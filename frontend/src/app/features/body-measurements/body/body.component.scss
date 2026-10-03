@@ -1,0 +1,40 @@
+.line-to-point {
+  fill: none;
+  stroke: white;
+  stroke-dasharray: 6 4;
+  stroke-width: 1px;
+  transform-origin: 203.377px 150.264px 0px;
+}
+
+.body-point {
+  fill: rgb(0, 136, 255);
+  stroke: rgb(0, 136, 255);
+}
+
+.body-main {
+  fill: none;
+  stroke: rgb(255, 255, 255);
+}
+
+.body-secondary {
+  fill: none;
+  stroke: rgba(85, 85, 85, 0.65);
+}
+
+#text text {
+  fill: rgb(255, 255, 255);
+  font-width: 200;
+}
+
+svg {
+  display: block;
+  max-width: 420px;
+  height: auto;
+}
+
+.body-label {
+  fill: #e5e7eb;
+  font-size: 14px;
+  font-family: 'Inter', sans-serif;
+  font-weight: 500;
+}
