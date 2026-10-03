@@ -1,0 +1,27 @@
+.page {
+  width: min(1400px, calc(100% - 48px));
+  margin: 0 auto;
+  padding: 32px 0;
+
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+.header {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  justify-content: center;
+  
+  .heading {
+    margin-top: 1rem;
+    margin-bottom: .25rem;
+  }
+
+  .subheading {
+    margin-top: .25rem;
+    font-weight: 200;
+    color: rgb(188, 188, 188);
+  }
+}

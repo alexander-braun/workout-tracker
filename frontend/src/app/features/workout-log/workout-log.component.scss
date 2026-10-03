@@ -1,0 +1,157 @@
+.exercise-grid {
+  display: grid;
+
+  // exercise | sets | reps | x | weight/unit | notes | delete
+  grid-template-columns:
+    minmax(180px, 2fr)
+    52px
+    60px
+    16px
+    130px
+    minmax(180px, 1.6fr)
+    32px;
+
+  gap: 8px;
+  align-items: center;
+
+  + .exercise-grid {
+    margin-top: 8px;
+  }
+}
+
+.header-row {
+  font-size: 0.75rem;
+  color: #9ca8b6;
+  margin-bottom: 6px;
+}
+
+.weight {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 6px;
+}
+
+.multiply {
+  text-align: center;
+  color: #8d99a7;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 24px;
+}
+
+:host ::ng-deep {
+  .p-select,
+  .p-inputnumber,
+  .p-inputnumber-input,
+  .p-inputtext {
+    width: 100%;
+  }
+}
+
+.exercise-table-scroll {
+  overflow-x: auto;
+  padding-bottom: 16px;
+}
+
+.exercise-grid {
+  display: grid;
+
+  grid-template-columns:
+    minmax(180px, 2fr)
+    52px
+    60px
+    16px
+    130px
+    minmax(180px, 1.6fr)
+    32px;
+
+  gap: 8px;
+  align-items: center;
+
+  min-width: 700px;
+
+  + .exercise-grid {
+    margin-top: 8px;
+  }
+
+  > * {
+    min-width: 0;
+  }
+}
+
+.header-row {
+  font-size: 0.75rem;
+  color: #9ca8b6;
+  margin-bottom: 6px;
+}
+
+.weight {
+  display: grid;
+  grid-template-columns: 1fr 70px;
+  gap: 6px;
+  min-width: 0;
+}
+
+.multiply {
+  text-align: center;
+  color: #8d99a7;
+}
+
+.card-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 16px;
+}
+
+:host ::ng-deep {
+  .p-select,
+  .p-inputnumber,
+  .p-inputtext {
+    width: 100%;
+    min-width: 0;
+    background: #1d242e;
+  }
+  .p-select-overlay {
+    background: #1d242e;
+  }
+}
+
+.exercise-table-scroll {
+  overflow-x: auto;
+  padding-bottom: 16px;
+  min-width: 0;
+}
+
+.exercise-grid {
+  width: 100%;
+  min-width: 700px;
+  box-sizing: border-box;
+}
+
+.remove-button {
+  width: 32px;
+  height: 32px;
+  min-width: 32px;
+  padding: 0;
+  justify-self: center;
+}
+
+.add-exercise-button {
+  background: #263b5a;
+  border: 1px solid #42689c;
+  color: #bcd3f5;
+  border-radius: 8px;
+  padding: 0.65rem 1rem;
+
+  &:hover {
+    background: #304a70;
+    border-color: #527db8;
+  }
+
+  &:active {
+    background: #223651;
+  }
+}

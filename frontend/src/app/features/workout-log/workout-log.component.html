@@ -1,0 +1,59 @@
+<section class="card">
+  <header class="card-header">
+    <h2>Workout Log</h2>
+
+    <button pButton type="button">
+      <span pButtonLabel>Save Workout</span>
+    </button>
+  </header>
+
+  <div class="exercise-table-scroll">
+    <div class="exercise-grid header-row">
+      <span>Exercise</span>
+      <span>Sets</span>
+      <span>Reps</span>
+      <span></span>
+      <span>Weight / Unit</span>
+      <span>Notes (optional)</span>
+      <span></span>
+    </div>
+
+    @for (row of rows; track $index) {
+      <div class="exercise-grid">
+        <p-select [options]="exerciseOptions" [(ngModel)]="row.exercise" />
+
+        <p-inputnumber [(ngModel)]="row.sets" [showButtons]="false" />
+
+        <p-inputnumber [(ngModel)]="row.reps" [showButtons]="false" />
+
+        <span class="multiply">×</span>
+
+        <div class="weight">
+          <p-inputnumber [(ngModel)]="row.weight" [showButtons]="false" placeholder="—" />
+
+          <p-select [options]="unitOptions" [(ngModel)]="row.unit" />
+        </div>
+
+        <input pInputText [(ngModel)]="row.notes" />
+
+        <button
+          pButton
+          type="button"
+          severity="secondary"
+          [text]="true"
+          class="remove-button"
+          aria-label="Remove exercise"
+        >
+          <i class="pi pi-times" pButtonIcon></i>
+        </button>
+      </div>
+    }
+  </div>
+
+  <footer class="card-footer">
+    <button pButton type="button" class="add-exercise-button">
+      <i class="pi pi-plus" pButtonIcon></i>
+      <span pButtonLabel>Add Exercise</span>
+    </button>
+  </footer>
+</section>

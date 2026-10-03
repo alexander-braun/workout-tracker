@@ -1,1 +1,51 @@
-/* You can add global styles to this file, and also import other style files */
+@import '@fontsource/inter/400.css';
+@import '@fontsource/inter/500.css';
+@import '@fontsource/inter/600.css';
+@import '@fontsource/inter/700.css';
+@import 'primeicons/primeicons.css';
+
+html {
+  font-size: 16px;
+}
+
+body {
+  font-family: 'Inter', sans-serif;
+  font-size: 1rem;
+  background-color: #171f27;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
+
+.card {
+  padding: 20px;
+  background: #1d242e;
+  border: 1px solid #25303c;
+  border-radius: 12px;
+}
+
+.card-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 12px;
+
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+  }
+}
+
+:root {
+  --font-xs: 0.75rem;   // 12px
+  --font-sm: 0.875rem;  // 14px
+  --font-md: 1rem;      // 16px
+  --font-lg: 1.25rem;   // 20px
+  --font-xl: 1.5rem;    // 24px
+  --font-2xl: 2rem;     // 32px
+  --surface-card: #1d242e;
+}
