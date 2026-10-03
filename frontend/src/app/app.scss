@@ -10,18 +10,44 @@
 
 .header {
   display: flex;
-  flex-direction: column;
-  align-items: start;
-  justify-content: center;
-  
+  justify-content: space-between;
+  align-items: center;
+  gap: 24px;
+
   .heading {
     margin-top: 1rem;
-    margin-bottom: .25rem;
+    margin-bottom: 0.25rem;
   }
 
   .subheading {
-    margin-top: .25rem;
+    margin-top: 0.25rem;
     font-weight: 200;
     color: rgb(188, 188, 188);
+  }
+
+  .header-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+.menu-button {
+  width: 36px;
+  height: 36px;
+  min-width: 36px;
+  padding: 0;
+  display: grid;
+  place-items: center;
+}
+}
+
+:host ::ng-deep {
+  .header-actions .p-datepicker {
+    width: 180px;
+  }
+
+  .header-actions .p-datepicker-input {
+    background: #1d242e;
+    height: 36px;
   }
 }

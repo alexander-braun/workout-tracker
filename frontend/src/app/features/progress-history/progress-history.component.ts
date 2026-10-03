@@ -5,7 +5,7 @@ import { ChartConfiguration } from 'chart.js';
 
 interface ProgressRow {
   exercise: string;
-  sessions: number[];
+  sessions: { date: Date; value: number }[];
   best: string;
   bestSub: string;
   latest: string;
@@ -17,10 +17,7 @@ interface ProgressRow {
 @Component({
   selector: 'frontend-progress-history',
   standalone: true,
-  imports: [
-    ButtonModule,
-    BaseChartDirective,
-  ],
+  imports: [ButtonModule, BaseChartDirective],
   templateUrl: './progress-history.component.html',
   styleUrl: './progress-history.component.scss',
 })
@@ -32,7 +29,12 @@ export class ProgressHistoryComponent {
   rows: ProgressRow[] = [
     {
       exercise: 'Ring Rows',
-      sessions: [5, 7, 8, 9],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '9 reps',
       bestSub: '3 sets',
       latest: '9 reps',
@@ -42,7 +44,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Scapular Push-ups',
-      sessions: [12, 15, 15, 16],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '20 reps',
       bestSub: '3 sets',
       latest: '15 reps',
@@ -52,7 +59,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Standing Band Row',
-      sessions: [15, 15, 14, 18],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '18 reps @ 65 lbs',
       bestSub: '3 sets',
       latest: '15 reps @ 65 lbs',
@@ -62,7 +74,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Band Internal Rotation',
-      sessions: [12, 13, 14, 14],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '14 reps @ 13.6 kg',
       bestSub: '3 sets',
       latest: '14 reps @ 13.6 kg',
@@ -72,7 +89,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Band External Rotation',
-      sessions: [9, 9, 11, 9],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '11 reps @ 13.6 kg',
       bestSub: '3 sets',
       latest: '9 reps @ 13.6 kg',
@@ -82,7 +104,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Biceps Curls',
-      sessions: [9, 10, 10, 12],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '12 reps @ 5 kg',
       bestSub: '3 sets',
       latest: '10 reps @ 5 kg',
@@ -92,7 +119,12 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Full Can',
-      sessions: [10, 11, 11, 11],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+      ],
       best: '11 reps @ 2.5 kg',
       bestSub: '3 sets',
       latest: '11 reps @ 2.5 kg',
@@ -102,7 +134,13 @@ export class ProgressHistoryComponent {
     },
     {
       exercise: 'Crunches',
-      sessions: [8, 9, 10, 11],
+      sessions: [
+        { date: new Date('2026-09-05'), value: 5 },
+        { date: new Date('2026-09-12'), value: 7 },
+        { date: new Date('2026-09-20'), value: 8 },
+        { date: new Date('2026-10-03'), value: 9 },
+        { date: new Date('2026-10-05'), value: 10 },
+      ],
       best: '11 reps',
       bestSub: '3 sets',
       latest: '11 reps',
@@ -148,10 +186,15 @@ export class ProgressHistoryComponent {
 
   chartData(row: ProgressRow): ChartConfiguration<'line'>['data'] {
     return {
-      labels: row.sessions.map((_, i) => i + 1),
+      labels: row.sessions.map((session) =>
+        session.date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+      ),
       datasets: [
         {
-          data: row.sessions,
+          data: row.sessions.map((session) => session.value),
           fill: false,
         },
       ],
