@@ -1,0 +1,13 @@
+export interface MeasurementEntry {
+  id: number;
+  date: string;
+  chest: number | null;
+  waist: number | null;
+  neck: number | null;
+  bicepsLeft: number | null;
+  bicepsRight: number | null;
+  thighLeft: number | null;
+  thighRight: number | null;
+  calfLeft: number | null;
+  calfRight: number | null;
+}

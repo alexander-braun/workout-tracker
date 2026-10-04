@@ -3,11 +3,13 @@ package com.alex.workouttracker.bodylog.controller;
 import java.time.LocalDate;
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.alex.workouttracker.bodylog.dto.MeasurementEntryRequest;
@@ -29,15 +31,22 @@ public class MeasurementController {
       return measurementService.getMeasurement(date);
    }
 
-   @GetMapping
-   public List<MeasurementEntryResponse> getAllMeasurements() {
-      return measurementService.getAllMeasurementEntries();
-   }
-
    @PutMapping("/{date}")
    public MeasurementEntryResponse saveMeasurement(
          @PathVariable LocalDate date,
          @Valid @RequestBody MeasurementEntryRequest request) {
       return measurementService.saveMeasurement(date, request);
+   }
+
+   @DeleteMapping("/{date}")
+   public void deleteMeasurement(@PathVariable LocalDate date) {
+      measurementService.deleteMeasurement(date);
+   }
+
+   @GetMapping
+   public List<MeasurementEntryResponse> getMeasurementEntryHistory(
+         @RequestParam(required = false) LocalDate from,
+         @RequestParam(required = false) LocalDate to) {
+      return measurementService.getMeasurementHistory(from, to);
    }
 }

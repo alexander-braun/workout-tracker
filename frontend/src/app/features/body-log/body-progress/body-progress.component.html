@@ -10,8 +10,8 @@
         <button
           type="button"
           class="range-button"
-          [class.active]="selectedRange === range"
-          (click)="selectedRange = range"
+          [class.active]="selectedRange() === range"
+          (click)="selectRange(range)"
         >
           {{ range }}
         </button>
@@ -19,6 +19,9 @@
     </div>
   </header>
 
+  @if (bodyStore.measurementHistoryLoading()) {
+    <frontend-loading text="Loading workout history..." />
+  } @else {
   <div class="measurement-scroll">
     <div class="measurement-table">
       <div class="measurement-row measurement-head">
@@ -29,7 +32,7 @@
         <span></span>
       </div>
 
-      @for (row of rows; track row.measurement) {
+      @for (row of rows(); track row.measurement) {
         <div class="measurement-row">
           <div class="measurement-name">
             {{ row.measurement }}
@@ -71,4 +74,6 @@
       }
     </div>
   </div>
+  }
+
 </section>

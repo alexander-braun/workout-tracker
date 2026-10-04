@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { BaseChartDirective } from 'ng2-charts';
-import { ChartConfiguration } from 'chart.js';
+import { type ChartConfiguration } from 'chart.js';
+import { BodyLogStore } from '../store/body-log.store';
+import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { toDateString } from '../../../shared/helper/toDateString';
 
 interface MeasurementSession {
   date: Date;
@@ -10,126 +13,73 @@ interface MeasurementSession {
 
 interface MeasurementProgressRow {
   measurement: string;
-  unit: 'cm' | 'kg';
+  unit: 'cm';
   sessions: MeasurementSession[];
 }
+
+type Range = '1M' | '3M' | '6M' | '1Y' | 'All';
+
+type MeasurementKey =
+  | 'chest'
+  | 'waist'
+  | 'neck'
+  | 'bicepsLeft'
+  | 'bicepsRight'
+  | 'thighLeft'
+  | 'thighRight'
+  | 'calfLeft'
+  | 'calfRight';
+
+const measurementDefinitions: {
+  key: MeasurementKey;
+  label: string;
+}[] = [
+  { key: 'chest', label: 'Chest' },
+  { key: 'waist', label: 'Waist' },
+  { key: 'neck', label: 'Neck' },
+  { key: 'bicepsLeft', label: 'Biceps (L)' },
+  { key: 'bicepsRight', label: 'Biceps (R)' },
+  { key: 'thighLeft', label: 'Thigh (L)' },
+  { key: 'thighRight', label: 'Thigh (R)' },
+  { key: 'calfLeft', label: 'Calf (L)' },
+  { key: 'calfRight', label: 'Calf (R)' },
+];
 
 @Component({
   selector: 'frontend-body-progress',
   standalone: true,
-  imports: [ButtonModule, BaseChartDirective],
+  imports: [
+    ButtonModule,
+    BaseChartDirective,
+    LoadingComponent,
+  ],
   templateUrl: './body-progress.component.html',
   styleUrl: './body-progress.component.scss',
 })
 export class BodyProgressComponent {
-  selectedRange = '1M';
+  readonly bodyStore = inject(BodyLogStore);
 
-  ranges = ['1M', '3M', '6M', '1Y', 'All'];
+  readonly selectedRange = signal<Range>('1M');
+  readonly ranges: Range[] = ['1M', '3M', '6M', '1Y', 'All'];
 
-  rows: MeasurementProgressRow[] = [
-    {
-      measurement: 'Weight',
-      unit: 'kg',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 82.3 },
-        { date: new Date('2026-09-12'), value: 81.5 },
-        { date: new Date('2026-09-20'), value: 80.6 },
-        { date: new Date('2026-10-03'), value: 80.0 },
-      ],
-    },
-    {
-      measurement: 'Chest',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 96.5 },
-        { date: new Date('2026-09-12'), value: 97.1 },
-        { date: new Date('2026-09-20'), value: 97.8 },
-        { date: new Date('2026-10-03'), value: 98.0 },
-      ],
-    },
-    {
-      measurement: 'Waist',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 86.0 },
-        { date: new Date('2026-09-12'), value: 85.1 },
-        { date: new Date('2026-09-20'), value: 84.2 },
-        { date: new Date('2026-10-03'), value: 83.0 },
-      ],
-    },
-    {
-      measurement: 'Neck',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 39.0 },
-        { date: new Date('2026-09-12'), value: 39.0 },
-        { date: new Date('2026-09-20'), value: 39.0 },
-        { date: new Date('2026-10-03'), value: 39.0 },
-      ],
-    },
-    {
-      measurement: 'Biceps (L)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 31.0 },
-        { date: new Date('2026-09-12'), value: 31.3 },
-        { date: new Date('2026-09-20'), value: 31.7 },
-        { date: new Date('2026-10-03'), value: 32.0 },
-      ],
-    },
-    {
-      measurement: 'Biceps (R)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 31.3 },
-        { date: new Date('2026-09-12'), value: 31.7 },
-        { date: new Date('2026-09-20'), value: 32.1 },
-        { date: new Date('2026-10-03'), value: 32.5 },
-      ],
-    },
-    {
-      measurement: 'Thigh (L)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 55.2 },
-        { date: new Date('2026-09-12'), value: 55.4 },
-        { date: new Date('2026-09-20'), value: 55.8 },
-        { date: new Date('2026-10-03'), value: 56.0 },
-      ],
-    },
-    {
-      measurement: 'Thigh (R)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 55.3 },
-        { date: new Date('2026-09-12'), value: 55.5 },
-        { date: new Date('2026-09-20'), value: 55.8 },
-        { date: new Date('2026-10-03'), value: 56.0 },
-      ],
-    },
-    {
-      measurement: 'Calf (L)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 35.5 },
-        { date: new Date('2026-09-12'), value: 35.7 },
-        { date: new Date('2026-09-20'), value: 35.9 },
-        { date: new Date('2026-10-03'), value: 36.0 },
-      ],
-    },
-    {
-      measurement: 'Calf (R)',
-      unit: 'cm',
-      sessions: [
-        { date: new Date('2026-09-05'), value: 35.5 },
-        { date: new Date('2026-09-12'), value: 35.7 },
-        { date: new Date('2026-09-20'), value: 35.9 },
-        { date: new Date('2026-10-03'), value: 36.0 },
-      ],
-    },
-  ];
+  readonly rows = computed<MeasurementProgressRow[]>(() => {
+    const history = this.bodyStore.measurementHistory();
 
-  sparklineOptions: ChartConfiguration<'line'>['options'] = {
+    return measurementDefinitions
+      .map(({ key, label }) => ({
+        measurement: label,
+        unit: 'cm' as const,
+        sessions: history
+          .filter((entry) => entry[key] !== null)
+          .map((entry) => ({
+            date: new Date(`${entry.date}T00:00:00`),
+            value: entry[key]!,
+          })),
+      }))
+      .filter((row) => row.sessions.length > 0);
+  });
+
+  readonly sparklineOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
     maintainAspectRatio: false,
 
@@ -163,6 +113,21 @@ export class BodyProgressComponent {
     },
   };
 
+  constructor() {
+    this.loadSelectedRange();
+
+    effect(() => {
+      if (this.bodyStore.measurementHistoryStale()) {
+        this.loadSelectedRange();
+      }
+    });
+  }
+
+  selectRange(range: Range): void {
+    this.selectedRange.set(range);
+    this.loadSelectedRange();
+  }
+
   chartData(row: MeasurementProgressRow): ChartConfiguration<'line'>['data'] {
     return {
       labels: row.sessions.map((session) =>
@@ -190,5 +155,31 @@ export class BodyProgressComponent {
     }
 
     return this.latest(row) - row.sessions[0].value;
+  }
+
+  private loadSelectedRange(): void {
+    const range = this.selectedRange();
+
+    if (range === 'All') {
+      this.bodyStore.loadMeasurementHistory();
+      return;
+    }
+
+    const to = new Date();
+    const from = new Date(to);
+
+    const months: Record<Exclude<Range, 'All'>, number> = {
+      '1M': 1,
+      '3M': 3,
+      '6M': 6,
+      '1Y': 12,
+    };
+
+    from.setMonth(from.getMonth() - months[range]);
+
+    this.bodyStore.loadMeasurementHistory(
+      toDateString(from),
+      toDateString(to),
+    );
   }
 }

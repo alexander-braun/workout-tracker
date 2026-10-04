@@ -10,11 +10,10 @@ import com.alex.workouttracker.bodylog.dto.MeasurementEntryRequest;
 import com.alex.workouttracker.bodylog.dto.MeasurementEntryResponse;
 import com.alex.workouttracker.bodylog.model.MeasurementEntry;
 import com.alex.workouttracker.bodylog.repository.MeasurementEntryRepository;
-
-import jakarta.validation.Valid;
+import com.alex.workouttracker.workout.dto.WorkoutResponse;
+import com.alex.workouttracker.workout.model.Workout;
 
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.server.ResponseStatusException;
 
 import lombok.RequiredArgsConstructor;
@@ -31,6 +30,29 @@ public class MeasurementService {
    }
 
    @Transactional(readOnly = true)
+   public List<MeasurementEntryResponse> getMeasurementHistory(
+         LocalDate from,
+         LocalDate to) {
+      List<MeasurementEntry> measurementEntries;
+
+      if (from == null || to == null) {
+         measurementEntries = measurementEntryRepository.findAllByOrderByDateAsc();
+      } else {
+         measurementEntries = measurementEntryRepository
+               .findAllByDateBetweenOrderByDateAsc(from, to);
+      }
+
+      return measurementEntries.stream()
+            .map(this::toResponse)
+            .toList();
+   }
+
+   @Transactional
+   public void deleteMeasurement(LocalDate date) {
+      measurementEntryRepository.deleteByDate(date);
+   }
+
+   @Transactional(readOnly = true)
    public MeasurementEntryResponse getMeasurement(LocalDate date) {
       MeasurementEntry measurement = measurementEntryRepository
             .findByDate(date)
@@ -44,7 +66,7 @@ public class MeasurementService {
    @Transactional
    public MeasurementEntryResponse saveMeasurement(
          LocalDate date,
-         @Valid @RequestBody MeasurementEntryRequest request) {
+         MeasurementEntryRequest request) {
       MeasurementEntry measurement = measurementEntryRepository
             .findByDate(date)
             .orElseGet(() -> new MeasurementEntry(date));

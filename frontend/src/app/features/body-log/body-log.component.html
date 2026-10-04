@@ -1,0 +1,218 @@
+<form class="card body-measurements" [formGroup]="form" (ngSubmit)="saveMeasurements()">
+  <header class="card-header">
+    <div>
+      <h2>Body Log</h2>
+      <p>Track key body measurements over time.</p>
+    </div>
+
+    <div class="header-actions">
+      <button
+        pButton
+        type="submit"
+        class="save-measurements"
+        [disabled]="bodyStore.measurementsLoading()"
+      >
+        <span pButtonLabel>Save Measurements</span>
+      </button>
+      @if (hasSavedMeasurement()) {
+        <button
+          pButton
+          type="button"
+          id="deleteMeasurement"
+          [disabled]="bodyStore.measurementSaveInProgress() || bodyStore.measurementsLoading()"
+          (click)="deleteMeasurement()"
+        >
+          <span pButtonLabel>Delete Measurements</span>
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="body-measurements-content">
+    <div class="body-visual">
+      <frontend-body [focusOn]="focusElement()" />
+    </div>
+
+    <div class="measurement-form">
+      <header class="measurement-form-header">
+        <h3>Measurements</h3>
+        <p>Enter your measurements for the selected date.</p>
+      </header>
+
+      @if (bodyStore.measurementsLoading()) {
+        <frontend-loading text="Loading measurements..." />
+      } @else {
+        <div class="measurement-columns">
+          <div class="measurement-column">
+            <div class="measurement-row">
+              <span>Chest</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('chest')"
+                  (onBlur)="removeFocus()"
+                  formControlName="chest"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Waist</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('waist')"
+                  (onBlur)="removeFocus()"
+                  formControlName="waist"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Neck</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('neck')"
+                  (onBlur)="removeFocus()"
+                  formControlName="neck"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+          </div>
+
+          <div class="measurement-column">
+            <div class="measurement-row">
+              <span>Biceps Left</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('biceps')"
+                  (onBlur)="removeFocus()"
+                  formControlName="bicepsLeft"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Biceps Right</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('biceps')"
+                  (onBlur)="removeFocus()"
+                  formControlName="bicepsRight"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Thigh Left</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('thigh')"
+                  (onBlur)="removeFocus()"
+                  formControlName="thighLeft"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Thigh Right</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('thigh')"
+                  (onBlur)="removeFocus()"
+                  formControlName="thighRight"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Calf Left</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('calf')"
+                  (onBlur)="removeFocus()"
+                  formControlName="calfLeft"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+
+            <div class="measurement-row">
+              <span>Calf Right</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('calf')"
+                  (onBlur)="removeFocus()"
+                  formControlName="calfRight"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">cm</span>
+              </div>
+            </div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
+    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
+
+    {{ historyOpen ? 'Hide Body Progress' : 'Show Body Progress' }}
+  </button>
+
+  @if (historyOpen) {
+    <div class="history-content">
+      <frontend-body-progress />
+    </div>
+  }
+</form>

@@ -1,15 +1,4 @@
-.line-to-point {
-  fill: none;
-  stroke: white;
-  stroke-dasharray: 6 4;
-  stroke-width: 1px;
-  transform-origin: 203.377px 150.264px 0px;
-}
 
-.body-point {
-  fill: rgb(0, 136, 255);
-  stroke: rgb(0, 136, 255);
-}
 
 .body-main {
   fill: none;
@@ -21,20 +10,97 @@
   stroke: rgba(85, 85, 85, 0.65);
 }
 
-#text text {
-  fill: rgb(255, 255, 255);
-  font-width: 200;
-}
-
 svg {
   display: block;
   max-width: 420px;
   height: auto;
+
+  &.has-focus {
+    .measurement-marker:not(.focussed) {
+      opacity: 0.55;
+    }
+  }
 }
 
-.body-label {
-  fill: #e5e7eb;
-  font-size: 14px;
-  font-family: 'Inter', sans-serif;
-  font-weight: 500;
+.measurement-marker {
+  transition: opacity 180ms ease;
+
+  .line-to-point {
+    fill: none;
+    stroke: #e5e7eb;
+    stroke-width: 1px;
+    stroke-dasharray: 6 4;
+
+    transition:
+      stroke 180ms ease,
+      stroke-width 180ms ease,
+      opacity 180ms ease;
+  }
+
+  .body-label {
+    fill: #e5e7eb;
+    font-size: 14px;
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+
+    transform-box: fill-box;
+    transform-origin: center;
+
+    transition:
+      fill 180ms ease,
+      transform 180ms ease,
+      font-weight 180ms ease;
+  }
+
+  .body-point {
+    fill: rgb(0, 136, 255);
+    stroke: rgb(0, 136, 255);
+    transition:
+      fill 180ms ease,
+      stroke 180ms ease,
+      r 180ms ease,
+      filter 180ms ease;
+  }
+
+  &.focussed {
+    .line-to-point {
+      stroke: var(--p-inputtext-focus-border-color);
+      stroke-width: 1.5px;
+      animation: dash-flow 700ms linear infinite;
+    }
+
+    .body-label {
+      fill: var(--p-inputtext-focus-border-color);
+      font-weight: 600;
+      transform: scale(1.08);
+    }
+
+    .body-point {
+      fill: var(--p-inputtext-focus-border-color);
+      stroke: var(--p-inputtext-focus-border-color);
+      r: 16px;
+
+      filter: drop-shadow(0 0 4px var(--p-inputtext-focus-border-color));
+    }
+  }
+}
+
+@keyframes dash-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+@keyframes point-pulse {
+  0% {
+    transform: scale(1);
+  }
+
+  50% {
+    transform: scale(1.7);
+  }
+
+  100% {
+    transform: scale(1.35);
+  }
 }
