@@ -2,11 +2,11 @@
   <header class="header">
     <div>
       <h1 class="heading">Workout Tracker</h1>
-      <h3 class="subheading">Log your exercises. See your progress.</h3>
     </div>
     <div class="header-actions">
       <p-datepicker
-        [(ngModel)]="selectedDate"
+        [ngModel]="store.selectedDate()"
+        (ngModelChange)="store.setSelectedDate($event)"
         [showIcon]="true"
         iconDisplay="input"
         [readonlyInput]="true"
@@ -18,8 +18,7 @@
       </button>
     </div>
   </header>
-  <frontend-workout-log></frontend-workout-log>
-  <frontend-progress-history></frontend-progress-history>
-  <frontend-body-measurements />
-  <frontend-measurement-progress />
+  <frontend-workout-log />
+  <frontend-body-log />
+  <frontend-nutrition-and-sleep-log />
 </div>

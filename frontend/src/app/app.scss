@@ -31,14 +31,14 @@
     gap: 12px;
   }
 
-.menu-button {
-  width: 36px;
-  height: 36px;
-  min-width: 36px;
-  padding: 0;
-  display: grid;
-  place-items: center;
-}
+  .menu-button {
+    width: 36px;
+    height: 36px;
+    min-width: 36px;
+    padding: 0;
+    display: grid;
+    place-items: center;
+  }
 }
 
 :host ::ng-deep {

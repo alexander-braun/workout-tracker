@@ -1,59 +1,110 @@
 <section class="card">
   <header class="card-header">
-    <h2>Workout Log</h2>
+    <div>
+      <h2>Workout Log</h2>
+      <p>Track your workout progress</p>
+    </div>
 
-    <button pButton type="button">
+    <button
+      [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
+      pButton
+      type="button"
+      [disabled]="!isWorkoutValid()"
+      (click)="saveWorkout()"
+    >
       <span pButtonLabel>Save Workout</span>
     </button>
   </header>
 
-  <div class="exercise-table-scroll">
-    <div class="exercise-grid header-row">
-      <span>Exercise</span>
-      <span>Sets</span>
-      <span>Reps</span>
-      <span></span>
-      <span>Weight / Unit</span>
-      <span>Notes (optional)</span>
-      <span></span>
-    </div>
-
-    @for (row of rows; track $index) {
-      <div class="exercise-grid">
-        <p-select [options]="exerciseOptions" [(ngModel)]="row.exercise" />
-
-        <p-inputnumber [(ngModel)]="row.sets" [showButtons]="false" />
-
-        <p-inputnumber [(ngModel)]="row.reps" [showButtons]="false" />
-
-        <span class="multiply">×</span>
-
-        <div class="weight">
-          <p-inputnumber [(ngModel)]="row.weight" [showButtons]="false" placeholder="—" />
-
-          <p-select [options]="unitOptions" [(ngModel)]="row.unit" />
-        </div>
-
-        <input pInputText [(ngModel)]="row.notes" />
-
-        <button
-          pButton
-          type="button"
-          severity="secondary"
-          [text]="true"
-          class="remove-button"
-          aria-label="Remove exercise"
-        >
-          <i class="pi pi-times" pButtonIcon></i>
-        </button>
+  @if (workoutStore.workoutSaveInProgress()) {
+    <frontend-loading text="Saving..." />
+  } @else if (workoutStore.workoutsLoading()) {
+    <frontend-loading text="Loading your workouts..." />
+  } @else {
+    <div class="exercise-table-scroll">
+      <div class="exercise-grid header-row">
+        <span>Exercise</span>
+        <span>Sets</span>
+        <span>Reps</span>
+        <span></span>
+        <span>Weight / Unit</span>
+        <span>Notes</span>
+        <span></span>
       </div>
-    }
-  </div>
+
+      @for (workoutEntry of workoutEntries(); track workoutEntry; let i = $index) {
+        <div class="exercise-grid">
+          <p-autocomplete
+            [ngModel]="getExerciseValue(workoutEntry)"
+            [suggestions]="filteredExercises()"
+            optionLabel="name"
+            [forceSelection]="false"
+            [dropdown]="true"
+            appendTo="body"
+            (completeMethod)="filterExercises($event, i)"
+            (onSelect)="selectExercise(i, $event.value)"
+            (onBlur)="onExerciseBlur(i, $event)"
+          />
+
+          <p-inputnumber [(ngModel)]="workoutEntry.sets" [showButtons]="false" />
+          <p-inputnumber [(ngModel)]="workoutEntry.reps" [showButtons]="false" />
+          <span class="multiply">×</span>
+          <div class="weight">
+            <p-inputnumber
+              [(ngModel)]="workoutEntry.weight"
+              [showButtons]="false"
+              placeholder="—"
+            />
+            <p-select
+              appendTo="body"
+              [options]="unitOptions"
+              [ngModel]="workoutEntry.unit"
+              (ngModelChange)="setWorkoutUnit(workoutEntry, $event)"
+            />
+          </div>
+          <input pInputText [(ngModel)]="workoutEntry.notes" />
+          <button
+            pButton
+            type="button"
+            severity="secondary"
+            [text]="true"
+            class="remove-button"
+            aria-label="Remove exercise"
+            (click)="removeWorkoutEntry(i)"
+          >
+            <i class="pi pi-times" pButtonIcon></i>
+          </button>
+        </div>
+      }
+    </div>
+  }
 
   <footer class="card-footer">
-    <button pButton type="button" class="add-exercise-button">
+    <button
+      [disabled]="workoutStore.workoutSaveInProgress() || workoutStore.workoutsLoading()"
+      pButton
+      type="button"
+      class="add-exercise-button"
+      (click)="addWorkoutEntry()"
+    >
       <i class="pi pi-plus" pButtonIcon></i>
       <span pButtonLabel>Add Exercise</span>
     </button>
   </footer>
+
+  <button type="button" class="history-toggle" (click)="historyOpen.set(!historyOpen())">
+    <i
+      class="pi"
+      [class.pi-chevron-down]="historyOpen()"
+      [class.pi-chevron-right]="!historyOpen()"
+    ></i>
+
+    {{ historyOpen() ? 'Hide Workout History' : 'Show Workout History' }}
+  </button>
+
+  @if (historyOpen()) {
+    <div class="history-content">
+      <frontend-workout-history />
+    </div>
+  }
 </section>

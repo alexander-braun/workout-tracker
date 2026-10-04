@@ -1,0 +1,121 @@
+<section class="card">
+  <header class="card-header">
+    <div>
+      <h2>Nutrition and Sleep Log</h2>
+      <p class="subtitle">Track nutrition and recovery</p>
+    </div>
+
+    <button pButton type="button" class="save-button" (click)="saveLog()">
+      <span pButtonLabel>Save Log</span>
+    </button>
+  </header>
+
+  <div class="log-grid">
+    <div class="log-column">
+      <label class="log-row">
+        <span class="label">Calories</span>
+
+        <div class="value-input">
+          <p-inputnumber [(ngModel)]="calories" [useGrouping]="false" [showButtons]="false" />
+
+          <span class="unit">kcal</span>
+        </div>
+      </label>
+
+      <label class="log-row">
+        <span class="label">Protein</span>
+
+        <div class="value-input">
+          <p-inputnumber [(ngModel)]="protein" [useGrouping]="false" [showButtons]="false" />
+
+          <span class="unit">g</span>
+        </div>
+      </label>
+
+      <label class="log-row">
+        <span class="label">Sleep</span>
+
+        <div class="value-input">
+          <p-inputnumber
+            [(ngModel)]="sleepHours"
+            [useGrouping]="false"
+            [showButtons]="false"
+            [minFractionDigits]="1"
+            [maxFractionDigits]="1"
+          />
+
+          <span class="unit">h</span>
+        </div>
+      </label>
+      <label class="log-row">
+        <span class="label">Steps</span>
+
+        <div class="value-input">
+          <p-inputnumber [(ngModel)]="steps" [useGrouping]="false" [showButtons]="false" />
+
+          <span class="unit">steps</span>
+        </div>
+      </label>
+    </div>
+
+    <div class="log-column">
+      <div class="log-row rating-row">
+        <span class="label">Sleep Quality</span>
+
+        <div class="rating-group">
+          @for (value of ratingOptions; track value) {
+            <button
+              type="button"
+              class="rating-button"
+              [class.active]="sleepQuality === value"
+              (click)="setSleepQuality(value)"
+            >
+              {{ value }}
+            </button>
+          }
+        </div>
+      </div>
+
+      <div class="log-row rating-row">
+        <span class="label">Energy</span>
+
+        <div class="rating-group">
+          @for (value of ratingOptions; track value) {
+            <button
+              type="button"
+              class="rating-button"
+              [class.active]="energy === value"
+              (click)="setEnergy(value)"
+            >
+              {{ value }}
+            </button>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="notes-section">
+    <label class="label notes-label" for="nutrition-notes">Notes</label>
+
+    <textarea
+      id="nutrition-notes"
+      pInputTextarea
+      [(ngModel)]="notes"
+      rows="3"
+      class="notes-textarea"
+    ></textarea>
+  </div>
+
+  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
+    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
+
+    Show Nutrition and Sleep Progress
+  </button>
+
+  @if (historyOpen) {
+    <div class="history-content">
+      <frontend-nutrition-and-sleep-history />
+    </div>
+  }
+</section>

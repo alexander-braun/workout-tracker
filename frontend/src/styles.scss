@@ -35,17 +35,47 @@ textarea {
   margin-bottom: 12px;
 
   h2 {
+    margin: 0 0 4px;
+  }
+
+  p {
     margin: 0;
-    font-size: 1.25rem;
+    color: #9ca8b6;
+    font-size: 0.875rem;
   }
 }
 
 :root {
-  --font-xs: 0.75rem;   // 12px
-  --font-sm: 0.875rem;  // 14px
-  --font-md: 1rem;      // 16px
-  --font-lg: 1.25rem;   // 20px
-  --font-xl: 1.5rem;    // 24px
-  --font-2xl: 2rem;     // 32px
+  --font-xs: 0.75rem; // 12px
+  --font-sm: 0.875rem; // 14px
+  --font-md: 1rem; // 16px
+  --font-lg: 1.25rem; // 20px
+  --font-xl: 1.5rem; // 24px
+  --font-2xl: 2rem; // 32px
   --surface-card: #1d242e;
+}
+
+.history-toggle {
+  width: 100%;
+  margin-top: 24px;
+  padding: 16px 0;
+
+  display: flex;
+  align-items: center;
+  gap: 10px;
+
+  border: 0;
+  border-top: 1px solid #2b3541;
+
+  background: transparent;
+  color: #dce3eb;
+
+  font: inherit;
+  font-weight: 600;
+
+  cursor: pointer;
+}
+
+.history-content {
+  padding-top: 8px;
 }

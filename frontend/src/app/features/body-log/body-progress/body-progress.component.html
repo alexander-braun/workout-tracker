@@ -1,0 +1,74 @@
+<section class="card">
+  <header class="card-header">
+    <div>
+      <h2>Body Progress</h2>
+      <p class="subtitle">See how your measurements change over time.</p>
+    </div>
+
+    <div class="range-selector">
+      @for (range of ranges; track range) {
+        <button
+          type="button"
+          class="range-button"
+          [class.active]="selectedRange === range"
+          (click)="selectedRange = range"
+        >
+          {{ range }}
+        </button>
+      }
+    </div>
+  </header>
+
+  <div class="measurement-scroll">
+    <div class="measurement-table">
+      <div class="measurement-row measurement-head">
+        <span>Measurement</span>
+        <span>Progress</span>
+        <span>Latest</span>
+        <span>Change</span>
+        <span></span>
+      </div>
+
+      @for (row of rows; track row.measurement) {
+        <div class="measurement-row">
+          <div class="measurement-name">
+            {{ row.measurement }}
+          </div>
+
+          <div class="sparkline">
+            <canvas
+              baseChart
+              type="line"
+              [data]="chartData(row)"
+              [options]="sparklineOptions"
+            ></canvas>
+          </div>
+
+          <div class="latest">{{ latest(row).toFixed(1) }} {{ row.unit }}</div>
+
+          <div
+            class="change"
+            [class.increase]="change(row) > 0"
+            [class.decrease]="change(row) < 0"
+            [class.neutral]="change(row) === 0"
+          >
+            @if (change(row) > 0) {
+              <i class="pi pi-arrow-up"></i>
+              +{{ change(row).toFixed(1) }} {{ row.unit }}
+            } @else if (change(row) < 0) {
+              <i class="pi pi-arrow-down"></i>
+              {{ change(row).toFixed(1) }} {{ row.unit }}
+            } @else {
+              <span>—</span>
+              0.0 {{ row.unit }}
+            }
+          </div>
+
+          <button pButton type="button" severity="secondary" [outlined]="true" class="view-button">
+            <span pButtonLabel>View</span>
+          </button>
+        </div>
+      }
+    </div>
+  </div>
+</section>

@@ -1,0 +1,87 @@
+<section class="card">
+  <header class="card-header">
+    <div>
+      <h2>Workout History</h2>
+      <p>Your workout progress over time</p>
+    </div>
+
+    <div class="range-selector">
+      @for (range of ranges; track range) {
+        <button
+          type="button"
+          class="range-button"
+          [class.active]="selectedRange() === range"
+          (click)="selectRange(range)"
+        >
+          {{ range }}
+        </button>
+      }
+    </div>
+  </header>
+
+  @if (store.workoutHistoryLoading()) {
+    <frontend-loading text="Loading workout history..." />
+  } @else {
+    <div class="history-scroll">
+      <div class="history-table">
+        <div class="history-row history-head">
+          <span>Exercise</span>
+          <span>Progress</span>
+          <span>Best</span>
+          <span>Latest</span>
+          <span>Change</span>
+          <span></span>
+        </div>
+
+        @for (row of rows(); track row.exercise) {
+          <div class="history-row">
+            <div class="exercise-name">
+              {{ row.exercise }}
+            </div>
+
+            <div class="sparkline">
+              <canvas
+                baseChart
+                [data]="chartData(row)"
+                [options]="sparklineOptions"
+                type="line"
+              ></canvas>
+            </div>
+
+            <div class="value">
+              <strong>{{ row.best }}</strong>
+              <span>{{ row.bestSub }}</span>
+            </div>
+
+            <div class="value">
+              <strong>{{ row.latest }}</strong>
+              <span>{{ row.latestSub }}</span>
+            </div>
+
+            <div
+              class="change"
+              [class.positive]="row.change > 0"
+              [class.negative]="row.change < 0"
+              [class.neutral]="row.change === 0"
+            >
+              @if (row.change > 0) {
+                <i class="pi pi-arrow-up"></i>
+                +{{ row.change }} {{ row.unit }}
+              } @else if (row.change < 0) {
+                <i class="pi pi-arrow-down"></i>
+                {{ row.change }} {{ row.unit }}
+              } @else {
+                <span>—</span>
+                0 {{ row.unit }}
+              }
+            </div>
+
+            <button pButton type="button" severity="secondary" [outlined]="true">
+              <span pButtonLabel>View</span>
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  }
+</section>
