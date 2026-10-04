@@ -1,5 +1,5 @@
 
-package com.alex.workouttracker.workout;
+package com.alex.workouttracker.workout.model;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
 import com.fasterxml.jackson.annotation.JsonValue;

@@ -1,5 +1,5 @@
 
-package com.alex.workouttracker.workout;
+package com.alex.workouttracker.workout.model;
 
 import jakarta.persistence.*;
 import lombok.Getter;

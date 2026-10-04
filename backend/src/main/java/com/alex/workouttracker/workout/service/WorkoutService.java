@@ -1,5 +1,5 @@
 
-package com.alex.workouttracker.workout;
+package com.alex.workouttracker.workout.service;
 
 import org.springframework.transaction.annotation.Transactional;
 import lombok.RequiredArgsConstructor;
@@ -9,6 +9,11 @@ import com.alex.workouttracker.workout.dto.SaveWorkoutRequest;
 import com.alex.workouttracker.workout.dto.WorkoutEntryRequest;
 import com.alex.workouttracker.workout.dto.WorkoutEntryResponse;
 import com.alex.workouttracker.workout.dto.WorkoutResponse;
+import com.alex.workouttracker.workout.model.Exercise;
+import com.alex.workouttracker.workout.model.WeightUnit;
+import com.alex.workouttracker.workout.model.Workout;
+import com.alex.workouttracker.workout.model.WorkoutEntry;
+import com.alex.workouttracker.workout.repository.WorkoutRepository;
 
 import java.time.LocalDate;
 import java.util.HashSet;
@@ -16,14 +21,13 @@ import java.util.List;
 import java.util.Set;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
-import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
 public class WorkoutService {
 
         private final WorkoutRepository workoutRepository;
-        private final ExerciseRepository exerciseRepository;
+        private final ExerciseService exerciseService;
 
         @Transactional(readOnly = true)
         public WorkoutResponse getWorkout(LocalDate date) {
@@ -46,14 +50,15 @@ public class WorkoutService {
 
                 if (workout.getId() != null) {
                         workout.clearEntries();
-
                         workoutRepository.flush();
                 }
 
                 Set<Long> usedExerciseIds = new HashSet<>();
 
                 for (WorkoutEntryRequest entryRequest : request.entries()) {
-                        Exercise exercise = resolveExercise(entryRequest);
+                        String name = entryRequest.newExerciseName();
+                        Long id = entryRequest.exerciseId();
+                        Exercise exercise = exerciseService.findOrCreateExercise(id, name);
 
                         if (!usedExerciseIds.add(exercise.getId())) {
                                 throw new IllegalArgumentException(
@@ -79,29 +84,6 @@ public class WorkoutService {
                 Workout savedWorkout = workoutRepository.save(workout);
 
                 return toResponse(savedWorkout);
-        }
-
-        private Exercise resolveExercise(WorkoutEntryRequest request) {
-                if (request.exerciseId() != null) {
-                        return exerciseRepository
-                                        .findById(request.exerciseId())
-                                        .orElseThrow(() -> new IllegalArgumentException(
-                                                        "Exercise not found: " + request.exerciseId()));
-                }
-
-                String name = request.newExerciseName();
-
-                if (name == null || name.isBlank()) {
-                        throw new IllegalArgumentException(
-                                        "Exercise must have either an id or a new name");
-                }
-
-                String trimmedName = name.trim();
-
-                return exerciseRepository
-                                .findByNameIgnoreCase(trimmedName)
-                                .orElseGet(() -> exerciseRepository.save(
-                                                new Exercise(trimmedName)));
         }
 
         private WorkoutResponse toResponse(Workout workout) {

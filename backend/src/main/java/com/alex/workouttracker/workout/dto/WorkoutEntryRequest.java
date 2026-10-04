@@ -6,7 +6,7 @@ import jakarta.validation.constraints.NotNull;
 
 import java.math.BigDecimal;
 
-import com.alex.workouttracker.workout.WeightUnit;
+import com.alex.workouttracker.workout.model.WeightUnit;
 
 public record WorkoutEntryRequest(
     Long exerciseId,

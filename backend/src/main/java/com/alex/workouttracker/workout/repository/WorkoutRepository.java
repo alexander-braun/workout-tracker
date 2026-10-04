@@ -1,6 +1,8 @@
-package com.alex.workouttracker.workout;
+package com.alex.workouttracker.workout.repository;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+
+import com.alex.workouttracker.workout.model.Workout;
 
 import java.time.LocalDate;
 import java.util.List;
