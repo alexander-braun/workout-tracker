@@ -157,3 +157,24 @@
 }
 
 
+#deleteWorkout {
+  background: #c23b3b;
+  border-color: #c23b3b;
+  color: white;
+
+  &:hover {
+    background: #842c2c;
+    border-color: #842c2c;
+  }
+}
+
+.card-header {
+  display: flex;
+  align-items: flex-start;
+}
+
+.header-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 0.75rem;
+}

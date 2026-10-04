@@ -11,7 +11,13 @@
         iconDisplay="input"
         [readonlyInput]="true"
         dateFormat="D, M d, yy"
-      />
+      >
+        <ng-template #date let-date>
+          <span class="calendar-day" [class.has-workout]="hasWorkout(date)">
+            {{ date.day }}
+          </span>
+        </ng-template>
+      </p-datepicker>
 
       <button pButton type="button" class="menu-button" severity="secondary" aria-label="Menu">
         <i class="pi pi-ellipsis-h"></i>

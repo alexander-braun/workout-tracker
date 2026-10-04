@@ -17,6 +17,10 @@ export interface WorkoutResponse {
   entries: WorkoutResponseEntry[];
 }
 
+export interface WorkoutDatesResponse {
+  dates: string[];
+}
+
 @Injectable({
   providedIn: 'root',
 })
@@ -49,5 +53,13 @@ export class WorkoutApiService {
 
   saveWorkout(date: string, request: SaveWorkoutRequest): Observable<WorkoutResponse> {
     return this.http.put<WorkoutResponse>(`/api/workouts/${date}`, request);
+  }
+
+  deleteWorkout(date: string): Observable<void> {
+    return this.http.delete<void>(`/api/workouts/${date}`);
+  }
+
+  getAllWorkoutDates(): Observable<WorkoutDatesResponse> {
+    return this.http.get<WorkoutDatesResponse>(`/api/workouts/dates`);
   }
 }

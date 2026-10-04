@@ -5,15 +5,27 @@
       <p>Track your workout progress</p>
     </div>
 
-    <button
-      [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
-      pButton
-      type="button"
-      [disabled]="!isWorkoutValid()"
-      (click)="saveWorkout()"
-    >
-      <span pButtonLabel>Save Workout</span>
-    </button>
+    <div class="header-actions">
+      <button
+        pButton
+        type="button"
+        [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
+        (click)="saveWorkout()"
+      >
+        <span pButtonLabel>Save Workout</span>
+      </button>
+      @if (hasSavedWorkout()) {
+      <button
+        pButton
+        type="button"
+        id="deleteWorkout"
+        [disabled]="workoutStore.workoutSaveInProgress()"
+        (click)="deleteWorkout()"
+      >
+        <span pButtonLabel>Delete Workout</span>
+      </button>
+      }
+    </div>
   </header>
 
   @if (workoutStore.workoutSaveInProgress()) {

@@ -9,9 +9,14 @@ export interface WorkoutStore {
   workoutSaveInProgress: boolean;
   workoutsLoading: boolean;
   workoutHistoryStale: boolean;
+  workoutDates: string[];
 }
 
 export interface SaveWorkout {
   date: string;
   entries: WorkoutEntry[];
+}
+
+export interface DeleteWorkout {
+  date: string;
 }

@@ -3,16 +3,15 @@ package com.alex.workouttracker.workout.dto;
 
 import java.math.BigDecimal;
 
-import com.alex.workouttracker.workout.WeightUnit;
+import com.alex.workouttracker.workout.model.WeightUnit;
 
 public record WorkoutEntryResponse(
-    Long id,
-    Long exerciseId,
-    int sets,
-    int reps,
-    BigDecimal weight,
-    WeightUnit unit,
-    String notes,
-    int position
-) {
+      Long id,
+      Long exerciseId,
+      int sets,
+      int reps,
+      BigDecimal weight,
+      WeightUnit unit,
+      String notes,
+      int position) {
 }

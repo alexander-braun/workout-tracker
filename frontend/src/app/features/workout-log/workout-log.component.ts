@@ -10,6 +10,7 @@ import { WorkoutHistoryComponent } from './workout-history/workout-history.compo
 import type { ExerciseEntry, WeightUnit, WorkoutEntry } from './workout.model';
 import { WorkoutLogStore } from './store/workout-log.store';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { toDateString } from '../../shared/helper/toDateString';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -22,7 +23,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
     SelectModule,
     AutoCompleteModule,
     WorkoutHistoryComponent,
-    LoadingComponent
+    LoadingComponent,
   ],
   templateUrl: './workout-log.component.html',
   styleUrl: './workout-log.component.scss',
@@ -49,8 +50,19 @@ export class WorkoutLogComponent {
 
   saveWorkout(): void {
     this.workoutStore.saveWorkout({
-      date: this.toDateString(this.appStore.selectedDate()),
+      date: toDateString(this.appStore.selectedDate()),
       entries: this.workoutEntries(),
+    });
+  }
+
+  hasSavedWorkout(): boolean {
+    const date = toDateString(this.appStore.selectedDate());
+    return this.workoutStore.workoutDates().includes(date);
+  }
+
+  deleteWorkout(): void {
+    this.workoutStore.deleteWorkout({
+      date: toDateString(this.appStore.selectedDate()),
     });
   }
 
@@ -210,14 +222,7 @@ export class WorkoutLogComponent {
   }
 
   private loadWorkout(date: Date): void {
-    this.workoutStore.loadWorkout(this.toDateString(date));
-  }
-
-  private toDateString(date: Date): string {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    this.workoutStore.loadWorkout(toDateString(date));
   }
 
   private normalizeExerciseName(name: string): string {

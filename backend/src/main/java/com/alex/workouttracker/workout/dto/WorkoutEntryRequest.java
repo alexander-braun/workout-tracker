@@ -9,22 +9,18 @@ import java.math.BigDecimal;
 import com.alex.workouttracker.workout.model.WeightUnit;
 
 public record WorkoutEntryRequest(
-    Long exerciseId,
-    String newExerciseName,
+      Long exerciseId,
+      String newExerciseName,
 
-    @Min(0)
-    int sets,
+      @Min(0) int sets,
 
-    @Min(0)
-    int reps,
+      @Min(0) int reps,
 
-    BigDecimal weight,
+      BigDecimal weight,
 
-    @NotNull
-    WeightUnit unit,
+      @NotNull WeightUnit unit,
 
-    String notes,
+      String notes,
 
-    int position
-) {
+      int position) {
 }

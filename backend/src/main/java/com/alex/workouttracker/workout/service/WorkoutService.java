@@ -6,6 +6,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import com.alex.workouttracker.workout.dto.SaveWorkoutRequest;
+import com.alex.workouttracker.workout.dto.WorkoutDatesResponse;
 import com.alex.workouttracker.workout.dto.WorkoutEntryRequest;
 import com.alex.workouttracker.workout.dto.WorkoutEntryResponse;
 import com.alex.workouttracker.workout.dto.WorkoutResponse;
@@ -26,99 +27,109 @@ import org.springframework.web.server.ResponseStatusException;
 @RequiredArgsConstructor
 public class WorkoutService {
 
-        private final WorkoutRepository workoutRepository;
-        private final ExerciseService exerciseService;
+   private final WorkoutRepository workoutRepository;
+   private final ExerciseService exerciseService;
 
-        @Transactional(readOnly = true)
-        public WorkoutResponse getWorkout(LocalDate date) {
-                Workout workout = workoutRepository
-                                .findByDate(date)
-                                .orElseThrow(() -> new ResponseStatusException(
-                                                HttpStatus.NOT_FOUND,
-                                                "No workout found for " + date));
+   @Transactional(readOnly = true)
+   public WorkoutDatesResponse getAllWorkoutDates() {
+      return new WorkoutDatesResponse(workoutRepository.findAllDates());
+   }
 
-                return toResponse(workout);
-        }
+   @Transactional(readOnly = true)
+   public WorkoutResponse getWorkout(LocalDate date) {
+      Workout workout = workoutRepository
+            .findByDate(date)
+            .orElseThrow(() -> new ResponseStatusException(
+                  HttpStatus.NOT_FOUND,
+                  "No workout found for " + date));
 
-        @Transactional
-        public WorkoutResponse saveWorkout(
-                        LocalDate date,
-                        SaveWorkoutRequest request) {
-                Workout workout = workoutRepository
-                                .findByDate(date)
-                                .orElseGet(() -> new Workout(date));
+      return toResponse(workout);
+   }
 
-                if (workout.getId() != null) {
-                        workout.clearEntries();
-                        workoutRepository.flush();
-                }
+   @Transactional
+   public WorkoutResponse saveWorkout(
+         LocalDate date,
+         SaveWorkoutRequest request) {
+      Workout workout = workoutRepository
+            .findByDate(date)
+            .orElseGet(() -> new Workout(date));
 
-                Set<Long> usedExerciseIds = new HashSet<>();
+      if (workout.getId() != null) {
+         workout.clearEntries();
+         workoutRepository.flush();
+      }
 
-                for (WorkoutEntryRequest entryRequest : request.entries()) {
-                        String name = entryRequest.newExerciseName();
-                        Long id = entryRequest.exerciseId();
-                        Exercise exercise = exerciseService.findOrCreateExercise(id, name);
+      Set<Long> usedExerciseIds = new HashSet<>();
 
-                        if (!usedExerciseIds.add(exercise.getId())) {
-                                throw new IllegalArgumentException(
-                                                "Exercise appears more than once: " + exercise.getName());
-                        }
+      for (WorkoutEntryRequest entryRequest : request.entries()) {
+         String name = entryRequest.newExerciseName();
+         Long id = entryRequest.exerciseId();
+         Exercise exercise = exerciseService.findOrCreateExercise(id, name);
 
-                        WorkoutEntry entry = new WorkoutEntry();
+         if (!usedExerciseIds.add(exercise.getId())) {
+            throw new IllegalArgumentException(
+                  "Exercise appears more than once: " + exercise.getName());
+         }
 
-                        entry.setExercise(exercise);
-                        entry.setSets(entryRequest.sets());
-                        entry.setReps(entryRequest.reps());
-                        entry.setWeight(
-                                        entryRequest.unit() == WeightUnit.BW
-                                                        ? null
-                                                        : entryRequest.weight());
-                        entry.setUnit(entryRequest.unit());
-                        entry.setNotes(entryRequest.notes());
-                        entry.setPosition(entryRequest.position());
+         WorkoutEntry entry = new WorkoutEntry();
 
-                        workout.addEntry(entry);
-                }
+         entry.setExercise(exercise);
+         entry.setSets(entryRequest.sets());
+         entry.setReps(entryRequest.reps());
+         entry.setWeight(
+               entryRequest.unit() == WeightUnit.BW
+                     ? null
+                     : entryRequest.weight());
+         entry.setUnit(entryRequest.unit());
+         entry.setNotes(entryRequest.notes());
+         entry.setPosition(entryRequest.position());
 
-                Workout savedWorkout = workoutRepository.save(workout);
+         workout.addEntry(entry);
+      }
 
-                return toResponse(savedWorkout);
-        }
+      Workout savedWorkout = workoutRepository.save(workout);
 
-        private WorkoutResponse toResponse(Workout workout) {
-                return new WorkoutResponse(
-                                workout.getId(),
-                                workout.getDate(),
-                                workout.getEntries()
-                                                .stream()
-                                                .map(entry -> new WorkoutEntryResponse(
-                                                                entry.getId(),
-                                                                entry.getExercise().getId(),
-                                                                entry.getSets(),
-                                                                entry.getReps(),
-                                                                entry.getWeight(),
-                                                                entry.getUnit(),
-                                                                entry.getNotes(),
-                                                                entry.getPosition()))
-                                                .toList());
-        }
+      return toResponse(savedWorkout);
+   }
 
-        @Transactional(readOnly = true)
-        public List<WorkoutResponse> getWorkoutHistory(
-                        LocalDate from,
-                        LocalDate to) {
-                List<Workout> workouts;
+   private WorkoutResponse toResponse(Workout workout) {
+      return new WorkoutResponse(
+            workout.getId(),
+            workout.getDate(),
+            workout.getEntries()
+                  .stream()
+                  .map(entry -> new WorkoutEntryResponse(
+                        entry.getId(),
+                        entry.getExercise().getId(),
+                        entry.getSets(),
+                        entry.getReps(),
+                        entry.getWeight(),
+                        entry.getUnit(),
+                        entry.getNotes(),
+                        entry.getPosition()))
+                  .toList());
+   }
 
-                if (from == null || to == null) {
-                        workouts = workoutRepository.findAllByOrderByDateAsc();
-                } else {
-                        workouts = workoutRepository
-                                        .findAllByDateBetweenOrderByDateAsc(from, to);
-                }
+   @Transactional(readOnly = true)
+   public List<WorkoutResponse> getWorkoutHistory(
+         LocalDate from,
+         LocalDate to) {
+      List<Workout> workouts;
 
-                return workouts.stream()
-                                .map(this::toResponse)
-                                .toList();
-        }
+      if (from == null || to == null) {
+         workouts = workoutRepository.findAllByOrderByDateAsc();
+      } else {
+         workouts = workoutRepository
+               .findAllByDateBetweenOrderByDateAsc(from, to);
+      }
+
+      return workouts.stream()
+            .map(this::toResponse)
+            .toList();
+   }
+
+   @Transactional
+   public void deleteWorkout(LocalDate date) {
+      workoutRepository.deleteByDate(date);
+   }
 }

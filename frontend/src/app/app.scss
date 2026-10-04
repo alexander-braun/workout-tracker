@@ -51,3 +51,19 @@
     height: 36px;
   }
 }
+
+.calendar-day {
+  position: relative;
+  width: 2rem;
+  height: 2rem;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 50%;
+}
+
+.calendar-day.has-workout {
+  background: rgba(156, 129, 66, 0.2);
+}
