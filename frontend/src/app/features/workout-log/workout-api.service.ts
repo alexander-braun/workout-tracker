@@ -1,8 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { ExerciseEntry, SaveWorkoutRequest, WorkoutDatesResponse, WorkoutResponse } from './workout.model';
-
+import type {
+  ExerciseEntry,
+  SaveWorkoutRequest,
+  WorkoutDatesResponse,
+  WorkoutResponse,
+} from './workout.model';
 
 @Injectable({
   providedIn: 'root',

@@ -49,9 +49,7 @@ export class NutritionAndSleepLogComponent {
 
   constructor() {
     effect(() => {
-      this.nutritionStore.loadNutritionEntry(
-        toDateString(this.appStore.selectedDate()),
-      );
+      this.nutritionStore.loadNutritionEntry(toDateString(this.appStore.selectedDate()));
     });
 
     effect(() => {

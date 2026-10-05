@@ -15,8 +15,7 @@
         aria-label="Save Log"
         title="Save Log"
         [disabled]="
-          nutritionStore.nutritionEntryLoading() ||
-          nutritionStore.nutritionEntrySaveInProgress()
+          nutritionStore.nutritionEntryLoading() || nutritionStore.nutritionEntrySaveInProgress()
         "
       >
         <i class="pi pi-save" pButtonIcon></i>
@@ -32,8 +31,7 @@
           aria-label="Delete Log"
           title="Delete Log"
           [disabled]="
-            nutritionStore.nutritionEntryLoading() ||
-            nutritionStore.nutritionEntrySaveInProgress()
+            nutritionStore.nutritionEntryLoading() || nutritionStore.nutritionEntrySaveInProgress()
           "
           (click)="deleteNutritionEntry()"
         >
@@ -151,12 +149,7 @@
     </div>
 
     <div class="notes-section">
-      <label
-        class="label notes-label"
-        for="nutrition-notes"
-      >
-        Notes
-      </label>
+      <label class="label notes-label" for="nutrition-notes">Notes</label>
 
       <textarea
         id="nutrition-notes"
@@ -169,22 +162,10 @@
     </div>
   }
 
-  <button
-    type="button"
-    class="history-toggle"
-    (click)="historyOpen = !historyOpen"
-  >
-    <i
-      class="pi"
-      [class.pi-chevron-down]="historyOpen"
-      [class.pi-chevron-right]="!historyOpen"
-    ></i>
+  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
+    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
 
-    {{
-      historyOpen
-        ? 'Hide Nutrition and Sleep Progress'
-        : 'Show Nutrition and Sleep Progress'
-    }}
+    {{ historyOpen ? 'Hide Nutrition and Sleep Progress' : 'Show Nutrition and Sleep Progress' }}
   </button>
 
   @if (historyOpen) {

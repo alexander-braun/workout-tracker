@@ -9,13 +9,7 @@ import { toDateString } from '../../../shared/helper/toDateString';
 
 type Range = '1W' | '1M' | '3M' | '6M' | 'All';
 
-type NutritionKey =
-  | 'calories'
-  | 'protein'
-  | 'sleepHours'
-  | 'sleepQuality'
-  | 'steps'
-  | 'energy';
+type NutritionKey = 'calories' | 'protein' | 'sleepHours' | 'sleepQuality' | 'steps' | 'energy';
 
 interface HistorySession {
   date: Date;
@@ -72,11 +66,7 @@ const metricDefinitions: {
 @Component({
   selector: 'frontend-nutrition-and-sleep-history',
   standalone: true,
-  imports: [
-    ButtonModule,
-    BaseChartDirective,
-    LoadingComponent,
-  ],
+  imports: [ButtonModule, BaseChartDirective, LoadingComponent],
   templateUrl: './nutrition-and-sleep-history.component.html',
   styleUrl: './nutrition-and-sleep-history.component.scss',
 })

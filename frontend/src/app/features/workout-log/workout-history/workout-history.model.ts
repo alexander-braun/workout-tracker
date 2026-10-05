@@ -1,4 +1,4 @@
-import { type WeightUnit } from "../workout.model";
+import { type WeightUnit } from '../workout.model';
 
 export type Range = '1M' | '3M' | '6M' | 'All';
 

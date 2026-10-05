@@ -6,35 +6,35 @@
     </div>
 
     <div class="header-actions">
-  <button
-    pButton
-    type="submit"
-    [text]="true"
-    severity="success"
-    class="header-icon-button"
-    aria-label="Save Measurements"
-    title="Save Measurements"
-    [disabled]="bodyStore.measurementsLoading()"
-  >
-    <i class="pi pi-save" pButtonIcon></i>
-  </button>
+      <button
+        pButton
+        type="submit"
+        [text]="true"
+        severity="success"
+        class="header-icon-button"
+        aria-label="Save Measurements"
+        title="Save Measurements"
+        [disabled]="bodyStore.measurementsLoading()"
+      >
+        <i class="pi pi-save" pButtonIcon></i>
+      </button>
 
-  @if (hasSavedMeasurement()) {
-<button
-  pButton
-  type="button"
-  [text]="true"
-  severity="danger"
-  class="header-icon-button"
-  aria-label="Delete Measurements"
-  title="Delete Measurements"
-  [disabled]="bodyStore.measurementSaveInProgress() || bodyStore.measurementsLoading()"
-  (click)="deleteMeasurement()"
->
-  <i class="pi pi-trash" pButtonIcon></i>
-</button>
-  }
-</div>
+      @if (hasSavedMeasurement()) {
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          severity="danger"
+          class="header-icon-button"
+          aria-label="Delete Measurements"
+          title="Delete Measurements"
+          [disabled]="bodyStore.measurementSaveInProgress() || bodyStore.measurementsLoading()"
+          (click)="deleteMeasurement()"
+        >
+          <i class="pi pi-trash" pButtonIcon></i>
+        </button>
+      }
+    </div>
   </header>
 
   <div class="body-measurements-content">
@@ -53,8 +53,8 @@
 
       @if (bodyStore.measurementsLoading()) {
         <frontend-loading text="Loading measurements..." />
-      }@else if(bodyStore.measurementSaveInProgress()) {
-        <frontend-loading text="Saving measurements..." /> 
+      } @else if (bodyStore.measurementSaveInProgress()) {
+        <frontend-loading text="Saving measurements..." />
       } @else {
         <div class="measurement-columns">
           <div class="measurement-column">

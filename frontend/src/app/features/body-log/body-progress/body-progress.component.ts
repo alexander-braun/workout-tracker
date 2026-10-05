@@ -48,11 +48,7 @@ const measurementDefinitions: {
 @Component({
   selector: 'frontend-body-progress',
   standalone: true,
-  imports: [
-    ButtonModule,
-    BaseChartDirective,
-    LoadingComponent,
-  ],
+  imports: [ButtonModule, BaseChartDirective, LoadingComponent],
   templateUrl: './body-progress.component.html',
   styleUrl: './body-progress.component.scss',
 })

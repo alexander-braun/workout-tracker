@@ -1,13 +1,6 @@
 import { Component, input } from '@angular/core';
 
-export type BodyArea =
-  | 'neck'
-  | 'chest'
-  | 'biceps'
-  | 'waist'
-  | 'thigh'
-  | 'calf'
-  | null;
+export type BodyArea = 'neck' | 'chest' | 'biceps' | 'waist' | 'thigh' | 'calf' | null;
 
 @Component({
   selector: 'frontend-body',

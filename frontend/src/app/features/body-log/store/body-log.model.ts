@@ -1,5 +1,4 @@
-
-import { type SaveMeasurementRequest, type MeasurementEntry } from "../body.model";
+import { type SaveMeasurementRequest, type MeasurementEntry } from '../body.model';
 
 export interface BodyStore {
   currentMeasurement: MeasurementEntry | null;

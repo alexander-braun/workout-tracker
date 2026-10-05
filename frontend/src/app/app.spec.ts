@@ -19,32 +19,32 @@ describe('App', () => {
     httpTesting.verify();
   });
 
-it('should create the app', () => {
-  const fixture = TestBed.createComponent(App);
+  it('should create the app', () => {
+    const fixture = TestBed.createComponent(App);
 
-  fixture.detectChanges();
+    fixture.detectChanges();
 
-  httpTesting.expectOne('/api/workouts/dates').flush({
-    dates: [],
+    httpTesting.expectOne('/api/workouts/dates').flush({
+      dates: [],
+    });
+
+    httpTesting.expectOne('/api/exercises').flush([]);
+
+    const workoutRequest = httpTesting.expectOne((request) =>
+      request.url.startsWith('/api/workouts/'),
+    );
+    workoutRequest.flush({}, { status: 404, statusText: 'Not Found' });
+
+    const measurementRequest = httpTesting.expectOne((request) =>
+      request.url.startsWith('/api/measurements/'),
+    );
+    measurementRequest.flush({}, { status: 404, statusText: 'Not Found' });
+
+    const nutritionRequest = httpTesting.expectOne((request) =>
+      request.url.startsWith('/api/nutrition/'),
+    );
+    nutritionRequest.flush({}, { status: 404, statusText: 'Not Found' });
+
+    expect(fixture.componentInstance).toBeTruthy();
   });
-
-  httpTesting.expectOne('/api/exercises').flush([]);
-
-  const workoutRequest = httpTesting.expectOne((request) =>
-    request.url.startsWith('/api/workouts/'),
-  );
-  workoutRequest.flush({}, { status: 404, statusText: 'Not Found' });
-
-  const measurementRequest = httpTesting.expectOne((request) =>
-    request.url.startsWith('/api/measurements/'),
-  );
-  measurementRequest.flush({}, { status: 404, statusText: 'Not Found' });
-
-  const nutritionRequest = httpTesting.expectOne((request) =>
-    request.url.startsWith('/api/nutrition/'),
-  );
-  nutritionRequest.flush({}, { status: 404, statusText: 'Not Found' });
-
-  expect(fixture.componentInstance).toBeTruthy();
-});
 });

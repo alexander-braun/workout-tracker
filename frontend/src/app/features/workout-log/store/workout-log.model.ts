@@ -1,4 +1,3 @@
-
 import { type WorkoutResponse, type ExerciseEntry, type WorkoutEntry } from '../workout.model';
 
 export interface WorkoutStore {
