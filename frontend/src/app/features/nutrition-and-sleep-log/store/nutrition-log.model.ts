@@ -1,0 +1,19 @@
+import { type SaveNutritionRequest, type NutritionEntry } from '../nutrition.model';
+
+export interface NutritionStore {
+  currentNutritionEntry: NutritionEntry | null;
+  nutritionEntryHistory: NutritionEntry[];
+  nutritionHistoryLoading: boolean;
+  nutritionHistoryStale: boolean;
+  nutritionEntryLoading: boolean;
+  nutritionEntrySaveInProgress: boolean;
+}
+
+export interface DeleteNutritionEntry {
+  date: string;
+}
+
+export interface SaveNutritionEntry {
+  date: string;
+  request: SaveNutritionRequest;
+}

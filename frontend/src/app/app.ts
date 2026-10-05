@@ -7,6 +7,7 @@ import { NutritionAndSleepLogComponent } from './features/nutrition-and-sleep-lo
 import { AppStore } from './store/app.store';
 import { WorkoutLogStore } from './features/workout-log/store/workout-log.store';
 import { BodyLogStore } from './features/body-log/store/body-log.store';
+import { NutritionLogStore } from './features/nutrition-and-sleep-log/store/nutrition-log.store';
 @Component({
   imports: [
     NutritionAndSleepLogComponent,
@@ -18,7 +19,7 @@ import { BodyLogStore } from './features/body-log/store/body-log.store';
   selector: 'frontend-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
-  providers: [AppStore, WorkoutLogStore, BodyLogStore],
+  providers: [AppStore, WorkoutLogStore, BodyLogStore, NutritionLogStore],
 })
 export class App {
   selectedDate: Date = new Date();

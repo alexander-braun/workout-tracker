@@ -1,15 +1,11 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
-import { BodyApiService, type SaveMeasurementRequest } from '../body-api.service';
-import { type DeleteMeasurement, type BodyStore } from './body-log.model';
+import { BodyApiService } from '../body-api.service';
+import { type DeleteMeasurement, type BodyStore, type SaveMeasurement } from './body-log.model';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, delayWhen, EMPTY, map, of, pipe, switchMap, tap, timer } from 'rxjs';
+import { catchError, delayWhen, map, of, pipe, switchMap, tap, timer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
-export interface SaveMeasurement {
-  date: string;
-  request: SaveMeasurementRequest;
-}
 
 const initialState: BodyStore = {
   currentMeasurement: null,
@@ -24,8 +20,10 @@ export const BodyLogStore = signalStore(
   withState<BodyStore>(initialState),
   withMethods((store, api = inject(BodyApiService)) => {
     const MIN_LOADING_TIME = 1000;
+
     const remainingLoadingTime = (startedAt: number) =>
       timer(Math.max(0, MIN_LOADING_TIME - (Date.now() - startedAt)));
+
     const loadMeasurement = rxMethod<string>(
       pipe(
         tap(() => patchState(store, { measurementsLoading: true })),
@@ -56,6 +54,7 @@ export const BodyLogStore = signalStore(
         }),
       ),
     );
+
     const loadMeasurementHistory = (from?: string, to?: string): void => {
       patchState(store, {
         measurementHistoryLoading: true,
@@ -78,6 +77,7 @@ export const BodyLogStore = signalStore(
         },
       });
     };
+
     return {
       loadMeasurement,
       loadMeasurementHistory,

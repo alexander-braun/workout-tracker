@@ -2,7 +2,9 @@
   <header class="card-header">
     <div>
       <h2>Nutrition and Sleep Progress</h2>
-      <p class="subtitle">See how your nutrition and sleep habits change over time.</p>
+      <p class="subtitle">
+        See how your nutrition and sleep habits change over time.
+      </p>
     </div>
 
     <div class="range-selector">
@@ -10,8 +12,8 @@
         <button
           type="button"
           class="range-button"
-          [class.active]="selectedRange === range"
-          (click)="selectedRange = range"
+          [class.active]="selectedRange() === range"
+          (click)="selectRange(range)"
         >
           {{ range }}
         </button>
@@ -19,58 +21,68 @@
     </div>
   </header>
 
-  <div class="history-scroll">
-    <div class="history-table">
-      <div class="history-row history-head">
-        <span>Metric</span>
-        <span>Progress</span>
-        <span>Latest</span>
-        <span>Change</span>
-        <span></span>
-      </div>
-
-      @for (row of rows; track row.metric) {
-        <div class="history-row">
-          <div class="metric-name">
-            {{ row.metric }}
-          </div>
-
-          <div class="sparkline">
-            <canvas
-              baseChart
-              type="line"
-              [data]="chartData(row)"
-              [options]="sparklineOptions"
-            ></canvas>
-          </div>
-
-          <div class="latest">
-            {{ formatValue(row, latest(row)) }}
-          </div>
-
-          <div
-            class="change"
-            [class.positive]="change(row) > 0"
-            [class.negative]="change(row) < 0"
-            [class.neutral]="change(row) === 0"
-          >
-            @if (change(row) > 0) {
-              <i class="pi pi-arrow-up"></i>
-              +{{ formatChange(row) }}
-            } @else if (change(row) < 0) {
-              <i class="pi pi-arrow-down"></i>
-              {{ formatChange(row) }}
-            } @else {
-              <span>—</span>
-              {{ formatChange(row) }}
-            }
-          </div>
-
-          <button pButton type="button" severity="secondary" [outlined]="true" class="view-button">
-            <span pButtonLabel>View</span>
-          </button>
+  @if (nutritionStore.nutritionHistoryLoading()) {
+    <frontend-loading text="Loading nutrition history..." />
+  } @else {
+    <div class="history-scroll">
+      <div class="history-table">
+        <div class="history-row history-head">
+          <span>Metric</span>
+          <span>Progress</span>
+          <span>Latest</span>
+          <span>Change</span>
+          <span></span>
         </div>
-      }
+
+        @for (row of rows(); track row.metric) {
+          <div class="history-row">
+            <div class="metric-name">
+              {{ row.metric }}
+            </div>
+
+            <div class="sparkline">
+              <canvas
+                baseChart
+                type="line"
+                [data]="chartData(row)"
+                [options]="sparklineOptions"
+              ></canvas>
+            </div>
+
+            <div class="latest">
+              {{ formatValue(row, latest(row)) }}
+            </div>
+
+            <div
+              class="change"
+              [class.positive]="change(row) > 0"
+              [class.negative]="change(row) < 0"
+              [class.neutral]="change(row) === 0"
+            >
+              @if (change(row) > 0) {
+                <i class="pi pi-arrow-up"></i>
+                +{{ formatChange(row) }}
+              } @else if (change(row) < 0) {
+                <i class="pi pi-arrow-down"></i>
+                {{ formatChange(row) }}
+              } @else {
+                <span>—</span>
+                {{ formatChange(row) }}
+              }
+            </div>
+
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              [outlined]="true"
+              class="view-button"
+            >
+              <span pButtonLabel>View</span>
+            </button>
+          </div>
+        }
+      </div>
     </div>
-  </div>
+  }
 </section>

@@ -1,116 +1,190 @@
-<section class="card">
+<form class="card" [formGroup]="form" (ngSubmit)="saveLog()">
   <header class="card-header">
     <div>
       <h2>Nutrition and Sleep Log</h2>
       <p class="subtitle">Track nutrition and recovery</p>
     </div>
 
-    <button pButton type="button" class="save-button" (click)="saveLog()">
-      <span pButtonLabel>Save Log</span>
-    </button>
+    <div class="header-actions">
+      <button
+        pButton
+        type="submit"
+        [text]="true"
+        severity="success"
+        class="header-icon-button"
+        aria-label="Save Log"
+        title="Save Log"
+        [disabled]="
+          nutritionStore.nutritionEntryLoading() ||
+          nutritionStore.nutritionEntrySaveInProgress()
+        "
+      >
+        <i class="pi pi-save" pButtonIcon></i>
+      </button>
+
+      @if (hasSavedNutritionEntry()) {
+        <button
+          pButton
+          type="button"
+          [text]="true"
+          severity="danger"
+          class="header-icon-button"
+          aria-label="Delete Log"
+          title="Delete Log"
+          [disabled]="
+            nutritionStore.nutritionEntryLoading() ||
+            nutritionStore.nutritionEntrySaveInProgress()
+          "
+          (click)="deleteNutritionEntry()"
+        >
+          <i class="pi pi-trash" pButtonIcon></i>
+        </button>
+      }
+    </div>
   </header>
 
-  <div class="log-grid">
-    <div class="log-column">
-      <label class="log-row">
-        <span class="label">Calories</span>
+  @if (nutritionStore.nutritionEntryLoading()) {
+    <frontend-loading text="Loading nutrition and recovery..." />
+  } @else if (nutritionStore.nutritionEntrySaveInProgress()) {
+    <frontend-loading text="Saving nutrition and recovery..." />
+  } @else {
+    <div class="log-grid">
+      <div class="log-column">
+        <div class="log-row">
+          <label class="label" for="calories">Calories</label>
 
-        <div class="value-input">
-          <p-inputnumber [(ngModel)]="calories" [useGrouping]="false" [showButtons]="false" />
+          <div class="value-input">
+            <p-inputnumber
+              inputId="calories"
+              formControlName="calories"
+              [useGrouping]="false"
+              [showButtons]="false"
+            />
 
-          <span class="unit">kcal</span>
+            <span class="unit">kcal</span>
+          </div>
         </div>
-      </label>
 
-      <label class="log-row">
-        <span class="label">Protein</span>
+        <div class="log-row">
+          <label class="label" for="protein">Protein</label>
 
-        <div class="value-input">
-          <p-inputnumber [(ngModel)]="protein" [useGrouping]="false" [showButtons]="false" />
+          <div class="value-input">
+            <p-inputnumber
+              inputId="protein"
+              formControlName="protein"
+              [useGrouping]="false"
+              [showButtons]="false"
+            />
 
-          <span class="unit">g</span>
+            <span class="unit">g</span>
+          </div>
         </div>
-      </label>
 
-      <label class="log-row">
-        <span class="label">Sleep</span>
+        <div class="log-row">
+          <label class="label" for="sleepHours">Sleep</label>
 
-        <div class="value-input">
-          <p-inputnumber
-            [(ngModel)]="sleepHours"
-            [useGrouping]="false"
-            [showButtons]="false"
-            [minFractionDigits]="1"
-            [maxFractionDigits]="1"
-          />
+          <div class="value-input">
+            <p-inputnumber
+              inputId="sleepHours"
+              formControlName="sleepHours"
+              [useGrouping]="false"
+              [showButtons]="false"
+              [minFractionDigits]="1"
+              [maxFractionDigits]="2"
+            />
 
-          <span class="unit">h</span>
+            <span class="unit">h</span>
+          </div>
         </div>
-      </label>
-      <label class="log-row">
-        <span class="label">Steps</span>
 
-        <div class="value-input">
-          <p-inputnumber [(ngModel)]="steps" [useGrouping]="false" [showButtons]="false" />
+        <div class="log-row">
+          <label class="label" for="steps">Steps</label>
 
-          <span class="unit">steps</span>
-        </div>
-      </label>
-    </div>
+          <div class="value-input">
+            <p-inputnumber
+              inputId="steps"
+              formControlName="steps"
+              [useGrouping]="false"
+              [showButtons]="false"
+            />
 
-    <div class="log-column">
-      <div class="log-row rating-row">
-        <span class="label">Sleep Quality</span>
-
-        <div class="rating-group">
-          @for (value of ratingOptions; track value) {
-            <button
-              type="button"
-              class="rating-button"
-              [class.active]="sleepQuality === value"
-              (click)="setSleepQuality(value)"
-            >
-              {{ value }}
-            </button>
-          }
-        </div>
-      </div>
-
-      <div class="log-row rating-row">
-        <span class="label">Energy</span>
-
-        <div class="rating-group">
-          @for (value of ratingOptions; track value) {
-            <button
-              type="button"
-              class="rating-button"
-              [class.active]="energy === value"
-              (click)="setEnergy(value)"
-            >
-              {{ value }}
-            </button>
-          }
+            <span class="unit">steps</span>
+          </div>
         </div>
       </div>
+
+      <div class="log-column">
+        <div class="log-row rating-row">
+          <span class="label">Sleep Quality</span>
+
+          <div class="rating-group">
+            @for (value of ratingOptions; track value) {
+              <button
+                type="button"
+                class="rating-button"
+                [class.active]="form.controls.sleepQuality.value === value"
+                (click)="setSleepQuality(value)"
+              >
+                {{ value }}
+              </button>
+            }
+          </div>
+        </div>
+
+        <div class="log-row rating-row">
+          <span class="label">Energy</span>
+
+          <div class="rating-group">
+            @for (value of ratingOptions; track value) {
+              <button
+                type="button"
+                class="rating-button"
+                [class.active]="form.controls.energy.value === value"
+                (click)="setEnergy(value)"
+              >
+                {{ value }}
+              </button>
+            }
+          </div>
+        </div>
+      </div>
     </div>
-  </div>
 
-  <div class="notes-section">
-    <label class="label notes-label" for="nutrition-notes">Notes</label>
+    <div class="notes-section">
+      <label
+        class="label notes-label"
+        for="nutrition-notes"
+      >
+        Notes
+      </label>
 
-    <textarea
-      id="nutrition-notes"
-      pInputTextarea
-      [(ngModel)]="notes"
-      rows="3"
-      class="notes-textarea"
-    ></textarea>
-  </div>
+      <textarea
+        id="nutrition-notes"
+        pInputTextarea
+        formControlName="notes"
+        maxlength="1000"
+        rows="3"
+        class="notes-textarea"
+      ></textarea>
+    </div>
+  }
 
-  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
-    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
+  <button
+    type="button"
+    class="history-toggle"
+    (click)="historyOpen = !historyOpen"
+  >
+    <i
+      class="pi"
+      [class.pi-chevron-down]="historyOpen"
+      [class.pi-chevron-right]="!historyOpen"
+    ></i>
 
-    Show Nutrition and Sleep Progress
+    {{
+      historyOpen
+        ? 'Hide Nutrition and Sleep Progress'
+        : 'Show Nutrition and Sleep Progress'
+    }}
   </button>
 
   @if (historyOpen) {
@@ -118,4 +192,4 @@
       <frontend-nutrition-and-sleep-history />
     </div>
   }
-</section>
+</form>

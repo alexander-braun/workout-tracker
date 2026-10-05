@@ -1,3 +1,4 @@
+import { type SaveMeasurementRequest } from "../body-api.service";
 import { type MeasurementEntry } from "../body.model";
 
 export interface BodyStore {
@@ -11,4 +12,9 @@ export interface BodyStore {
 
 export interface DeleteMeasurement {
   date: string;
+}
+
+export interface SaveMeasurement {
+  date: string;
+  request: SaveMeasurementRequest;
 }
