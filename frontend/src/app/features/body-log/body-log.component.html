@@ -30,17 +30,22 @@
 
   <div class="body-measurements-content">
     <div class="body-visual">
-      <frontend-body [focusOn]="focusElement()" />
+      <frontend-body
+        [focusOn]="focusElement()"
+        [isLoading]="bodyStore.measurementsLoading() || bodyStore.measurementSaveInProgress()"
+      />
     </div>
 
     <div class="measurement-form">
       <header class="measurement-form-header">
         <h3>Measurements</h3>
-        <p>Enter your measurements for the selected date.</p>
+        <p>Enter your measurements for today</p>
       </header>
 
       @if (bodyStore.measurementsLoading()) {
         <frontend-loading text="Loading measurements..." />
+      }@else if(bodyStore.measurementSaveInProgress()) {
+        <frontend-loading text="Saving measurements..." /> 
       } @else {
         <div class="measurement-columns">
           <div class="measurement-column">

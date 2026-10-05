@@ -18,4 +18,5 @@ export type BodyArea =
 })
 export class BodyComponent {
   readonly focusOn = input<BodyArea>(null);
+  readonly isLoading = input<boolean>(false);
 }

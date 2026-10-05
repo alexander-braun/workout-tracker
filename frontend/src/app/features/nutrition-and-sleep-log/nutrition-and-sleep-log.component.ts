@@ -25,8 +25,8 @@ export class NutritionAndSleepLogComponent {
   sleepHours: number | null = 7.5;
   steps: number | null = 6840;
 
-  sleepQuality = 4;
-  energy = 4;
+  sleepQuality = 3;
+  energy = 3;
 
   notes = 'slept well, shoulder felt good';
 
