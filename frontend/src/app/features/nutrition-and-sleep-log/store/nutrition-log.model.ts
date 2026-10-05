@@ -2,7 +2,7 @@ import { type SaveNutritionRequest, type NutritionEntry } from '../nutrition.mod
 
 export interface NutritionStore {
   currentNutritionEntry: NutritionEntry | null;
-  nutritionEntryHistory: NutritionEntry[];
+  nutritionHistory: NutritionEntry[];
   nutritionHistoryLoading: boolean;
   nutritionHistoryStale: boolean;
   nutritionEntryLoading: boolean;
@@ -16,4 +16,9 @@ export interface DeleteNutritionEntry {
 export interface SaveNutritionEntry {
   date: string;
   request: SaveNutritionRequest;
+}
+
+export interface GetNutritionHistory {
+  from?: string;
+  to?: string;
 }

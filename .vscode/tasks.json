@@ -1,0 +1,15 @@
+{
+  "version": "2.0.0",
+  "configurations": [
+    {
+      "type": "java",
+      "name": "Workout Tracker Backend",
+      "request": "launch",
+      "mainClass": "YOUR_MAIN_CLASS",
+      "projectName": "backend",
+      "env": {
+        "SPRING_PROFILES_ACTIVE": "local"
+      }
+    }
+  ]
+}

@@ -30,9 +30,15 @@ textarea {
 
 .card-header {
   display: flex;
-  align-items: center;
   justify-content: space-between;
   margin-bottom: 12px;
+  align-items: flex-start;
+  gap: 1rem;
+  flex-wrap: wrap;
+
+  & > div:first-child {
+    flex: 1 1 180px;
+  }
 
   h2 {
     margin: 0 0 4px;
@@ -83,14 +89,23 @@ textarea {
 .header-actions {
   display: flex;
   align-items: center;
-  gap: 6px;
   margin-top: 2px;
+
+  margin-left: auto;
+  margin-right: auto;
+  gap: 0.75rem;
+  min-width: 0;
 }
 
-.card-header {
-  display: flex;
-  justify-content: space-between;
-  align-items: flex-start;
+:host ::ng-deep {
+  .header-actions .p-datepicker {
+    width: 180px;
+  }
+
+  .header-actions .p-datepicker-input {
+    background: #1d242e;
+    height: 36px;
+  }
 }
 
 .header-icon-button {

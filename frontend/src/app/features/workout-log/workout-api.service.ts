@@ -1,25 +1,8 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { ExerciseEntry, WorkoutEntry } from './workout.model';
+import type { ExerciseEntry, SaveWorkoutRequest, WorkoutDatesResponse, WorkoutResponse } from './workout.model';
 
-export interface SaveWorkoutRequest {
-  entries: Omit<WorkoutEntry, 'id'>[];
-}
-
-type WorkoutResponseEntry = Omit<WorkoutEntry, 'newExerciseName' | 'exerciseId'> & {
-  exerciseId: number;
-};
-
-export interface WorkoutResponse {
-  id: number;
-  date: string;
-  entries: WorkoutResponseEntry[];
-}
-
-export interface WorkoutDatesResponse {
-  dates: string[];
-}
 
 @Injectable({
   providedIn: 'root',

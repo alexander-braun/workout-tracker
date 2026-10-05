@@ -1,11 +1,15 @@
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { BodyApiService } from '../body-api.service';
-import { type DeleteMeasurement, type BodyStore, type SaveMeasurement } from './body-log.model';
+import {
+  type DeleteMeasurement,
+  type BodyStore,
+  type SaveMeasurement,
+  type GetMeasurementHistory,
+} from './body-log.model';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, delayWhen, map, of, pipe, switchMap, tap, timer } from 'rxjs';
+import { catchError, delayWhen, EMPTY, finalize, map, of, pipe, switchMap, tap, timer } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
-
 
 const initialState: BodyStore = {
   currentMeasurement: null,
@@ -55,32 +59,34 @@ export const BodyLogStore = signalStore(
       ),
     );
 
-    const loadMeasurementHistory = (from?: string, to?: string): void => {
-      patchState(store, {
-        measurementHistoryLoading: true,
-      });
-
-      api.getMeasurementHistory(from, to).subscribe({
-        next: (measurementHistory) => {
-          patchState(store, {
-            measurementHistory,
-            measurementHistoryLoading: false,
-            measurementHistoryStale: false,
-          });
-        },
-        error: (error) => {
-          patchState(store, {
-            measurementHistoryLoading: false,
-          });
-
-          console.error(error);
-        },
-      });
-    };
-
     return {
+      loadMeasurementHistory: rxMethod<GetMeasurementHistory>(
+        pipe(
+          tap(() => {
+            patchState(store, {
+              measurementHistoryLoading: true,
+            });
+          }),
+          switchMap(({ from, to }) =>
+            api.getMeasurementHistory(from, to).pipe(
+              tap((measurementHistory) => {
+                patchState(store, {
+                  measurementHistory,
+                  measurementHistoryStale: false,
+                });
+              }),
+              catchError((error) => {
+                console.error(error);
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, { measurementHistoryLoading: false });
+              }),
+            ),
+          ),
+        ),
+      ),
       loadMeasurement,
-      loadMeasurementHistory,
       deleteMeasurement: rxMethod<DeleteMeasurement>(
         pipe(
           tap(() => {

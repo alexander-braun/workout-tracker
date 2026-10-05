@@ -1,0 +1,25 @@
+{
+  "name": "workout-tracker",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "backend": "cd backend && mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local",
+    "backend:test": "cd backend && mvnw.cmd test -Dspring.profiles.active=local",
+    "frontend": "cd frontend && npm run start",
+    "frontend:test": "cd frontend && npm run test",
+    "application": "concurrently -n backend,frontend -k \"npm run backend\" \"npm run frontend\""  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/alexander-braun/workout-tracker.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/alexander-braun/workout-tracker/issues"
+  },
+  "homepage": "https://github.com/alexander-braun/workout-tracker#readme",
+  "devDependencies": {
+    "concurrently": "^10.0.5"
+  }
+}

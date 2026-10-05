@@ -44,7 +44,7 @@ public class MeasurementController {
    }
 
    @GetMapping
-   public List<MeasurementEntryResponse> getMeasurementEntryHistory(
+   public List<MeasurementEntryResponse> getMeasurementHistory(
          @RequestParam(required = false) LocalDate from,
          @RequestParam(required = false) LocalDate to) {
       return measurementService.getMeasurementHistory(from, to);

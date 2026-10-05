@@ -18,3 +18,8 @@ export interface SaveMeasurement {
   date: string;
   request: SaveMeasurementRequest;
 }
+
+export interface GetMeasurementHistory {
+  from?: string;
+  to?: string;
+}

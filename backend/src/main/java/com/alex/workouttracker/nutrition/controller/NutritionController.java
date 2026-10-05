@@ -26,25 +26,25 @@ public class NutritionController {
    private final NutritionService nutritionService;
 
    @GetMapping("/{date}")
-   public NutritionEntryResponse getNutritionEntry(@PathVariable LocalDate date) {
+   public NutritionEntryResponse getNutrition(@PathVariable LocalDate date) {
       return nutritionService.getNutritionEntry(date);
    }
 
    @PutMapping("/{date}")
-   public NutritionEntryResponse saveNutritionEntry(
+   public NutritionEntryResponse saveNutrition(
          @PathVariable LocalDate date,
          @Valid @RequestBody NutritionEntryRequest request) {
       return nutritionService.saveNutritionEntry(date, request);
    }
 
    @DeleteMapping("/{date}")
-   public void deleteNutritionEntry(
+   public void deleteNutrition(
          @PathVariable LocalDate date) {
       nutritionService.deleteNutritionEntry(date);
    }
 
    @GetMapping
-   public List<NutritionEntryResponse> getNutritionEntryHistory(
+   public List<NutritionEntryResponse> getNutritionHistory(
          @RequestParam(required = false) LocalDate from,
          @RequestParam(required = false) LocalDate to) {
       return nutritionService.getNutritionHistory(from, to);

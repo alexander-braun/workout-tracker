@@ -22,7 +22,6 @@ import { NutritionLogStore } from './features/nutrition-and-sleep-log/store/nutr
   providers: [AppStore, WorkoutLogStore, BodyLogStore, NutritionLogStore],
 })
 export class App {
-  selectedDate: Date = new Date();
   readonly store = inject(AppStore);
   readonly workoutLogStore = inject(WorkoutLogStore);
   readonly workoutDates = computed(() => new Set(this.workoutLogStore.workoutDates()));

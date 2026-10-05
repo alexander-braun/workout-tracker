@@ -9,7 +9,7 @@ import type { NutritionEntry, SaveNutritionRequest } from './nutrition.model';
 export class NutritionApiService {
   private readonly http = inject(HttpClient);
 
-  getNutritionEntryForDate(date: string): Observable<NutritionEntry> {
+  getNutritionForDate(date: string): Observable<NutritionEntry> {
     return this.http.get<NutritionEntry>(`/api/nutrition/${date}`);
   }
 

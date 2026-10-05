@@ -87,7 +87,7 @@ export class NutritionAndSleepHistoryComponent {
   readonly ranges: Range[] = ['1W', '1M', '3M', '6M', 'All'];
 
   readonly rows = computed<NutritionSleepHistoryRow[]>(() => {
-    const history = this.nutritionStore.nutritionEntryHistory();
+    const history = this.nutritionStore.nutritionHistory();
 
     return metricDefinitions
       .map((definition) => ({
@@ -205,7 +205,7 @@ export class NutritionAndSleepHistoryComponent {
     const range = this.selectedRange();
 
     if (range === 'All') {
-      this.nutritionStore.loadNutritionHistory();
+      this.nutritionStore.loadNutritionHistory({});
       return;
     }
 
@@ -230,9 +230,9 @@ export class NutritionAndSleepHistoryComponent {
         break;
     }
 
-    this.nutritionStore.loadNutritionHistory(
-      toDateString(from),
-      toDateString(to),
-    );
+    this.nutritionStore.loadNutritionHistory({
+      from: toDateString(from),
+      to: toDateString(to),
+    });
   }
 }

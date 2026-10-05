@@ -11,3 +11,5 @@ export interface MeasurementEntry {
   calfLeft: number | null;
   calfRight: number | null;
 }
+
+export type SaveMeasurementRequest = Omit<MeasurementEntry, 'id' | 'date'>;

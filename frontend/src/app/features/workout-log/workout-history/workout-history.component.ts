@@ -97,7 +97,7 @@ export class WorkoutHistoryComponent {
     const range = this.selectedRange();
 
     if (range === 'All') {
-      this.store.loadWorkoutHistory();
+      this.store.loadWorkoutHistory({});
       return;
     }
 
@@ -112,7 +112,7 @@ export class WorkoutHistoryComponent {
 
     from.setMonth(from.getMonth() - months[range]);
 
-    this.store.loadWorkoutHistory(this.formatDate(from), this.formatDate(to));
+    this.store.loadWorkoutHistory({ from: this.formatDate(from), to: this.formatDate(to) });
   }
 
   private formatDate(date: Date): string {

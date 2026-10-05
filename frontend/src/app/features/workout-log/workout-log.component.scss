@@ -1,5 +1,14 @@
+.exercise-table-scroll {
+  overflow-x: auto;
+  padding-bottom: 16px;
+  min-width: 0;
+}
+
 .exercise-grid {
   display: grid;
+  width: 100%;
+  min-width: 700px;
+  box-sizing: border-box;
 
   // exercise | sets | reps | x | weight/unit | notes | delete
   grid-template-columns:
@@ -13,65 +22,6 @@
 
   gap: 8px;
   align-items: center;
-
-  + .exercise-grid {
-    margin-top: 8px;
-  }
-}
-
-.header-row {
-  font-size: 0.75rem;
-  color: #9ca8b6;
-  margin-bottom: 6px;
-}
-
-.weight {
-  display: grid;
-  grid-template-columns: 1fr 70px;
-  gap: 6px;
-}
-
-.multiply {
-  text-align: center;
-  color: #8d99a7;
-}
-
-.card-footer {
-  display: flex;
-  justify-content: flex-end;
-  margin-top: 24px;
-}
-
-:host ::ng-deep {
-  .p-select,
-  .p-inputnumber,
-  .p-inputnumber-input,
-  .p-inputtext {
-    width: 100%;
-  }
-}
-
-.exercise-table-scroll {
-  overflow-x: auto;
-  padding-bottom: 16px;
-}
-
-.exercise-grid {
-  display: grid;
-
-  grid-template-columns:
-    minmax(180px, 2fr)
-    52px
-    60px
-    16px
-    130px
-    minmax(180px, 1.6fr)
-    32px;
-
-  gap: 8px;
-  align-items: center;
-
-  min-width: 700px;
 
   + .exercise-grid {
     margin-top: 8px;
@@ -114,21 +64,10 @@
     min-width: 0;
     background: #1d242e;
   }
+
   .p-select-overlay {
     background: #1d242e;
   }
-}
-
-.exercise-table-scroll {
-  overflow-x: auto;
-  padding-bottom: 16px;
-  min-width: 0;
-}
-
-.exercise-grid {
-  width: 100%;
-  min-width: 700px;
-  box-sizing: border-box;
 }
 
 .remove-button {
@@ -156,7 +95,6 @@
   }
 }
 
-
 #deleteWorkout {
   background: #c23b3b;
   border-color: #c23b3b;
@@ -166,23 +104,4 @@
     background: #842c2c;
     border-color: #842c2c;
   }
-}
-
-.card-header {
-  display: flex;
-  align-items: flex-start;
-  gap: 1rem;
-  flex-wrap: wrap;
-}
-
-.card-header > div:first-child {
-  flex: 1 1 180px;
-}
-
-.header-actions {
-  margin-left: auto;
-  margin-right: auto;
-  display: flex;
-  gap: 0.75rem;
-  min-width: 0;
 }

@@ -161,7 +161,7 @@ export class BodyProgressComponent {
     const range = this.selectedRange();
 
     if (range === 'All') {
-      this.bodyStore.loadMeasurementHistory();
+      this.bodyStore.loadMeasurementHistory({});
       return;
     }
 
@@ -177,9 +177,9 @@ export class BodyProgressComponent {
 
     from.setMonth(from.getMonth() - months[range]);
 
-    this.bodyStore.loadMeasurementHistory(
-      toDateString(from),
-      toDateString(to),
-    );
+    this.bodyStore.loadMeasurementHistory({
+      from: toDateString(from),
+      to: toDateString(to),
+    });
   }
 }

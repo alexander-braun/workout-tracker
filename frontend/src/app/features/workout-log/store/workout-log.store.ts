@@ -2,10 +2,10 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, map, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, map, pipe, switchMap, tap } from 'rxjs';
 import { type WorkoutEntry } from '../workout.model';
 import { WorkoutApiService, type WorkoutResponse } from '../workout-api.service';
-import { type DeleteWorkout, type SaveWorkout, type WorkoutStore } from './workout-log.model';
+import { GetWorkoutHistory, type DeleteWorkout, type SaveWorkout, type WorkoutStore } from './workout-log.model';
 
 const initialState: WorkoutStore = {
   exerciseEntries: [],
@@ -32,24 +32,6 @@ export const WorkoutLogStore = signalStore(
         ...entry,
         newExerciseName: null,
       }));
-    const loadWorkoutHistory = (from?: string, to?: string): void => {
-      patchState(store, {
-        workoutHistoryLoading: true,
-      });
-
-      api.getWorkoutHistory(from, to).subscribe({
-        next: (workoutHistory) => {
-          patchState(store, {
-            workoutHistory,
-            workoutHistoryLoading: false,
-            workoutHistoryStale: false,
-          });
-        },
-        error: () => {
-          patchState(store, { workoutHistoryLoading: false });
-        },
-      });
-    };
     const loadWorkout = rxMethod<string>(
       pipe(
         tap(() => patchState(store, { workoutsLoading: true })),
@@ -82,7 +64,31 @@ export const WorkoutLogStore = signalStore(
         }),
       );
     return {
-      loadWorkoutHistory,
+      loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
+        pipe(
+          tap(() => {
+            patchState(store, {
+              workoutHistoryLoading: true,
+            });
+          }),
+          switchMap(({ from, to }) =>
+            api.getWorkoutHistory(from, to).pipe(
+              tap((workoutHistory) => {
+                patchState(store, {
+                  workoutHistory,
+                  workoutHistoryStale: false,
+                });
+              }),
+              catchError(() => EMPTY),
+              finalize(() => {
+                patchState(store, {
+                  workoutHistoryLoading: false,
+                });
+              }),
+            ),
+          ),
+        ),
+      ),
       loadWorkout,
       getWorkoutDates: rxMethod<void>(pipe(switchMap(() => loadWorkoutDates$()))),
       loadExercises: rxMethod<void>(

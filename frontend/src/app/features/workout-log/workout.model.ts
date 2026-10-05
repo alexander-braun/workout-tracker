@@ -16,3 +16,21 @@ export interface WorkoutEntry {
   notes: string | null;
   position: number;
 }
+
+export interface SaveWorkoutRequest {
+  entries: Omit<WorkoutEntry, 'id'>[];
+}
+
+type WorkoutResponseEntry = Omit<WorkoutEntry, 'newExerciseName' | 'exerciseId'> & {
+  exerciseId: number;
+};
+
+export interface WorkoutResponse {
+  id: number;
+  date: string;
+  entries: WorkoutResponseEntry[];
+}
+
+export interface WorkoutDatesResponse {
+  dates: string[];
+}

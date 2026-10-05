@@ -1,9 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { MeasurementEntry } from './body.model';
-
-export type SaveMeasurementRequest = Omit<MeasurementEntry, 'id' | 'date'>;
+import type { MeasurementEntry, SaveMeasurementRequest } from './body.model';
 
 @Injectable({
   providedIn: 'root',

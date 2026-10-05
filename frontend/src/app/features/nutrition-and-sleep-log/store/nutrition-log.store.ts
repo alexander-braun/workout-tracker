@@ -1,17 +1,18 @@
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { NutritionApiService } from '../nutrition-api.service';
 import {
+  type GetNutritionHistory,
   type DeleteNutritionEntry,
   type NutritionStore,
   type SaveNutritionEntry,
 } from './nutrition-log.model';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, map, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, map, of, pipe, switchMap, tap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const initialState: NutritionStore = {
-  nutritionEntryHistory: [],
+  nutritionHistory: [],
   nutritionEntryLoading: false,
   nutritionEntrySaveInProgress: false,
   nutritionHistoryLoading: false,
@@ -26,7 +27,7 @@ export const NutritionLogStore = signalStore(
       pipe(
         tap(() => patchState(store, { nutritionEntryLoading: true })),
         switchMap((date) => {
-          return api.getNutritionEntryForDate(date).pipe(
+          return api.getNutritionForDate(date).pipe(
             map((nutritionEntry) => ({
               nutritionEntry,
               error: null,
@@ -45,27 +46,36 @@ export const NutritionLogStore = signalStore(
         }),
       ),
     );
-
-    const loadNutritionHistory = (from?: string, to?: string): void => {
-      patchState(store, { nutritionHistoryLoading: true });
-
-      api.getNutritionHistory(from, to).subscribe({
-        next: (nutritionHistory) => {
-          patchState(store, {
-            nutritionEntryHistory: nutritionHistory,
-            nutritionHistoryLoading: false,
-            nutritionHistoryStale: false,
-          });
-        },
-        error: (error) => {
-          patchState(store, { nutritionHistoryLoading: false });
-          console.error(error);
-        },
-      });
-    };
     return {
       loadNutritionEntry,
-      loadNutritionHistory,
+      loadNutritionHistory: rxMethod<GetNutritionHistory>(
+        pipe(
+          tap(() => {
+            patchState(store, {
+              nutritionHistoryLoading: true,
+            });
+          }),
+          switchMap(({ from, to }) =>
+            api.getNutritionHistory(from, to).pipe(
+              tap((nutritionHistory) => {
+                patchState(store, {
+                  nutritionHistory: nutritionHistory,
+                  nutritionHistoryStale: false,
+                });
+              }),
+              catchError((error) => {
+                console.error(error);
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, {
+                  nutritionHistoryLoading: false,
+                });
+              }),
+            ),
+          ),
+        ),
+      ),
       deleteNutritionEntry: rxMethod<DeleteNutritionEntry>(
         pipe(
           tap(() => {
