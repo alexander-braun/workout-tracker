@@ -6,9 +6,12 @@
   "scripts": {
     "backend": "cd backend && mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local",
     "backend:test": "cd backend && mvnw.cmd test -Dspring.profiles.active=local",
+    "backend:format": "cd backend && mvnw.cmd spotless:apply",
+    "backend:format:check": "cd backend && mvnw.cmd spotless:check",
     "frontend": "cd frontend && npm run start",
     "frontend:test": "cd frontend && npm run test",
-    "application": "concurrently -n backend,frontend -k \"npm run backend\" \"npm run frontend\""  },
+    "application": "concurrently -n backend,frontend -k \"npm run backend\" \"npm run frontend\""
+  },
   "repository": {
     "type": "git",
     "url": "git+https://github.com/alexander-braun/workout-tracker.git"

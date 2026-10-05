@@ -1,4 +1,3 @@
-
 package com.alex.workouttracker.workout.model;
 
 import jakarta.persistence.*;
@@ -13,14 +12,14 @@ import lombok.Setter;
 @NoArgsConstructor
 public class Exercise {
 
-    @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+  @Id
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
+  private Long id;
 
-    @Column(nullable = false, unique = true, length = 120)
-    private String name;
+  @Column(nullable = false, unique = true, length = 120)
+  private String name;
 
-    public Exercise(String name) {
-        this.name = name;
-    }
+  public Exercise(String name) {
+    this.name = name;
+  }
 }

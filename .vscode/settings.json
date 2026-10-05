@@ -3,8 +3,9 @@
     "editor.tabSize": 3,
     "editor.insertSpaces": true,
     "editor.detectIndentation": false,
+    "editor.defaultFormatter": "JoseVSeb.google-java-format-for-vs-code",
     "editor.formatOnSave": true
   },
-
-  "java.format.settings.profile": "GoogleStyle"
+  "java.format.settings.profile": "GoogleStyle",
+  "java.configuration.updateBuildConfiguration": "interactive"
 }

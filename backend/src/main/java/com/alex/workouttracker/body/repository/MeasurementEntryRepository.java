@@ -1,21 +1,17 @@
 package com.alex.workouttracker.body.repository;
 
+import com.alex.workouttracker.body.model.MeasurementEntry;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
-import com.alex.workouttracker.body.model.MeasurementEntry;
-
 public interface MeasurementEntryRepository extends JpaRepository<MeasurementEntry, Long> {
-   Optional<MeasurementEntry> findByDate(LocalDate date);
+  Optional<MeasurementEntry> findByDate(LocalDate date);
 
-   List<MeasurementEntry> findAllByDateBetweenOrderByDateAsc(
-         LocalDate from,
-         LocalDate to);
+  List<MeasurementEntry> findAllByDateBetweenOrderByDateAsc(LocalDate from, LocalDate to);
 
-   void deleteByDate(LocalDate date);
+  void deleteByDate(LocalDate date);
 
-   List<MeasurementEntry> findAllByOrderByDateAsc();
+  List<MeasurementEntry> findAllByOrderByDateAsc();
 }
