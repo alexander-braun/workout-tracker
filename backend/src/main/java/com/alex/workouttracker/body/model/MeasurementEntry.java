@@ -1,4 +1,4 @@
-package com.alex.workouttracker.bodylog.model;
+package com.alex.workouttracker.body.model;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;

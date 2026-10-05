@@ -1,4 +1,4 @@
-package com.alex.workouttracker.bodylog.controller;
+package com.alex.workouttracker.body.controller;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -12,9 +12,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.alex.workouttracker.bodylog.dto.MeasurementEntryRequest;
-import com.alex.workouttracker.bodylog.dto.MeasurementEntryResponse;
-import com.alex.workouttracker.bodylog.service.MeasurementService;
+import com.alex.workouttracker.body.dto.MeasurementEntryRequest;
+import com.alex.workouttracker.body.dto.MeasurementEntryResponse;
+import com.alex.workouttracker.body.service.MeasurementService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;

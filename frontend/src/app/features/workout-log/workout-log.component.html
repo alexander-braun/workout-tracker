@@ -6,26 +6,35 @@
     </div>
 
     <div class="header-actions">
-      <button
-        pButton
-        type="button"
-        [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
-        (click)="saveWorkout()"
-      >
-        <span pButtonLabel>Save Workout</span>
-      </button>
-      @if (hasSavedWorkout()) {
-      <button
-        pButton
-        type="button"
-        id="deleteWorkout"
-        [disabled]="workoutStore.workoutSaveInProgress()"
-        (click)="deleteWorkout()"
-      >
-        <span pButtonLabel>Delete Workout</span>
-      </button>
-      }
-    </div>
+<button
+  pButton
+  type="button"
+  [text]="true"
+  severity="success"
+  class="header-icon-button"
+  aria-label="Save Workout"
+  title="Save Workout"
+  [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
+  (click)="saveWorkout()"
+>
+  <i class="pi pi-save" pButtonIcon></i>
+</button>
+
+@if (hasSavedWorkout()) {
+  <button
+    pButton
+    type="button"
+    [text]="true"
+    severity="danger"
+    class="header-icon-button"
+    aria-label="Delete Workout"
+    title="Delete Workout"
+    (click)="deleteWorkout()"
+  >
+    <i class="pi pi-trash" pButtonIcon></i>
+  </button>
+}
+</div>
   </header>
 
   @if (workoutStore.workoutSaveInProgress()) {

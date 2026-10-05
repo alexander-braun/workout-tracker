@@ -79,3 +79,41 @@ textarea {
 .history-content {
   padding-top: 8px;
 }
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 2px;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.header-icon-button {
+  width: 40px;
+  height: 40px;
+  padding: 0;
+  border: 1px solid transparent;
+
+  .pi {
+    font-size: 1.05rem;
+  }
+
+  &.p-button-success:hover:not(:disabled) {
+    background: rgba(52, 211, 153, 0.15) !important;
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease;
+  }
+
+  &.p-button-danger:hover:not(:disabled) {
+    background: rgba(248, 113, 113, 0.15) !important;
+    transition:
+      background-color 120ms ease,
+      border-color 120ms ease;
+  }
+}

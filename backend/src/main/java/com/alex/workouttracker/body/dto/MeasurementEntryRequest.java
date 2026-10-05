@@ -1,4 +1,4 @@
-package com.alex.workouttracker.bodylog.dto;
+package com.alex.workouttracker.body.dto;
 
 import java.math.BigDecimal;
 

@@ -1,4 +1,4 @@
-package com.alex.workouttracker.bodylog.service;
+package com.alex.workouttracker.body.service;
 
 import java.time.LocalDate;
 import java.util.List;
@@ -6,12 +6,10 @@ import java.util.List;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 
-import com.alex.workouttracker.bodylog.dto.MeasurementEntryRequest;
-import com.alex.workouttracker.bodylog.dto.MeasurementEntryResponse;
-import com.alex.workouttracker.bodylog.model.MeasurementEntry;
-import com.alex.workouttracker.bodylog.repository.MeasurementEntryRepository;
-import com.alex.workouttracker.workout.dto.WorkoutResponse;
-import com.alex.workouttracker.workout.model.Workout;
+import com.alex.workouttracker.body.dto.MeasurementEntryRequest;
+import com.alex.workouttracker.body.dto.MeasurementEntryResponse;
+import com.alex.workouttracker.body.model.MeasurementEntry;
+import com.alex.workouttracker.body.repository.MeasurementEntryRepository;
 
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.server.ResponseStatusException;
@@ -22,12 +20,6 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class MeasurementService {
    private final MeasurementEntryRepository measurementEntryRepository;
-
-   @Transactional(readOnly = true)
-   public List<MeasurementEntryResponse> getAllMeasurementEntries() {
-      return measurementEntryRepository.findAllByOrderByDateAsc()
-            .stream().map(this::toResponse).toList();
-   }
 
    @Transactional(readOnly = true)
    public List<MeasurementEntryResponse> getMeasurementHistory(

@@ -3,6 +3,7 @@ package com.alex.workouttracker.workout.dto;
 
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotNull;
+import jakarta.validation.constraints.Size;
 
 import java.math.BigDecimal;
 
@@ -20,7 +21,7 @@ public record WorkoutEntryRequest(
 
       @NotNull WeightUnit unit,
 
-      String notes,
+      @Size(max = 1000) String notes,
 
       int position) {
 }
