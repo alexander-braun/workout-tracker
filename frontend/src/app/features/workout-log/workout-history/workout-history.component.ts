@@ -127,7 +127,7 @@ export class WorkoutHistoryComponent {
       return `${session.reps} reps @ BW`;
     }
 
-    if (session.weight == null) {
+    if (session.weight === null || session.weight === undefined) {
       return `${session.reps} reps`;
     }
 

@@ -62,13 +62,11 @@ export const BodyLogStore = signalStore(
     return {
       loadMeasurementHistory: rxMethod<GetMeasurementHistory>(
         pipe(
-          tap(() => {
+          switchMap(({ from, to }) => {
             patchState(store, {
               measurementHistoryLoading: true,
             });
-          }),
-          switchMap(({ from, to }) =>
-            api.getMeasurementHistory(from, to).pipe(
+            return api.getMeasurementHistory(from, to).pipe(
               tap((measurementHistory) => {
                 patchState(store, {
                   measurementHistory,
@@ -82,8 +80,8 @@ export const BodyLogStore = signalStore(
               finalize(() => {
                 patchState(store, { measurementHistoryLoading: false });
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
       loadMeasurement,

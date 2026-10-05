@@ -3,9 +3,14 @@ import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, map, pipe, switchMap, tap } from 'rxjs';
-import { type WorkoutEntry } from '../workout.model';
-import { WorkoutApiService, type WorkoutResponse } from '../workout-api.service';
-import { GetWorkoutHistory, type DeleteWorkout, type SaveWorkout, type WorkoutStore } from './workout-log.model';
+import { type WorkoutResponse, type WorkoutEntry } from '../workout.model';
+import { WorkoutApiService } from '../workout-api.service';
+import {
+  type GetWorkoutHistory,
+  type DeleteWorkout,
+  type SaveWorkout,
+  type WorkoutStore,
+} from './workout-log.model';
 
 const initialState: WorkoutStore = {
   exerciseEntries: [],
@@ -66,13 +71,11 @@ export const WorkoutLogStore = signalStore(
     return {
       loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
         pipe(
-          tap(() => {
+          switchMap(({ from, to }) => {
             patchState(store, {
               workoutHistoryLoading: true,
             });
-          }),
-          switchMap(({ from, to }) =>
-            api.getWorkoutHistory(from, to).pipe(
+            return api.getWorkoutHistory(from, to).pipe(
               tap((workoutHistory) => {
                 patchState(store, {
                   workoutHistory,
@@ -85,8 +88,8 @@ export const WorkoutLogStore = signalStore(
                   workoutHistoryLoading: false,
                 });
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
       loadWorkout,

@@ -50,13 +50,11 @@ export const NutritionLogStore = signalStore(
       loadNutritionEntry,
       loadNutritionHistory: rxMethod<GetNutritionHistory>(
         pipe(
-          tap(() => {
+          switchMap(({ from, to }) => {
             patchState(store, {
               nutritionHistoryLoading: true,
             });
-          }),
-          switchMap(({ from, to }) =>
-            api.getNutritionHistory(from, to).pipe(
+            return api.getNutritionHistory(from, to).pipe(
               tap((nutritionHistory) => {
                 patchState(store, {
                   nutritionHistory: nutritionHistory,
@@ -72,8 +70,8 @@ export const NutritionLogStore = signalStore(
                   nutritionHistoryLoading: false,
                 });
               }),
-            ),
-          ),
+            );
+          }),
         ),
       ),
       deleteNutritionEntry: rxMethod<DeleteNutritionEntry>(

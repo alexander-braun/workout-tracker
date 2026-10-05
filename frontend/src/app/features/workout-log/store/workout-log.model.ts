@@ -1,5 +1,5 @@
-import { type WorkoutResponse } from '../workout-api.service';
-import { type ExerciseEntry, type WorkoutEntry } from '../workout.model';
+
+import { type WorkoutResponse, type ExerciseEntry, type WorkoutEntry } from '../workout.model';
 
 export interface WorkoutStore {
   exerciseEntries: ExerciseEntry[];

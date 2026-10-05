@@ -50,3 +50,14 @@
 .calendar-day.has-workout {
   background: rgba(156, 129, 66, 0.2);
 }
+
+:host ::ng-deep {
+  .header-actions .p-datepicker {
+    width: 180px;
+  }
+
+  .header-actions .p-datepicker-input {
+    background: #1d242e;
+    height: 36px;
+  }
+}

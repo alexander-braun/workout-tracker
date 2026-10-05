@@ -20,7 +20,7 @@ module.exports = tseslint.config(
       eqeqeq: ['error', 'always'],
       curly: ['error', 'all'],
       'prefer-const': 'error',
-      'no-console': 'warn',
+      'no-console': 'off',
 
       '@typescript-eslint/consistent-type-imports': [
         'error',

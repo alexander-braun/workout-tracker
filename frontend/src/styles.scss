@@ -86,26 +86,17 @@ textarea {
   padding-top: 8px;
 }
 
+.card-header .header-actions {
+  margin-left: auto;
+  margin-right: auto;
+}
+
 .header-actions {
   display: flex;
   align-items: center;
   margin-top: 2px;
-
-  margin-left: auto;
-  margin-right: auto;
   gap: 0.75rem;
   min-width: 0;
-}
-
-:host ::ng-deep {
-  .header-actions .p-datepicker {
-    width: 180px;
-  }
-
-  .header-actions .p-datepicker-input {
-    background: #1d242e;
-    height: 36px;
-  }
 }
 
 .header-icon-button {
