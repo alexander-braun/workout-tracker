@@ -8,7 +8,7 @@ import {
 } from './nutrition-log.model';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, finalize, map, of, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, filter, finalize, map, of, pipe, switchMap, tap } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const initialState: NutritionStore = {
@@ -18,6 +18,7 @@ const initialState: NutritionStore = {
   nutritionHistoryLoading: false,
   nutritionHistoryStale: false,
   currentNutritionEntry: null,
+  nutritionDates: [],
 };
 
 export const NutritionLogStore = signalStore(
@@ -46,8 +47,21 @@ export const NutritionLogStore = signalStore(
         }),
       ),
     );
+    const loadNutritionDates$ = () =>
+      api.getAllNutritionDates().pipe(
+        tap((response) => {
+          patchState(store, {
+            nutritionDates: response.dates,
+          });
+        }),
+        catchError((error) => {
+          console.error(error);
+          return EMPTY;
+        }),
+      );
     return {
       loadNutritionEntry,
+      getNutritionDates: rxMethod<void>(pipe(switchMap(() => loadNutritionDates$()))),
       loadNutritionHistory: rxMethod<GetNutritionHistory>(
         pipe(
           switchMap(({ from, to }) => {
@@ -99,6 +113,8 @@ export const NutritionLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              filter((result) => result.success),
+              switchMap(() => loadNutritionDates$()),
             );
           }),
         ),
@@ -129,6 +145,8 @@ export const NutritionLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              filter((result) => result.success),
+              switchMap(() => loadNutritionDates$()),
             );
           }),
         ),

@@ -5,6 +5,7 @@ import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 public interface NutritionEntryRepository extends JpaRepository<NutritionEntry, Long> {
   Optional<NutritionEntry> findByDate(LocalDate date);
@@ -14,4 +15,7 @@ public interface NutritionEntryRepository extends JpaRepository<NutritionEntry, 
   void deleteByDate(LocalDate date);
 
   List<NutritionEntry> findAllByOrderByDateAsc();
+
+  @Query("select e.date from NutritionEntry e order by e.date asc")
+  List<LocalDate> getAllNutritionDates();
 }

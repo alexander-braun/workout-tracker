@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { MeasurementEntry, SaveMeasurementRequest } from './body.model';
+import type {
+  MeasurementDatesResponse,
+  MeasurementEntry,
+  SaveMeasurementRequest,
+} from './body.model';
 
 @Injectable({
   providedIn: 'root',
@@ -35,5 +39,9 @@ export class BodyApiService {
 
   deleteMeasurement(date: string): Observable<void> {
     return this.http.delete<void>(`/api/measurements/${date}`);
+  }
+
+  getAllMeasurementDates(): Observable<MeasurementDatesResponse> {
+    return this.http.get<MeasurementDatesResponse>('/api/measurements/dates');
   }
 }

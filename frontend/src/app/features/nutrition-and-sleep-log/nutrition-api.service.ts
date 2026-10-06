@@ -1,7 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type { NutritionEntry, SaveNutritionRequest } from './nutrition.model';
+import type {
+  NutritionDatesResponse,
+  NutritionEntry,
+  SaveNutritionRequest,
+} from './nutrition.model';
 
 @Injectable({
   providedIn: 'root',
@@ -27,6 +31,10 @@ export class NutritionApiService {
     return this.http.get<NutritionEntry[]>('/api/nutrition', {
       params,
     });
+  }
+
+  getAllNutritionDates(): Observable<NutritionDatesResponse> {
+    return this.http.get<NutritionDatesResponse>('/api/nutrition/dates');
   }
 
   saveNutritionEntry(date: string, request: SaveNutritionRequest): Observable<NutritionEntry> {

@@ -1,5 +1,6 @@
 package com.alex.workouttracker.nutrition.controller;
 
+import com.alex.workouttracker.nutrition.dto.NutritionDatesResponse;
 import com.alex.workouttracker.nutrition.dto.NutritionEntryRequest;
 import com.alex.workouttracker.nutrition.dto.NutritionEntryResponse;
 import com.alex.workouttracker.nutrition.service.NutritionService;
@@ -43,5 +44,10 @@ public class NutritionController {
       @RequestParam(required = false) LocalDate from,
       @RequestParam(required = false) LocalDate to) {
     return nutritionService.getNutritionHistory(from, to);
+  }
+
+  @GetMapping("/dates")
+  public NutritionDatesResponse getAllNutritionDates() {
+    return new NutritionDatesResponse(nutritionService.getAllNutritionDates());
   }
 }

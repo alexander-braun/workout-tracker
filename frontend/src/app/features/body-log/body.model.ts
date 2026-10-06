@@ -13,3 +13,7 @@ export interface MeasurementEntry {
 }
 
 export type SaveMeasurementRequest = Omit<MeasurementEntry, 'id' | 'date'>;
+
+export interface MeasurementDatesResponse {
+  dates: string[];
+}

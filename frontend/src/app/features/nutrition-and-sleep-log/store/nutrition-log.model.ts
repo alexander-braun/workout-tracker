@@ -7,6 +7,7 @@ export interface NutritionStore {
   nutritionHistoryStale: boolean;
   nutritionEntryLoading: boolean;
   nutritionEntrySaveInProgress: boolean;
+  nutritionDates: string[];
 }
 
 export interface DeleteNutritionEntry {

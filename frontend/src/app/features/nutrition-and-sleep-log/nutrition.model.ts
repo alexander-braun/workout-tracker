@@ -11,3 +11,7 @@ export interface NutritionEntry {
 }
 
 export type SaveNutritionRequest = Omit<NutritionEntry, 'id' | 'date'>;
+
+export interface NutritionDatesResponse {
+  dates: string[];
+}

@@ -2,7 +2,7 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, finalize, map, pipe, switchMap, tap } from 'rxjs';
+import { catchError, EMPTY, finalize, map, merge, pipe, switchMap, tap } from 'rxjs';
 import { type WorkoutResponse, type WorkoutEntry } from '../workout.model';
 import { WorkoutApiService } from '../workout-api.service';
 import {
@@ -67,6 +67,10 @@ export const WorkoutLogStore = signalStore(
             workoutDates: response.dates,
           });
         }),
+        catchError((error) => {
+          console.error(error);
+          return EMPTY;
+        }),
       );
     return {
       loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
@@ -113,18 +117,19 @@ export const WorkoutLogStore = signalStore(
           }),
           switchMap(({ date }) =>
             api.deleteWorkout(date).pipe(
-              switchMap(() => loadWorkoutDates$()),
               tap(() => {
                 patchState(store, {
                   workoutEntries: [],
-                  workoutSaveInProgress: false,
                   workoutHistoryStale: true,
                 });
               }),
+              switchMap(() => loadWorkoutDates$()),
               catchError((error) => {
-                patchState(store, { workoutSaveInProgress: false });
                 console.error(error);
                 return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, { workoutSaveInProgress: false });
               }),
             ),
           ),
@@ -151,20 +156,29 @@ export const WorkoutLogStore = signalStore(
                 })),
               })
               .pipe(
-                switchMap((workout) => {
-                  patchState(store, { workoutHistoryStale: true });
-                  return loadWorkoutDates$().pipe(
-                    switchMap(() => loadExercises$()),
-                    map(() => toWorkoutEntries(workout.entries)),
-                  );
+                tap((workout) => {
+                  patchState(store, {
+                    workoutEntries: toWorkoutEntries(workout.entries),
+                    workoutHistoryStale: true,
+                  });
                 }),
-                tap((workoutEntries) => {
-                  patchState(store, { workoutEntries, workoutSaveInProgress: false });
-                }),
+                switchMap(() =>
+                  merge(
+                    loadWorkoutDates$(),
+                    loadExercises$().pipe(
+                      catchError((error) => {
+                        console.error(error);
+                        return EMPTY;
+                      }),
+                    ),
+                  ),
+                ),
                 catchError((error) => {
-                  patchState(store, { workoutSaveInProgress: false });
                   console.error(error);
                   return EMPTY;
+                }),
+                finalize(() => {
+                  patchState(store, { workoutSaveInProgress: false });
                 }),
               ),
           ),

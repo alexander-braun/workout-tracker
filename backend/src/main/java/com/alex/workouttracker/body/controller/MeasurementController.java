@@ -1,5 +1,6 @@
 package com.alex.workouttracker.body.controller;
 
+import com.alex.workouttracker.body.dto.MeasurementDatesResponse;
 import com.alex.workouttracker.body.dto.MeasurementEntryRequest;
 import com.alex.workouttracker.body.dto.MeasurementEntryResponse;
 import com.alex.workouttracker.body.service.MeasurementService;
@@ -44,5 +45,10 @@ public class MeasurementController {
       @RequestParam(required = false) LocalDate from,
       @RequestParam(required = false) LocalDate to) {
     return measurementService.getMeasurementHistory(from, to);
+  }
+
+  @GetMapping("/dates")
+  public MeasurementDatesResponse getAllMeasurementDates() {
+    return new MeasurementDatesResponse(measurementService.getAllMeasurementDates());
   }
 }

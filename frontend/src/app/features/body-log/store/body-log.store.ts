@@ -8,7 +8,19 @@ import {
   type GetMeasurementHistory,
 } from './body-log.model';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, delayWhen, EMPTY, finalize, map, of, pipe, switchMap, tap, timer } from 'rxjs';
+import {
+  catchError,
+  delayWhen,
+  EMPTY,
+  filter,
+  finalize,
+  map,
+  of,
+  pipe,
+  switchMap,
+  tap,
+  timer,
+} from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const initialState: BodyStore = {
@@ -18,6 +30,7 @@ const initialState: BodyStore = {
   measurementHistoryStale: false,
   measurementsLoading: false,
   measurementSaveInProgress: false,
+  measurementDates: [],
 };
 
 export const BodyLogStore = signalStore(
@@ -59,7 +72,20 @@ export const BodyLogStore = signalStore(
       ),
     );
 
+    const loadMeasurementDates$ = () =>
+      api.getAllMeasurementDates().pipe(
+        tap((response) => {
+          patchState(store, {
+            measurementDates: response.dates,
+          });
+        }),
+        catchError((error) => {
+          console.error(error);
+          return EMPTY;
+        }),
+      );
     return {
+      getMeasurementDates: rxMethod<void>(pipe(switchMap(() => loadMeasurementDates$()))),
       loadMeasurementHistory: rxMethod<GetMeasurementHistory>(
         pipe(
           switchMap(({ from, to }) => {
@@ -117,6 +143,8 @@ export const BodyLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              filter((result) => result.success),
+              switchMap(() => loadMeasurementDates$()),
             );
           }),
         ),
@@ -154,6 +182,8 @@ export const BodyLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              filter((result) => result.success),
+              switchMap(() => loadMeasurementDates$()),
             );
           }),
         ),

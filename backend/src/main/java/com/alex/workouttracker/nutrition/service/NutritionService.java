@@ -62,6 +62,11 @@ public class NutritionService {
     return toResponse(savedEntry);
   }
 
+  @Transactional(readOnly = true)
+  public List<LocalDate> getAllNutritionDates() {
+    return nutritionEntryRepository.getAllNutritionDates();
+  }
+
   private NutritionEntryResponse toResponse(NutritionEntry entry) {
     return new NutritionEntryResponse(
         entry.getId(),

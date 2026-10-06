@@ -13,14 +13,45 @@
         dateFormat="D, M d, yy"
       >
         <ng-template #date let-date>
-          <span class="calendar-day" [class.has-workout]="hasWorkout(date)">
-            {{ date.day }}
+          @let key = dateKey(date);
+
+          <span class="calendar-day" [class.has-entry]="markedDates().has(key)">
+            <span>{{ date.day }}</span>
+
+            <span class="calendar-markers">
+              @if (workoutDates().has(key)) {
+                <span class="calendar-dot workout"></span>
+              }
+              @if (measurementDates().has(key)) {
+                <span class="calendar-dot body"></span>
+              }
+              @if (nutritionDates().has(key)) {
+                <span class="calendar-dot nutrition"></span>
+              }
+            </span>
           </span>
+        </ng-template>
+
+        <ng-template #footer>
+          <div class="calendar-legend">
+            <span>
+              <i class="calendar-dot workout"></i>
+              Workout
+            </span>
+            <span>
+              <i class="calendar-dot body"></i>
+              Body
+            </span>
+            <span>
+              <i class="calendar-dot nutrition"></i>
+              Nutrition
+            </span>
+          </div>
         </ng-template>
       </p-datepicker>
 
-      <button pButton type="button" class="menu-button" severity="secondary" aria-label="Menu">
-        <i class="pi pi-ellipsis-h"></i>
+      <button pButton type="button" class="menu-button" severity="secondary" aria-label="Account">
+        <i class="pi pi-user"></i>
       </button>
     </div>
   </header>

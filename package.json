@@ -10,7 +10,11 @@
     "backend:format:check": "cd backend && mvnw.cmd spotless:check",
     "frontend": "cd frontend && npm run start",
     "frontend:test": "cd frontend && npm run test",
-    "application": "concurrently -n backend,frontend -k \"npm run backend\" \"npm run frontend\""
+    "frontend:lint": "cd frontend && npm run lint",
+    "frontend:lint:fix": "cd frontend && npm run lint:fix",
+    "frontend:format": "cd frontend && npm run format",
+    "app:format": "npm run frontend:format && npm run frontend:lint:fix && npm run backend:format",
+    "app": "concurrently -n backend,frontend -k \"npm run backend\" \"npm run frontend\""
   },
   "repository": {
     "type": "git",

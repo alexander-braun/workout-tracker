@@ -6,5 +6,6 @@
     "editor.defaultFormatter": "JoseVSeb.google-java-format-for-vs-code",
     "editor.formatOnSave": true
   },
-  "java.configuration.updateBuildConfiguration": "interactive"
+  "java.configuration.updateBuildConfiguration": "interactive",
+  "java.format.settings.google.mode": "jar-file"
 }

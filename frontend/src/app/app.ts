@@ -24,18 +24,36 @@ import { NutritionLogStore } from './features/nutrition-and-sleep-log/store/nutr
 export class App {
   readonly store = inject(AppStore);
   readonly workoutLogStore = inject(WorkoutLogStore);
+  readonly nutritionLogStore = inject(NutritionLogStore);
+  readonly bodyLogStore = inject(BodyLogStore);
+
   readonly workoutDates = computed(() => new Set(this.workoutLogStore.workoutDates()));
+  readonly nutritionDates = computed(() => new Set(this.nutritionLogStore.nutritionDates()));
+  readonly measurementDates = computed(() => new Set(this.bodyLogStore.measurementDates()));
+  readonly markedDates = computed(
+    () => new Set([...this.workoutDates(), ...this.measurementDates(), ...this.nutritionDates()]),
+  );
   hasWorkout(date: { year: number; month: number; day: number }): boolean {
-    const key = [
+    const key = this.dateKey(date);
+
+    return (
+      this.workoutDates().has(key) ||
+      this.nutritionDates().has(key) ||
+      this.measurementDates().has(key)
+    );
+  }
+
+  dateKey(date: { year: number; month: number; day: number }): string {
+    return [
       date.year,
       String(date.month + 1).padStart(2, '0'),
       String(date.day).padStart(2, '0'),
     ].join('-');
-
-    return this.workoutDates().has(key);
   }
 
   constructor() {
     this.workoutLogStore.getWorkoutDates();
+    this.nutritionLogStore.getNutritionDates();
+    this.bodyLogStore.getMeasurementDates();
   }
 }

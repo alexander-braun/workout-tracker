@@ -35,6 +35,21 @@
   }
 }
 
+:host ::ng-deep {
+  .header-actions .p-datepicker {
+    width: 180px;
+  }
+
+  .header-actions .p-datepicker-input {
+    background: #1d242e;
+    height: 36px;
+  }
+
+  .p-datepicker-day {
+    overflow: visible !important;
+  }
+}
+
 .calendar-day {
   position: relative;
   width: 2rem;
@@ -45,19 +60,63 @@
   justify-content: center;
 
   border-radius: 50%;
+
+  > span:first-child {
+    transform: translateY(-2px);
+  }
 }
 
-.calendar-day.has-workout {
-  background: rgba(156, 129, 66, 0.2);
+.calendar-day.has-entry {
+  background: rgba(156, 129, 66, 0.12);
 }
 
-:host ::ng-deep {
-  .header-actions .p-datepicker {
-    width: 180px;
+.calendar-markers {
+  position: absolute;
+  left: 50%;
+  bottom: -3px;
+  transform: translateX(-50%);
+
+  display: flex;
+  gap: 2px;
+  z-index: 2;
+  pointer-events: none;
+}
+
+.calendar-dot {
+  width: 4px;
+  height: 4px;
+  flex: 0 0 4px;
+  border-radius: 50%;
+
+  &.workout {
+    background: #f59e0b;
   }
 
-  .header-actions .p-datepicker-input {
-    background: #1d242e;
-    height: 36px;
+  &.body {
+    background: #3b82f6;
+  }
+
+  &.nutrition {
+    background: #10b981;
+  }
+}
+
+.calendar-legend {
+  display: flex;
+  justify-content: center;
+  gap: 12px;
+  padding-top: 8px;
+  font-size: 0.75rem;
+  color: #9ca8b6;
+
+  span {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+  }
+
+  .calendar-dot {
+    position: static;
+    display: inline-block;
   }
 }

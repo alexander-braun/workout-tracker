@@ -67,6 +67,11 @@ public class MeasurementService {
     return toResponse(measurementEntry);
   }
 
+  @Transactional(readOnly = true)
+  public List<LocalDate> getAllMeasurementDates() {
+    return measurementEntryRepository.getAllMeasurementDates();
+  }
+
   private MeasurementEntryResponse toResponse(MeasurementEntry entry) {
     return new MeasurementEntryResponse(
         entry.getId(),

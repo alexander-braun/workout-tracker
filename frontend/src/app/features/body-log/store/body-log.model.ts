@@ -7,6 +7,7 @@ export interface BodyStore {
   measurementHistoryStale: boolean;
   measurementsLoading: boolean;
   measurementSaveInProgress: boolean;
+  measurementDates: string[];
 }
 
 export interface DeleteMeasurement {
