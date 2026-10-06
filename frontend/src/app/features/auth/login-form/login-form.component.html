@@ -1,0 +1,90 @@
+<form class="login-form" [formGroup]="form" (ngSubmit)="login()">
+  <header class="login-header">
+    <div class="login-icon">
+      <i class="pi pi-sign-in"></i>
+    </div>
+
+    <div class="login-header-content">
+      <div>
+        <h2>Login</h2>
+        <p>Welcome back. Sign in to continue tracking your progress.</p>
+      </div>
+    </div>
+  </header>
+
+  <div class="form-field">
+    <label for="login-email">Email</label>
+
+    <div class="input-wrapper">
+      <i class="pi pi-envelope"></i>
+
+      <input
+        id="login-email"
+        pInputText
+        type="email"
+        formControlName="email"
+        placeholder="alex@example.com"
+        autocomplete="email"
+      />
+    </div>
+
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <small class="field-error">Enter a valid email address.</small>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="login-password">Password</label>
+
+    <div class="input-wrapper">
+      <i class="pi pi-lock"></i>
+
+      <input
+        id="login-password"
+        pInputText
+        [type]="showPassword ? 'text' : 'password'"
+        formControlName="password"
+        placeholder="Enter your password"
+        autocomplete="current-password"
+      />
+
+      <button
+        type="button"
+        class="password-toggle"
+        aria-label="Toggle password visibility"
+        (click)="showPassword = !showPassword"
+      >
+        <i class="pi" [class.pi-eye]="!showPassword" [class.pi-eye-slash]="showPassword"></i>
+      </button>
+    </div>
+
+    @if (form.controls.password.touched && form.controls.password.invalid) {
+      <small class="field-error">Enter your password.</small>
+    }
+  </div>
+
+  @if (authStore.loginError()) {
+    <div class="login-error">
+      {{ authStore.loginError() }}
+    </div>
+  }
+
+  <button
+    pButton
+    type="submit"
+    class="login-button"
+    [disabled]="form.invalid || authStore.loginInProgress()"
+  >
+    @if (authStore.loginInProgress()) {
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Logging in...</span>
+    } @else {
+      <span>Login</span>
+    }
+  </button>
+
+  <button type="button" class="register-link" (click)="registerRequested.emit()">
+    Don't have an account?
+    <strong>Register</strong>
+  </button>
+</form>

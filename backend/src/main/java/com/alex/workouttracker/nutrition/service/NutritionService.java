@@ -30,6 +30,11 @@ public class NutritionService {
   }
 
   @Transactional
+  public void deleteAllNutritionEntries() {
+    nutritionEntryRepository.deleteAll();
+  }
+
+  @Transactional
   public void deleteNutritionEntry(LocalDate date) {
     nutritionEntryRepository.deleteByDate(date);
   }

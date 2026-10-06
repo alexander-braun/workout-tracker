@@ -110,6 +110,32 @@ export const WorkoutLogStore = signalStore(
           ),
         ),
       ),
+      deleteAllWorkouts: rxMethod<void>(
+        pipe(
+          tap(() => {
+            patchState(store, { workoutSaveInProgress: true });
+          }),
+          switchMap(() =>
+            api.deleteAllWorkouts().pipe(
+              tap(() => {
+                patchState(store, {
+                  workoutEntries: [],
+                  workoutHistory: [],
+                  workoutHistoryStale: false,
+                  workoutDates: [],
+                });
+              }),
+              catchError((error) => {
+                console.error(error);
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, { workoutSaveInProgress: false });
+              }),
+            ),
+          ),
+        ),
+      ),
       deleteWorkout: rxMethod<DeleteWorkout>(
         pipe(
           tap(() => {

@@ -88,6 +88,37 @@ export const NutritionLogStore = signalStore(
           }),
         ),
       ),
+      deleteAllNutritionEntries: rxMethod<void>(
+        pipe(
+          tap(() => {
+            patchState(store, { nutritionEntrySaveInProgress: true });
+          }),
+          switchMap(() =>
+            api.deleteAllNutritionEntries().pipe(
+              map(() => ({
+                success: true as const,
+              })),
+              catchError((error) => of({ success: false as const, error })),
+              tap((result) => {
+                if (result.success) {
+                  patchState(store, {
+                    currentNutritionEntry: null,
+                    nutritionEntrySaveInProgress: false,
+                    nutritionHistory: [],
+                    nutritionHistoryStale: false,
+                    nutritionDates: [],
+                  });
+                } else {
+                  patchState(store, {
+                    nutritionEntrySaveInProgress: false,
+                  });
+                  console.error(result.error);
+                }
+              }),
+            ),
+          ),
+        ),
+      ),
       deleteNutritionEntry: rxMethod<DeleteNutritionEntry>(
         pipe(
           tap(() => {

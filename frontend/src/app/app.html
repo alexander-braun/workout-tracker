@@ -50,7 +50,23 @@
         </ng-template>
       </p-datepicker>
 
-      <button pButton type="button" class="menu-button" severity="secondary" aria-label="Account">
+      <p-menu
+        styleClass="account-menu"
+        #accountMenu
+        [model]="accountMenuItems()"
+        [popup]="true"
+        appendTo="body"
+      />
+      <button
+        pButton
+        type="button"
+        [outlined]="true"
+        severity="secondary"
+        class="menu-button"
+        [class.logged-in]="authStore.authenticated()"
+        aria-label="Account"
+        (click)="accountMenu.toggle($event)"
+      >
         <i class="pi pi-user"></i>
       </button>
     </div>
@@ -58,4 +74,34 @@
   <frontend-workout-log />
   <frontend-body-log />
   <frontend-nutrition-and-sleep-log />
+  <button (click)="deleteAllData()">DELETE ALL DATA</button>
 </div>
+
+<p-dialog
+  header=""
+  [(visible)]="registerDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <frontend-register-form
+    (loginRequested)="loginDialogVisible = true; registerDialogVisible = false"
+    (registered)="registerDialogVisible = false"
+  />
+</p-dialog>
+
+<p-dialog
+  header=""
+  [(visible)]="loginDialogVisible"
+  [modal]="true"
+  [closable]="true"
+  [draggable]="false"
+  [resizable]="false"
+>
+  <frontend-login-form
+    (closeRequested)="loginDialogVisible = false"
+    (loggedIn)="loginDialogVisible = false"
+    (registerRequested)="loginDialogVisible = false; registerDialogVisible = true"
+  />
+</p-dialog>

@@ -35,6 +35,11 @@ public class MeasurementService {
     measurementEntryRepository.deleteByDate(date);
   }
 
+  @Transactional
+  public void deleteAllMeasurements() {
+    measurementEntryRepository.deleteAll();
+  }
+
   @Transactional(readOnly = true)
   public MeasurementEntryResponse getMeasurement(LocalDate date) {
     MeasurementEntry measurement =

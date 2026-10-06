@@ -85,6 +85,44 @@ export const BodyLogStore = signalStore(
         }),
       );
     return {
+      deleteAllMeasurements: rxMethod<void>(
+        pipe(
+          tap(() => {
+            patchState(store, { measurementSaveInProgress: true });
+          }),
+          switchMap(() => {
+            const startedAt = Date.now();
+            return api.deleteAllMeasurements().pipe(
+              map(() => ({
+                success: true as const,
+              })),
+              catchError((error) =>
+                of({
+                  success: false as const,
+                  error,
+                }),
+              ),
+              delayWhen(() => remainingLoadingTime(startedAt)),
+              tap((result) => {
+                if (result.success) {
+                  patchState(store, {
+                    currentMeasurement: null,
+                    measurementHistory: [],
+                    measurementDates: [],
+                    measurementHistoryStale: false,
+                    measurementSaveInProgress: false,
+                  });
+                } else {
+                  patchState(store, {
+                    measurementSaveInProgress: false,
+                  });
+                  console.error(result.error);
+                }
+              }),
+            );
+          }),
+        ),
+      ),
       getMeasurementDates: rxMethod<void>(pipe(switchMap(() => loadMeasurementDates$()))),
       loadMeasurementHistory: rxMethod<GetMeasurementHistory>(
         pipe(

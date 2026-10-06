@@ -51,4 +51,9 @@ public class MeasurementController {
   public MeasurementDatesResponse getAllMeasurementDates() {
     return new MeasurementDatesResponse(measurementService.getAllMeasurementDates());
   }
+
+  @DeleteMapping
+  public void deleteAllMeasurements() {
+    measurementService.deleteAllMeasurements();
+  }
 }

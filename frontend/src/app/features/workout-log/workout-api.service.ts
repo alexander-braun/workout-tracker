@@ -49,4 +49,8 @@ export class WorkoutApiService {
   getAllWorkoutDates(): Observable<WorkoutDatesResponse> {
     return this.http.get<WorkoutDatesResponse>(`/api/workouts/dates`);
   }
+
+  deleteAllWorkouts(): Observable<void> {
+    return this.http.delete<void>('/api/workouts');
+  }
 }

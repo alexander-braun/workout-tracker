@@ -44,4 +44,8 @@ export class BodyApiService {
   getAllMeasurementDates(): Observable<MeasurementDatesResponse> {
     return this.http.get<MeasurementDatesResponse>('/api/measurements/dates');
   }
+
+  deleteAllMeasurements(): Observable<void> {
+    return this.http.delete<void>('/api/measurements');
+  }
 }

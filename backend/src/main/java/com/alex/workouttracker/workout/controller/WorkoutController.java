@@ -44,4 +44,9 @@ public class WorkoutController {
   public void deleteWorkout(@PathVariable LocalDate date) {
     workoutService.deleteWorkout(date);
   }
+
+  @DeleteMapping
+  public void deleteAllWorkouts() {
+    workoutService.deleteAllWorkouts();
+  }
 }

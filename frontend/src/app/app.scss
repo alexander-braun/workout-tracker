@@ -120,3 +120,12 @@
     display: inline-block;
   }
 }
+
+.menu-button {
+  &.logged-in {
+    color: var(--p-green-400);
+  }
+}
+.p-button-outlined.p-button-secondary:not(:disabled):hover {
+  color: var(--p-green-400);
+}

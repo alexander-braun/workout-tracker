@@ -50,4 +50,9 @@ public class NutritionController {
   public NutritionDatesResponse getAllNutritionDates() {
     return new NutritionDatesResponse(nutritionService.getAllNutritionDates());
   }
+
+  @DeleteMapping
+  public void deleteAllNutritionEntries() {
+    nutritionService.deleteAllNutritionEntries();
+  }
 }

@@ -120,4 +120,9 @@ public class WorkoutService {
   public void deleteWorkout(LocalDate date) {
     workoutRepository.deleteByDate(date);
   }
+
+  @Transactional
+  public void deleteAllWorkouts() {
+    workoutRepository.deleteAll();
+  }
 }

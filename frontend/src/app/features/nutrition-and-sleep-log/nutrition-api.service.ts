@@ -44,4 +44,8 @@ export class NutritionApiService {
   deleteNutritionEntry(date: string): Observable<void> {
     return this.http.delete<void>(`/api/nutrition/${date}`);
   }
+
+  deleteAllNutritionEntries(): Observable<void> {
+    return this.http.delete<void>('/api/nutrition');
+  }
 }

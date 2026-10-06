@@ -1,0 +1,141 @@
+<form class="register-form" [formGroup]="form" (ngSubmit)="register()">
+  <header class="register-header">
+    <div class="register-icon">
+      <i class="pi pi-user"></i>
+    </div>
+
+    <div>
+      <h2>Create account</h2>
+      <p>Start tracking your workouts, body progress and recovery.</p>
+    </div>
+  </header>
+
+  <div class="form-field">
+    <label for="register-email">Email</label>
+
+    <div class="input-wrapper">
+      <i class="pi pi-envelope"></i>
+
+      <input
+        id="register-email"
+        pInputText
+        type="email"
+        formControlName="email"
+        placeholder="alex@example.com"
+        autocomplete="email"
+      />
+    </div>
+
+    @if (form.controls.email.touched && form.controls.email.invalid) {
+      <small class="field-error">Enter a valid email address.</small>
+    }
+  </div>
+
+  <div class="form-field">
+    <label for="register-password">Password</label>
+
+    <div class="input-wrapper">
+      <i class="pi pi-lock"></i>
+
+      <input
+        id="register-password"
+        pInputText
+        [type]="showPassword ? 'text' : 'password'"
+        formControlName="password"
+        placeholder="Enter a password"
+        autocomplete="new-password"
+      />
+
+      <button
+        type="button"
+        class="password-toggle"
+        aria-label="Toggle password visibility"
+        (click)="showPassword = !showPassword"
+      >
+        <i class="pi" [class.pi-eye]="!showPassword" [class.pi-eye-slash]="showPassword"></i>
+      </button>
+    </div>
+
+    <div class="password-rules">
+      <strong>Password must contain:</strong>
+
+      <span [class.valid]="hasMinimumLength">
+        <i
+          class="pi"
+          [class.pi-circle-fill]="!hasMinimumLength"
+          [class.pi-check-circle]="hasMinimumLength"
+        ></i>
+        At least 8 characters
+      </span>
+
+      <span [class.valid]="hasLetter">
+        <i class="pi" [class.pi-circle-fill]="!hasLetter" [class.pi-check-circle]="hasLetter"></i>
+        At least one letter
+      </span>
+
+      <span [class.valid]="hasNumber">
+        <i class="pi" [class.pi-circle-fill]="!hasNumber" [class.pi-check-circle]="hasNumber"></i>
+        At least one number
+      </span>
+    </div>
+  </div>
+
+  <div class="form-field">
+    <label for="register-confirm-password">Confirm password</label>
+
+    <div class="input-wrapper">
+      <i class="pi pi-lock"></i>
+
+      <input
+        id="register-confirm-password"
+        pInputText
+        [type]="showConfirmPassword ? 'text' : 'password'"
+        formControlName="confirmPassword"
+        placeholder="Confirm your password"
+        autocomplete="new-password"
+      />
+
+      <button
+        type="button"
+        class="password-toggle"
+        aria-label="Toggle password visibility"
+        (click)="showConfirmPassword = !showConfirmPassword"
+      >
+        <i
+          class="pi"
+          [class.pi-eye]="!showConfirmPassword"
+          [class.pi-eye-slash]="showConfirmPassword"
+        ></i>
+      </button>
+    </div>
+
+    @if (form.controls.confirmPassword.touched && !passwordsMatch) {
+      <small class="field-error">Passwords do not match.</small>
+    }
+  </div>
+
+  @if (authStore.registerError()) {
+    <div class="register-error">
+      {{ authStore.registerError() }}
+    </div>
+  }
+
+  <button
+    pButton
+    type="submit"
+    class="register-button"
+    [disabled]="form.invalid || authStore.registerInProgress()"
+  >
+    @if (authStore.registerInProgress()) {
+      <i class="pi pi-spin pi-spinner"></i>
+      <span>Registering...</span>
+    } @else {
+      <span>Register</span>
+    }
+  </button>
+
+  <button type="button" class="login-link" (click)="loginRequested.emit()">
+    Already have an account?
+    <strong>Login</strong>
+  </button>
+</form>
