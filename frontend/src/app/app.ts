@@ -33,15 +33,6 @@ export class App {
   readonly markedDates = computed(
     () => new Set([...this.workoutDates(), ...this.measurementDates(), ...this.nutritionDates()]),
   );
-  hasWorkout(date: { year: number; month: number; day: number }): boolean {
-    const key = this.dateKey(date);
-
-    return (
-      this.workoutDates().has(key) ||
-      this.nutritionDates().has(key) ||
-      this.measurementDates().has(key)
-    );
-  }
 
   dateKey(date: { year: number; month: number; day: number }): string {
     return [
