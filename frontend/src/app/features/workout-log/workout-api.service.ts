@@ -1,12 +1,12 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type {
-  ExerciseEntry,
-  SaveWorkoutRequest,
-  WorkoutDatesResponse,
-  WorkoutResponse,
-} from './workout.model';
+import {
+  type SaveWorkoutRequest,
+  type ExerciseResponse,
+  type WorkoutResponse,
+  type WorkoutDatesResponse,
+} from '../../api/generated/api-types';
 
 @Injectable({
   providedIn: 'root',
@@ -14,8 +14,8 @@ import type {
 export class WorkoutApiService {
   private readonly http = inject(HttpClient);
 
-  getExercises(): Observable<ExerciseEntry[]> {
-    return this.http.get<ExerciseEntry[]>('/api/exercises');
+  getExercises(): Observable<ExerciseResponse[]> {
+    return this.http.get<ExerciseResponse[]>('/api/exercises');
   }
 
   getWorkout(date: string): Observable<WorkoutResponse> {

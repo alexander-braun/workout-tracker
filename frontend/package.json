@@ -2,6 +2,9 @@
   "name": "frontend",
   "version": "0.0.0",
   "scripts": {
+    "generate:api-types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/app/api/generated/api-types.ts --root-types --root-types-no-schema-prefix",
+    "prestart": "npm run generate:api-types",
+    "prebuild": "npm run generate:api-types",
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
@@ -39,6 +42,7 @@
     "eslint": "^10.9.1",
     "eslint-config-prettier": "^10.1.8",
     "jsdom": "^30.0.0",
+    "openapi-typescript": "^7.13.0",
     "prettier": "^3.9.9",
     "typescript": "~6.0.2",
     "typescript-eslint": "8.69.0",

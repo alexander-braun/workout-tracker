@@ -1,8 +1,11 @@
-import { type SaveMeasurementRequest, type MeasurementEntry } from '../body.model';
+import {
+  type MeasurementEntryRequest,
+  type MeasurementEntryResponse,
+} from '../../../api/generated/api-types';
 
 export interface BodyStore {
-  currentMeasurement: MeasurementEntry | null;
-  measurementHistory: MeasurementEntry[];
+  currentMeasurement: MeasurementEntryResponse | null;
+  measurementHistory: MeasurementEntryResponse[];
   measurementHistoryLoading: boolean;
   measurementHistoryStale: boolean;
   measurementsLoading: boolean;
@@ -16,7 +19,7 @@ export interface DeleteMeasurement {
 
 export interface SaveMeasurement {
   date: string;
-  request: SaveMeasurementRequest;
+  request: MeasurementEntryRequest;
 }
 
 export interface GetMeasurementHistory {

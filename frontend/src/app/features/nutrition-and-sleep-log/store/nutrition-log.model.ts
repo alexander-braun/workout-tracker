@@ -1,8 +1,11 @@
-import { type SaveNutritionRequest, type NutritionEntry } from '../nutrition.model';
+import {
+  type NutritionEntryResponse,
+  type NutritionEntryRequest,
+} from '../../../api/generated/api-types';
 
 export interface NutritionStore {
-  currentNutritionEntry: NutritionEntry | null;
-  nutritionHistory: NutritionEntry[];
+  currentNutritionEntry: NutritionEntryResponse | null;
+  nutritionHistory: NutritionEntryResponse[];
   nutritionHistoryLoading: boolean;
   nutritionHistoryStale: boolean;
   nutritionEntryLoading: boolean;
@@ -16,7 +19,7 @@ export interface DeleteNutritionEntry {
 
 export interface SaveNutritionEntry {
   date: string;
-  request: SaveNutritionRequest;
+  request: NutritionEntryRequest;
 }
 
 export interface GetNutritionHistory {

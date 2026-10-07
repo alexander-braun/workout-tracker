@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type {
-  NutritionDatesResponse,
-  NutritionEntry,
-  SaveNutritionRequest,
-} from './nutrition.model';
+import {
+  type NutritionEntryResponse,
+  type NutritionDatesResponse,
+  type NutritionEntryRequest,
+} from '../../api/generated/api-types';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,11 @@ import type {
 export class NutritionApiService {
   private readonly http = inject(HttpClient);
 
-  getNutritionForDate(date: string): Observable<NutritionEntry> {
-    return this.http.get<NutritionEntry>(`/api/nutrition/${date}`);
+  getNutritionForDate(date: string): Observable<NutritionEntryResponse> {
+    return this.http.get<NutritionEntryResponse>(`/api/nutrition/${date}`);
   }
 
-  getNutritionHistory(from?: string, to?: string): Observable<NutritionEntry[]> {
+  getNutritionHistory(from?: string, to?: string): Observable<NutritionEntryResponse[]> {
     const params: Record<string, string> = {};
 
     if (from) {
@@ -28,7 +28,7 @@ export class NutritionApiService {
       params['to'] = to;
     }
 
-    return this.http.get<NutritionEntry[]>('/api/nutrition', {
+    return this.http.get<NutritionEntryResponse[]>('/api/nutrition', {
       params,
     });
   }
@@ -37,8 +37,11 @@ export class NutritionApiService {
     return this.http.get<NutritionDatesResponse>('/api/nutrition/dates');
   }
 
-  saveNutritionEntry(date: string, request: SaveNutritionRequest): Observable<NutritionEntry> {
-    return this.http.put<NutritionEntry>(`/api/nutrition/${date}`, request);
+  saveNutritionEntry(
+    date: string,
+    request: NutritionEntryRequest,
+  ): Observable<NutritionEntryResponse> {
+    return this.http.put<NutritionEntryResponse>(`/api/nutrition/${date}`, request);
   }
 
   deleteNutritionEntry(date: string): Observable<void> {

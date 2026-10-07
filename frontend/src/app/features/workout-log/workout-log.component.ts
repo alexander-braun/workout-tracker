@@ -7,11 +7,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SelectModule } from 'primeng/select';
 import { AppStore } from '../../store/app.store';
 import { WorkoutHistoryComponent } from './workout-history/workout-history.component';
-import type { ExerciseEntry, WeightUnit, WorkoutEntry } from './workout.model';
+import type { WeightUnit, WorkoutEntry } from './workout.model';
 import { WorkoutLogStore } from './store/workout-log.store';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { toDateString } from '../../shared/helper/toDateString';
 import { AuthStore } from '../auth/store/auth.store';
+import { type ExerciseResponse } from '../../api/generated/api-types';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -34,7 +35,7 @@ export class WorkoutLogComponent {
   readonly appStore = inject(AppStore);
   readonly authStore = inject(AuthStore);
   readonly historyOpen = signal(false);
-  readonly filteredExercises = signal<ExerciseEntry[]>([]);
+  readonly filteredExercises = signal<ExerciseResponse[]>([]);
   readonly unitOptions: WeightUnit[] = ['BW', 'kg', 'lbs'];
   readonly workoutEntries = linkedSignal(() =>
     this.workoutStore.workoutEntries().map((entry) => ({
@@ -111,7 +112,7 @@ export class WorkoutLogComponent {
     }
   }
 
-  selectExercise(index: number, exercise: ExerciseEntry): void {
+  selectExercise(index: number, exercise: ExerciseResponse): void {
     const duplicate = this.workoutEntries().some(
       (entry, i) => i !== index && entry.exerciseId === exercise.id,
     );
@@ -209,7 +210,7 @@ export class WorkoutLogComponent {
     this.setExerciseName(index, input.value);
   }
 
-  getExerciseValue(entry: WorkoutEntry): ExerciseEntry | string {
+  getExerciseValue(entry: WorkoutEntry): ExerciseResponse | string {
     if (entry.exerciseId !== null) {
       return (
         this.workoutStore.exerciseEntries().find((exercise) => exercise.id === entry.exerciseId) ??

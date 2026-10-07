@@ -1,11 +1,11 @@
 import { inject, Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import type { Observable } from 'rxjs';
-import type {
-  MeasurementDatesResponse,
-  MeasurementEntry,
-  SaveMeasurementRequest,
-} from './body.model';
+import {
+  type MeasurementDatesResponse,
+  type MeasurementEntryRequest,
+  type MeasurementEntryResponse,
+} from '../../api/generated/api-types';
 
 @Injectable({
   providedIn: 'root',
@@ -13,11 +13,11 @@ import type {
 export class BodyApiService {
   private readonly http = inject(HttpClient);
 
-  getMeasurement(date: string): Observable<MeasurementEntry> {
-    return this.http.get<MeasurementEntry>(`/api/measurements/${date}`);
+  getMeasurement(date: string): Observable<MeasurementEntryResponse> {
+    return this.http.get<MeasurementEntryResponse>(`/api/measurements/${date}`);
   }
 
-  getMeasurementHistory(from?: string, to?: string): Observable<MeasurementEntry[]> {
+  getMeasurementHistory(from?: string, to?: string): Observable<MeasurementEntryResponse[]> {
     const params: Record<string, string> = {};
 
     if (from) {
@@ -28,13 +28,16 @@ export class BodyApiService {
       params['to'] = to;
     }
 
-    return this.http.get<MeasurementEntry[]>('/api/measurements', {
+    return this.http.get<MeasurementEntryResponse[]>('/api/measurements', {
       params,
     });
   }
 
-  saveMeasurement(date: string, request: SaveMeasurementRequest): Observable<MeasurementEntry> {
-    return this.http.put<MeasurementEntry>(`/api/measurements/${date}`, request);
+  saveMeasurement(
+    date: string,
+    request: MeasurementEntryRequest,
+  ): Observable<MeasurementEntryResponse> {
+    return this.http.put<MeasurementEntryResponse>(`/api/measurements/${date}`, request);
   }
 
   deleteMeasurement(date: string): Observable<void> {

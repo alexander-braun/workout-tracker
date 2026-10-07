@@ -3,7 +3,6 @@ import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import { catchError, EMPTY, finalize, map, merge, pipe, switchMap, tap } from 'rxjs';
-import { type WorkoutResponse, type WorkoutEntry } from '../workout.model';
 import { WorkoutApiService } from '../workout-api.service';
 import {
   type GetWorkoutHistory,
@@ -11,6 +10,8 @@ import {
   type SaveWorkout,
   type WorkoutStore,
 } from './workout-log.model';
+import { type WorkoutEntry } from '../workout.model';
+import { type WorkoutEntryResponse } from '../../../api/generated/api-types';
 
 const initialState: WorkoutStore = {
   exerciseEntries: [],
@@ -33,7 +34,7 @@ export const WorkoutLogStore = signalStore(
           patchState(store, { exerciseEntries });
         }),
       );
-    const toWorkoutEntries = (entries: WorkoutResponse['entries']): WorkoutEntry[] =>
+    const toWorkoutEntries = (entries: WorkoutEntryResponse[]): WorkoutEntry[] =>
       entries.map((entry) => ({
         ...entry,
         newExerciseName: null,

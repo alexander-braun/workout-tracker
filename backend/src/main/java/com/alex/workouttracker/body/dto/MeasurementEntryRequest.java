@@ -1,15 +1,25 @@
 package com.alex.workouttracker.body.dto;
 
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
 
 public record MeasurementEntryRequest(
-    @PositiveOrZero BigDecimal chest,
-    @PositiveOrZero BigDecimal waist,
-    @PositiveOrZero BigDecimal neck,
-    @PositiveOrZero BigDecimal bicepsLeft,
-    @PositiveOrZero BigDecimal bicepsRight,
-    @PositiveOrZero BigDecimal thighLeft,
-    @PositiveOrZero BigDecimal thighRight,
-    @PositiveOrZero BigDecimal calfLeft,
-    @PositiveOrZero BigDecimal calfRight) {}
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal chest,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal waist,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal neck,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal bicepsLeft,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal bicepsRight,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal thighLeft,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal thighRight,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal calfLeft,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal calfRight) {}
