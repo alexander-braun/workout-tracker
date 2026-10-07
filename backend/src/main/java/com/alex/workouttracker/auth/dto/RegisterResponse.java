@@ -1,3 +1,5 @@
 package com.alex.workouttracker.auth.dto;
 
-public record RegisterResponse(Long id, String email) {}
+import java.util.UUID;
+
+public record RegisterResponse(UUID id, String email) {}

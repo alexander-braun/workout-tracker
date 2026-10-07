@@ -1,3 +1,5 @@
 package com.alex.workouttracker.workout.dto;
 
-public record ExerciseResponse(Long id, String name) {}
+import java.util.UUID;
+
+public record ExerciseResponse(UUID id, String name) {}

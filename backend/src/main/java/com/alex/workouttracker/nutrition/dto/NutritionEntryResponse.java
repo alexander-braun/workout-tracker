@@ -2,9 +2,10 @@ package com.alex.workouttracker.nutrition.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record NutritionEntryResponse(
-    Long id,
+    UUID id,
     LocalDate date,
     BigDecimal calories,
     BigDecimal protein,

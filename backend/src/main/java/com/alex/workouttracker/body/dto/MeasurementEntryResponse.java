@@ -2,9 +2,10 @@ package com.alex.workouttracker.body.dto;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.UUID;
 
 public record MeasurementEntryResponse(
-    Long id,
+    UUID id,
     LocalDate date,
     BigDecimal chest,
     BigDecimal waist,

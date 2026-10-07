@@ -14,6 +14,7 @@ import java.time.LocalDate;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -47,11 +48,11 @@ public class WorkoutService {
       workoutRepository.flush();
     }
 
-    Set<Long> usedExerciseIds = new HashSet<>();
+    Set<UUID> usedExerciseIds = new HashSet<>();
 
     for (WorkoutEntryRequest entryRequest : request.entries()) {
       String name = entryRequest.newExerciseName();
-      Long id = entryRequest.exerciseId();
+      UUID id = entryRequest.exerciseId();
       Exercise exercise = exerciseService.findOrCreateExercise(id, name);
 
       if (!usedExerciseIds.add(exercise.getId())) {

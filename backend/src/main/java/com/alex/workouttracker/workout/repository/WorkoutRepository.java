@@ -4,10 +4,11 @@ import com.alex.workouttracker.workout.model.Workout;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface WorkoutRepository extends JpaRepository<Workout, Long> {
+public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
 
   Optional<Workout> findByDate(LocalDate date);
 

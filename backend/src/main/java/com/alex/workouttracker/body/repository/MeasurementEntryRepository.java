@@ -4,10 +4,11 @@ import com.alex.workouttracker.body.model.MeasurementEntry;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
+import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
-public interface MeasurementEntryRepository extends JpaRepository<MeasurementEntry, Long> {
+public interface MeasurementEntryRepository extends JpaRepository<MeasurementEntry, UUID> {
   Optional<MeasurementEntry> findByDate(LocalDate date);
 
   List<MeasurementEntry> findAllByDateBetweenOrderByDateAsc(LocalDate from, LocalDate to);

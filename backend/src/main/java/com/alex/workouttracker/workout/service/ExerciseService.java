@@ -4,6 +4,7 @@ import com.alex.workouttracker.workout.dto.ExerciseResponse;
 import com.alex.workouttracker.workout.model.Exercise;
 import com.alex.workouttracker.workout.repository.ExerciseRepository;
 import java.util.List;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -18,7 +19,7 @@ public class ExerciseService {
         .toList();
   }
 
-  public Exercise findOrCreateExercise(Long exerciseId, String newExerciseName) {
+  public Exercise findOrCreateExercise(UUID exerciseId, String newExerciseName) {
     if (exerciseId != null) {
       return exerciseRepository
           .findById(exerciseId)

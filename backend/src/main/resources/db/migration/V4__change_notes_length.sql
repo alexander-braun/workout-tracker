@@ -1,2 +1,0 @@
-ALTER TABLE workout_entry
-ALTER COLUMN notes TYPE VARCHAR(1000);
