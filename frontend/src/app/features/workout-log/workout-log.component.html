@@ -74,6 +74,9 @@
             <p-inputnumber
               [(ngModel)]="workoutEntry.weight"
               [showButtons]="false"
+              [minFractionDigits]="0"
+              [maxFractionDigits]="2"
+              [useGrouping]="false"
               placeholder="—"
             />
             <p-select
