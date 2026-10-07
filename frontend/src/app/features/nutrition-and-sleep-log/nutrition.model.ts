@@ -1,5 +1,5 @@
 export interface NutritionEntry {
-  id: number;
+  id: string | null;
   date: string;
   calories: number | null;
   protein: number | null;

@@ -193,7 +193,7 @@ export class WorkoutLogComponent {
       this.workoutEntries()
         .filter((_, index) => index !== currentIndex)
         .map((entry) => entry.exerciseId)
-        .filter((id): id is number => id !== null),
+        .filter((id) => id !== null),
     );
 
     this.filteredExercises.set(

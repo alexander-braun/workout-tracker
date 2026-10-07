@@ -1,13 +1,13 @@
 export interface ExerciseEntry {
-  id: number;
+  id: string;
   name: string;
 }
 
 export type WeightUnit = 'BW' | 'kg' | 'lbs';
 
 export interface WorkoutEntry {
-  id?: number;
-  exerciseId: number | null;
+  id?: string | undefined;
+  exerciseId: string | null;
   newExerciseName: string | null;
   sets: number;
   reps: number;
@@ -22,11 +22,11 @@ export interface SaveWorkoutRequest {
 }
 
 type WorkoutResponseEntry = Omit<WorkoutEntry, 'newExerciseName' | 'exerciseId'> & {
-  exerciseId: number;
+  exerciseId: string;
 };
 
 export interface WorkoutResponse {
-  id: number;
+  id: string | null;
   date: string;
   entries: WorkoutResponseEntry[];
 }

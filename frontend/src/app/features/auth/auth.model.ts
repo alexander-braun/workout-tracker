@@ -4,7 +4,7 @@ export interface RegisterRequest {
 }
 
 export interface RegisterResponse {
-  id: number;
+  id: string;
   email: string;
 }
 
@@ -14,7 +14,7 @@ export interface LoginRequest {
 }
 
 export interface AuthUser {
-  id: number;
+  id: string;
   email: string;
   // add username etc. if your /me endpoint returns it
 }

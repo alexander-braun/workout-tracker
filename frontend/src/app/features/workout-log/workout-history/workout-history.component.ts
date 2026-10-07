@@ -57,7 +57,7 @@ export class WorkoutHistoryComponent {
   readonly history = computed<ExerciseHistory[]>(() => {
     const workouts = this.store.workoutHistory();
     const exercises = this.store.exerciseEntries();
-    const sessionsByExercise = new Map<number, WorkoutSession[]>();
+    const sessionsByExercise = new Map<string, WorkoutSession[]>();
 
     for (const workout of workouts) {
       for (const entry of workout.entries) {

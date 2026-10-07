@@ -1,5 +1,5 @@
 export interface MeasurementEntry {
-  id: number;
+  id: string | null;
   date: string;
   chest: number | null;
   waist: number | null;
