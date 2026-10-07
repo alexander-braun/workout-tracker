@@ -7,16 +7,26 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface NutritionEntryRepository extends JpaRepository<NutritionEntry, UUID> {
-  Optional<NutritionEntry> findByDate(LocalDate date);
+  Optional<NutritionEntry> findByUserIdAndDate(UUID userId, LocalDate date);
 
-  List<NutritionEntry> findAllByDateBetweenOrderByDateAsc(LocalDate from, LocalDate to);
+  List<NutritionEntry> findAllByUserIdAndDateBetweenOrderByDateAsc(
+      UUID userId, LocalDate from, LocalDate to);
 
-  void deleteByDate(LocalDate date);
+  void deleteByUserIdAndDate(UUID userId, LocalDate date);
 
-  List<NutritionEntry> findAllByOrderByDateAsc();
+  List<NutritionEntry> findAllByUserIdOrderByDateAsc(UUID userId);
 
-  @Query("select e.date from NutritionEntry e order by e.date asc")
-  List<LocalDate> getAllNutritionDates();
+  @Query(
+      """
+      select e.date
+      from NutritionEntry e
+      where e.user.id = :userId
+      order by e.date asc
+      """)
+  List<LocalDate> findAllDatesByUserId(@Param("userId") UUID userId);
+
+  void deleteAllByUserId(UUID userId);
 }

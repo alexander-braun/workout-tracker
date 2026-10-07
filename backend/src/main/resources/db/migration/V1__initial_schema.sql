@@ -1,14 +1,37 @@
-CREATE TABLE exercise (
+CREATE TABLE app_user (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    name VARCHAR(120) NOT NULL UNIQUE
+    email VARCHAR(255) NOT NULL,
+    password_hash VARCHAR(255),
+    created_at TIMESTAMPTZ NOT NULL,
+
+    CONSTRAINT uk_app_user_email
+        UNIQUE (email)
+);
+
+CREATE TABLE exercise (
+    exercise_id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
+    name VARCHAR(120) NOT NULL,
+    user_id UUID NOT NULL,
+
+    CONSTRAINT uk_exercise_user_name
+        UNIQUE (user_id, name),
+    
+    CONSTRAINT fk_exercise_user
+        FOREIGN KEY (user_id)
+        REFERENCES app_user(id)
 );
 
 CREATE TABLE workout (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     workout_date DATE NOT NULL,
+    user_id UUID NOT NULL,
 
-    CONSTRAINT uk_workout_date
-        UNIQUE (workout_date)
+    CONSTRAINT uk_workout_user_date
+        UNIQUE (user_id, workout_date),
+
+    CONSTRAINT fk_workout_user
+        FOREIGN KEY (user_id)
+        REFERENCES app_user(id)
 );
 
 CREATE TABLE workout_entry (
@@ -33,7 +56,7 @@ CREATE TABLE workout_entry (
 
     CONSTRAINT fk_workout_entry_exercise
         FOREIGN KEY (exercise_id)
-        REFERENCES exercise(id),
+        REFERENCES exercise(exercise_id),
 
     CONSTRAINT uk_workout_entry_exercise
         UNIQUE (workout_id, exercise_id)
@@ -42,6 +65,7 @@ CREATE TABLE workout_entry (
 CREATE TABLE measurement_entry (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     measurement_date DATE NOT NULL,
+    user_id UUID NOT NULL,
 
     chest NUMERIC(5, 2),
     waist NUMERIC(5, 2),
@@ -56,13 +80,18 @@ CREATE TABLE measurement_entry (
     calf_left NUMERIC(5, 2),
     calf_right NUMERIC(5, 2),
 
-    CONSTRAINT uk_measurement_date
-        UNIQUE (measurement_date)
+    CONSTRAINT uk_measurement_user_date
+        UNIQUE(user_id, measurement_date),
+
+    CONSTRAINT fk_measurement_user
+        FOREIGN KEY (user_id)
+        REFERENCES app_user(id)
 );
 
 CREATE TABLE nutrition_entry (
     id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
     nutrition_date DATE NOT NULL,
+    user_id UUID NOT NULL,
 
     calories NUMERIC(7, 2),
     protein NUMERIC(5, 2),
@@ -74,25 +103,10 @@ CREATE TABLE nutrition_entry (
 
     notes VARCHAR(1000),
 
-    CONSTRAINT uk_nutrition_date
-        UNIQUE (nutrition_date)
+    CONSTRAINT uk_nutrition_user_date
+        UNIQUE (user_id, nutrition_date),
+    
+    CONSTRAINT fk_nutrition_user
+        FOREIGN KEY (user_id)
+        REFERENCES app_user(id)
 );
-
-CREATE TABLE app_user (
-    id UUID DEFAULT gen_random_uuid() PRIMARY KEY,
-    email VARCHAR(255) NOT NULL,
-    password_hash VARCHAR(255),
-    created_at TIMESTAMPTZ NOT NULL,
-
-    CONSTRAINT uk_app_user_email
-        UNIQUE (email)
-);
-
-INSERT INTO exercise (name)
-VALUES
-    ('Ring Rows'),
-    ('Scapular Push-ups'),
-    ('Biceps Curls'),
-    ('Band External Rotation'),
-    ('Crunches')
-ON CONFLICT (name) DO NOTHING;

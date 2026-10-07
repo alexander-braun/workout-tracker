@@ -1,10 +1,14 @@
 package com.alex.workouttracker.body.model;
 
+import com.alex.workouttracker.auth.model.AppUser;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.FetchType;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import jakarta.persistence.UniqueConstraint;
 import java.math.BigDecimal;
@@ -19,17 +23,22 @@ import lombok.Setter;
     name = "measurement_entry",
     uniqueConstraints = {
       @UniqueConstraint(
-          name = "uk_measurement_date",
-          columnNames = {"measurement_date"})
+          name = "uk_measurement_user_date",
+          columnNames = {"user_id", "measurement_date"})
     })
 @Getter
 @Setter
 @NoArgsConstructor
 public class MeasurementEntry {
 
-  public MeasurementEntry(LocalDate date) {
+  public MeasurementEntry(AppUser user, LocalDate date) {
     this.date = date;
+    this.user = user;
   }
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private AppUser user;
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)

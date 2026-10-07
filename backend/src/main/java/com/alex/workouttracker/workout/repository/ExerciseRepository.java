@@ -8,7 +8,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
 
-  Optional<Exercise> findByNameIgnoreCase(String name);
+  Optional<Exercise> findByUserIdAndNameIgnoreCase(UUID userId, String name);
 
-  List<Exercise> findAllByOrderByNameAsc();
+  List<Exercise> findAllByUserIdOrderByNameAsc(UUID userId);
+
+  Optional<Exercise> findByUserIdAndId(UUID userId, UUID id);
 }

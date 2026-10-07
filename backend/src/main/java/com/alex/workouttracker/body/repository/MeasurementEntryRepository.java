@@ -7,16 +7,26 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface MeasurementEntryRepository extends JpaRepository<MeasurementEntry, UUID> {
-  Optional<MeasurementEntry> findByDate(LocalDate date);
+  Optional<MeasurementEntry> findByUserIdAndDate(UUID userId, LocalDate date);
 
-  List<MeasurementEntry> findAllByDateBetweenOrderByDateAsc(LocalDate from, LocalDate to);
+  List<MeasurementEntry> findAllByUserIdAndDateBetweenOrderByDateAsc(
+      UUID userId, LocalDate from, LocalDate to);
 
-  void deleteByDate(LocalDate date);
+  void deleteByUserIdAndDate(UUID userId, LocalDate date);
 
-  List<MeasurementEntry> findAllByOrderByDateAsc();
+  List<MeasurementEntry> findAllByUserIdOrderByDateAsc(UUID userId);
 
-  @Query("select e.date from MeasurementEntry e order by e.date asc")
-  List<LocalDate> getAllMeasurementDates();
+  @Query(
+      """
+      select e.date
+      from MeasurementEntry e
+      where e.user.id = :userId
+      order by e.date asc
+      """)
+  List<LocalDate> findAllDatesByUserId(@Param("userId") UUID userId);
+
+  void deleteAllByUserId(UUID userId);
 }

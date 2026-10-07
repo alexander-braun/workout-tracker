@@ -1,5 +1,6 @@
 package com.alex.workouttracker.workout.model;
 
+import com.alex.workouttracker.auth.model.AppUser;
 import jakarta.persistence.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -12,11 +13,19 @@ import lombok.Setter;
 @Entity
 @Table(
     name = "workout",
-    uniqueConstraints = {@UniqueConstraint(name = "uk_workout_date", columnNames = "workout_date")})
+    uniqueConstraints = {
+      @UniqueConstraint(
+          name = "uk_workout_user_date",
+          columnNames = {"user_id", "workout_date"})
+    })
 @Getter
 @Setter
 @NoArgsConstructor
 public class Workout {
+
+  @ManyToOne(fetch = FetchType.LAZY, optional = false)
+  @JoinColumn(name = "user_id", nullable = false)
+  private AppUser user;
 
   @Id
   @GeneratedValue(strategy = GenerationType.UUID)
@@ -29,7 +38,8 @@ public class Workout {
   @OrderBy("position ASC")
   private List<WorkoutEntry> entries = new ArrayList<>();
 
-  public Workout(LocalDate date) {
+  public Workout(AppUser user, LocalDate date) {
+    this.user = user;
     this.date = date;
   }
 

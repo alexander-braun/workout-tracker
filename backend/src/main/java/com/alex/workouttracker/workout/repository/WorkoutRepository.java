@@ -7,17 +7,27 @@ import java.util.Optional;
 import java.util.UUID;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.repository.query.Param;
 
 public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
 
-  Optional<Workout> findByDate(LocalDate date);
+  Optional<Workout> findByUserIdAndDate(UUID userId, LocalDate date);
 
-  List<Workout> findAllByDateBetweenOrderByDateAsc(LocalDate from, LocalDate to);
+  List<Workout> findAllByUserIdAndDateBetweenOrderByDateAsc(
+      UUID userId, LocalDate from, LocalDate to);
 
-  List<Workout> findAllByOrderByDateAsc();
+  List<Workout> findAllByUserIdOrderByDateAsc(UUID userId);
 
-  @Query("select w.date from Workout w order by w.date asc")
-  List<LocalDate> findAllDates();
+  @Query(
+      """
+      select w.date
+      from Workout w
+      where w.user.id = :userId
+      order by w.date asc
+      """)
+  List<LocalDate> findAllDatesByUserId(@Param("userId") UUID userId);
 
-  void deleteByDate(LocalDate date);
+  void deleteByUserIdAndDate(UUID userId, LocalDate date);
+
+  void deleteAllByUserId(UUID userId);
 }

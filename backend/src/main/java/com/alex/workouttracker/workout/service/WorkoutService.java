@@ -1,5 +1,7 @@
 package com.alex.workouttracker.workout.service;
 
+import com.alex.workouttracker.auth.model.AppUser;
+import com.alex.workouttracker.auth.service.CurrentUserService;
 import com.alex.workouttracker.workout.dto.SaveWorkoutRequest;
 import com.alex.workouttracker.workout.dto.WorkoutDatesResponse;
 import com.alex.workouttracker.workout.dto.WorkoutEntryRequest;
@@ -25,23 +27,29 @@ public class WorkoutService {
 
   private final WorkoutRepository workoutRepository;
   private final ExerciseService exerciseService;
+  private final CurrentUserService currentUserService;
 
   @Transactional(readOnly = true)
   public WorkoutDatesResponse getAllWorkoutDates() {
-    return new WorkoutDatesResponse(workoutRepository.findAllDates());
+    return new WorkoutDatesResponse(
+        workoutRepository.findAllDatesByUserId(currentUserService.getUser().getId()));
   }
 
   @Transactional(readOnly = true)
   public WorkoutResponse getWorkout(LocalDate date) {
     return workoutRepository
-        .findByDate(date)
+        .findByUserIdAndDate(currentUserService.getUser().getId(), date)
         .map(this::toResponse)
         .orElseGet(() -> WorkoutResponse.empty(date));
   }
 
   @Transactional
   public WorkoutResponse saveWorkout(LocalDate date, SaveWorkoutRequest request) {
-    Workout workout = workoutRepository.findByDate(date).orElseGet(() -> new Workout(date));
+    AppUser user = currentUserService.getUser();
+    Workout workout =
+        workoutRepository
+            .findByUserIdAndDate(user.getId(), date)
+            .orElseGet(() -> new Workout(user, date));
 
     if (workout.getId() != null) {
       workout.clearEntries();
@@ -53,7 +61,7 @@ public class WorkoutService {
     for (WorkoutEntryRequest entryRequest : request.entries()) {
       String name = entryRequest.newExerciseName();
       UUID id = entryRequest.exerciseId();
-      Exercise exercise = exerciseService.findOrCreateExercise(id, name);
+      Exercise exercise = exerciseService.findOrCreateExercise(user, id, name);
 
       if (!usedExerciseIds.add(exercise.getId())) {
         throw new IllegalArgumentException(
@@ -100,11 +108,13 @@ public class WorkoutService {
   @Transactional(readOnly = true)
   public List<WorkoutResponse> getWorkoutHistory(LocalDate from, LocalDate to) {
     List<Workout> workouts;
+    AppUser user = currentUserService.getUser();
 
     if (from == null || to == null) {
-      workouts = workoutRepository.findAllByOrderByDateAsc();
+      workouts = workoutRepository.findAllByUserIdOrderByDateAsc(user.getId());
     } else {
-      workouts = workoutRepository.findAllByDateBetweenOrderByDateAsc(from, to);
+      workouts =
+          workoutRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(user.getId(), from, to);
     }
 
     return workouts.stream().map(this::toResponse).toList();
@@ -112,11 +122,11 @@ public class WorkoutService {
 
   @Transactional
   public void deleteWorkout(LocalDate date) {
-    workoutRepository.deleteByDate(date);
+    workoutRepository.deleteByUserIdAndDate(currentUserService.getUser().getId(), date);
   }
 
   @Transactional
   public void deleteAllWorkouts() {
-    workoutRepository.deleteAll();
+    workoutRepository.deleteAllByUserId(currentUserService.getUser().getId());
   }
 }

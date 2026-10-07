@@ -53,6 +53,6 @@ public class NutritionController {
 
   @DeleteMapping
   public void deleteAllNutritionEntries() {
-    nutritionService.deleteAllNutritionEntries();
+    nutritionService.deleteAllNutritionEntriesFromUser();
   }
 }

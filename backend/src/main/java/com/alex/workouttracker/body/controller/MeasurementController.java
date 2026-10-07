@@ -54,6 +54,6 @@ public class MeasurementController {
 
   @DeleteMapping
   public void deleteAllMeasurements() {
-    measurementService.deleteAllMeasurements();
+    measurementService.deleteAllMeasurementsFromUser();
   }
 }

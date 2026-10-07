@@ -1,5 +1,7 @@
 package com.alex.workouttracker.body.service;
 
+import com.alex.workouttracker.auth.model.AppUser;
+import com.alex.workouttracker.auth.service.CurrentUserService;
 import com.alex.workouttracker.body.dto.MeasurementEntryRequest;
 import com.alex.workouttracker.body.dto.MeasurementEntryResponse;
 import com.alex.workouttracker.body.model.MeasurementEntry;
@@ -14,15 +16,19 @@ import org.springframework.transaction.annotation.Transactional;
 @RequiredArgsConstructor
 public class MeasurementService {
   private final MeasurementEntryRepository measurementEntryRepository;
+  private final CurrentUserService currentUserService;
 
   @Transactional(readOnly = true)
   public List<MeasurementEntryResponse> getMeasurementHistory(LocalDate from, LocalDate to) {
     List<MeasurementEntry> measurementEntries;
+    AppUser user = currentUserService.getUser();
 
     if (from == null || to == null) {
-      measurementEntries = measurementEntryRepository.findAllByOrderByDateAsc();
+      measurementEntries = measurementEntryRepository.findAllByUserIdOrderByDateAsc(user.getId());
     } else {
-      measurementEntries = measurementEntryRepository.findAllByDateBetweenOrderByDateAsc(from, to);
+      measurementEntries =
+          measurementEntryRepository.findAllByUserIdAndDateBetweenOrderByDateAsc(
+              user.getId(), from, to);
     }
 
     return measurementEntries.stream().map(this::toResponse).toList();
@@ -30,26 +36,29 @@ public class MeasurementService {
 
   @Transactional
   public void deleteMeasurement(LocalDate date) {
-    measurementEntryRepository.deleteByDate(date);
+    measurementEntryRepository.deleteByUserIdAndDate(currentUserService.getUser().getId(), date);
   }
 
   @Transactional
-  public void deleteAllMeasurements() {
-    measurementEntryRepository.deleteAll();
+  public void deleteAllMeasurementsFromUser() {
+    measurementEntryRepository.deleteAllByUserId(currentUserService.getUser().getId());
   }
 
   @Transactional(readOnly = true)
   public MeasurementEntryResponse getMeasurement(LocalDate date) {
     return measurementEntryRepository
-        .findByDate(date)
+        .findByUserIdAndDate(currentUserService.getUser().getId(), date)
         .map(this::toResponse)
         .orElseGet(() -> MeasurementEntryResponse.empty(date));
   }
 
   @Transactional
   public MeasurementEntryResponse saveMeasurement(LocalDate date, MeasurementEntryRequest request) {
+    AppUser user = currentUserService.getUser();
     MeasurementEntry measurement =
-        measurementEntryRepository.findByDate(date).orElseGet(() -> new MeasurementEntry(date));
+        measurementEntryRepository
+            .findByUserIdAndDate(user.getId(), date)
+            .orElseGet(() -> new MeasurementEntry(user, date));
 
     measurement.setChest(request.chest());
     measurement.setWaist(request.waist());
@@ -67,7 +76,7 @@ public class MeasurementService {
 
   @Transactional(readOnly = true)
   public List<LocalDate> getAllMeasurementDates() {
-    return measurementEntryRepository.getAllMeasurementDates();
+    return measurementEntryRepository.findAllDatesByUserId(currentUserService.getUser().getId());
   }
 
   private MeasurementEntryResponse toResponse(MeasurementEntry entry) {
