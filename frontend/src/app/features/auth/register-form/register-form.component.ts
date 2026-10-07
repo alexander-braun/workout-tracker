@@ -3,7 +3,6 @@ import { FormBuilder, ReactiveFormsModule, Validators } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 
-import { AuthApiService } from '../auth-api.service';
 import { AuthStore } from '../store/auth.store';
 
 @Component({
@@ -15,7 +14,6 @@ import { AuthStore } from '../store/auth.store';
 })
 export class RegisterFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authApi = inject(AuthApiService);
   readonly authStore = inject(AuthStore);
 
   readonly registered = output<void>();

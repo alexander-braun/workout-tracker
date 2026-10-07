@@ -34,6 +34,7 @@ const initialState: BodyStore = {
 };
 
 export const BodyLogStore = signalStore(
+  { providedIn: 'root' },
   withState<BodyStore>(initialState),
   withMethods((store, api = inject(BodyApiService)) => {
     const MIN_LOADING_TIME = 1000;
@@ -85,6 +86,9 @@ export const BodyLogStore = signalStore(
         }),
       );
     return {
+      clearStore: () => {
+        patchState(store, initialState);
+      },
       deleteAllMeasurements: rxMethod<void>(
         pipe(
           tap(() => {

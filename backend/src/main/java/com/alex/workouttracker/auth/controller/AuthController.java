@@ -4,6 +4,7 @@ import com.alex.workouttracker.auth.dto.CurrentUserResponse;
 import com.alex.workouttracker.auth.dto.LoginRequest;
 import com.alex.workouttracker.auth.dto.RegisterRequest;
 import com.alex.workouttracker.auth.dto.RegisterResponse;
+import com.alex.workouttracker.auth.exception.EmailAlreadyRegisteredException;
 import com.alex.workouttracker.auth.model.AppUser;
 import com.alex.workouttracker.auth.service.AuthService;
 import jakarta.servlet.http.HttpServletRequest;
@@ -58,12 +59,17 @@ public class AuthController {
   @ResponseStatus(HttpStatus.UNAUTHORIZED)
   void handleAuthenticationException() {}
 
+  @ExceptionHandler(EmailAlreadyRegisteredException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  void handleEmailAlreadyRegistered() {}
+
   @GetMapping("/me")
   public ResponseEntity<CurrentUserResponse> getCurrentUser(Authentication authentication) {
     if (authentication == null || !authentication.isAuthenticated()) {
       return ResponseEntity.status(HttpStatus.UNAUTHORIZED).build();
     }
 
-    return ResponseEntity.ok(new CurrentUserResponse(authentication.getName()));
+    AppUser user = authService.getUserByEmail(authentication.getName());
+    return ResponseEntity.ok(new CurrentUserResponse(user.getId(), user.getEmail()));
   }
 }

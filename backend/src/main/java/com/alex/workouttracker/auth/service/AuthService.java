@@ -2,12 +2,14 @@ package com.alex.workouttracker.auth.service;
 
 import com.alex.workouttracker.auth.dto.LoginRequest;
 import com.alex.workouttracker.auth.dto.RegisterRequest;
+import com.alex.workouttracker.auth.exception.EmailAlreadyRegisteredException;
 import com.alex.workouttracker.auth.model.AppUser;
 import com.alex.workouttracker.auth.repository.AppUserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
@@ -34,5 +36,15 @@ public class AuthService {
         UsernamePasswordAuthenticationToken.unauthenticated(
             request.email().trim().toLowerCase(), request.password());
     return authenticationManager.authenticate(authenticationToken);
+  }
+
+  public AppUser getUserByEmail(String email) {
+    if (appUserRepository.existsByEmailIgnoreCase(email)) {
+      throw new EmailAlreadyRegisteredException();
+    }
+
+    return appUserRepository
+        .findByEmailIgnoreCase(email)
+        .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

@@ -17,8 +17,6 @@ export class LoginFormComponent {
 
   readonly loggedIn = output<void>();
   readonly registerRequested = output<void>();
-
-  readonly loading = this.authStore.loginInProgress();
   readonly closeRequested = output<void>();
   showPassword = false;
 
@@ -41,7 +39,6 @@ export class LoginFormComponent {
       .subscribe({
         next: () => {
           this.loggedIn.emit();
-          console.log(this.authStore.user());
         },
       });
   }

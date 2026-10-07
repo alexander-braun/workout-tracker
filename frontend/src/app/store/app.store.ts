@@ -13,8 +13,8 @@ const initialState: AppStoreState = {
 };
 
 export const AppStore = signalStore(
+  { providedIn: 'root' },
   withState(initialState),
-
   withMethods(
     (
       store,

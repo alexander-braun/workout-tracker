@@ -19,6 +19,9 @@ import {
 } from '../auth.model';
 import { AuthApiService } from '../auth-api.service';
 import { type HttpErrorResponse } from '@angular/common/http';
+import { WorkoutLogStore } from '../../workout-log/store/workout-log.store';
+import { NutritionLogStore } from '../../nutrition-and-sleep-log/store/nutrition-log.store';
+import { BodyLogStore } from '../../body-log/store/body-log.store';
 
 const initialState: AuthState = {
   user: null,
@@ -38,122 +41,131 @@ export const AuthStore = signalStore(
   withComputed((store) => ({
     authenticated: computed(() => store.user() !== null),
   })),
-  withMethods((store, api = inject(AuthApiService)) => {
-    const loadCurrentUser = rxMethod<void>(
-      pipe(
-        tap(() => patchState(store, { loading: true })),
-        switchMap(() =>
-          api.getCurrentUser().pipe(
-            tap((user) =>
+  withMethods(
+    (
+      store,
+      api = inject(AuthApiService),
+      workoutStore = inject(WorkoutLogStore),
+      nutritionStore = inject(NutritionLogStore),
+      bodyStore = inject(BodyLogStore),
+    ) => {
+      const loadCurrentUser = rxMethod<void>(
+        pipe(
+          tap(() => patchState(store, { loading: true })),
+          switchMap(() =>
+            api.getCurrentUser().pipe(
+              tap((user) =>
+                patchState(store, {
+                  user,
+                  initialized: true,
+                }),
+              ),
+              catchError(() => {
+                patchState(store, {
+                  user: null,
+                  initialized: true,
+                });
+                return EMPTY;
+              }),
+              finalize(() => patchState(store, { loading: false })),
+            ),
+          ),
+        ),
+      );
+      const logout = rxMethod<void>(
+        pipe(
+          switchMap(() =>
+            api.logout().pipe(
+              tap(() => {
+                workoutStore.clearStore();
+                nutritionStore.clearStore();
+                bodyStore.clearStore();
+                patchState(store, {
+                  user: null,
+                  initialized: true,
+                });
+              }),
+              catchError((error) => {
+                console.error('Logout failed', error);
+                return EMPTY;
+              }),
+            ),
+          ),
+        ),
+      );
+      const setUser = (user: AuthUser): void => {
+        patchState(store, {
+          user,
+          initialized: true,
+        });
+      };
+      return {
+        loadCurrentUser,
+        logout,
+        setUser,
+        login(request: LoginRequest): Observable<AuthUser> {
+          patchState(store, {
+            loginInProgress: true,
+            loginError: null,
+          });
+          return api.login(request).pipe(
+            tap((user) => {
               patchState(store, {
                 user,
                 initialized: true,
+              });
+            }),
+            catchError((error: HttpErrorResponse) => {
+              patchState(store, {
+                loginError:
+                  error.status === 401
+                    ? 'Invalid email or password.'
+                    : 'Login failed. Please try again.',
+              });
+              return throwError(() => error);
+            }),
+            finalize(() => {
+              patchState(store, {
+                loginInProgress: false,
+              });
+            }),
+          );
+        },
+        register(request: RegisterRequest): Observable<AuthUser> {
+          patchState(store, {
+            registerInProgress: true,
+            registerError: null,
+          });
+          return api.register(request).pipe(
+            switchMap(() =>
+              api.login({
+                email: request.email,
+                password: request.password,
               }),
             ),
-            catchError(() => {
+            tap((user) => {
               patchState(store, {
-                user: null,
-                initialized: true,
-              });
-              return EMPTY;
-            }),
-            finalize(() => patchState(store, { loading: false })),
-          ),
-        ),
-      ),
-    );
-    const logout = rxMethod<void>(
-      pipe(
-        switchMap(() =>
-          api.logout().pipe(
-            tap(() => {
-              patchState(store, {
-                user: null,
+                user,
                 initialized: true,
               });
             }),
-            catchError((error) => {
-              console.error('Logout failed', error);
-              return EMPTY;
+            catchError((error: HttpErrorResponse) => {
+              patchState(store, {
+                registerError:
+                  error.status === 409
+                    ? 'An account with this email already exists.'
+                    : 'Registration failed. Please try again.',
+              });
+              return throwError(() => error);
             }),
-          ),
-        ),
-      ),
-    );
-    const setUser = (user: AuthUser): void => {
-      patchState(store, {
-        user,
-        initialized: true,
-      });
-    };
-    return {
-      loadCurrentUser,
-      logout,
-      setUser,
-      login(request: LoginRequest): Observable<AuthUser> {
-        patchState(store, {
-          loginInProgress: true,
-          loginError: null,
-        });
-        return api.login(request).pipe(
-          tap((user) => {
-            console.log('tap: ', user);
-            patchState(store, {
-              user,
-              initialized: true,
-            });
-          }),
-          catchError((error: HttpErrorResponse) => {
-            patchState(store, {
-              loginError:
-                error.status === 401
-                  ? 'Invalid email or password.'
-                  : 'Login failed. Please try again.',
-            });
-            return throwError(() => error);
-          }),
-          finalize(() => {
-            console.log(store.user());
-            patchState(store, {
-              loginInProgress: false,
-            });
-          }),
-        );
-      },
-      register(request: RegisterRequest): Observable<AuthUser> {
-        patchState(store, {
-          registerInProgress: true,
-          registerError: null,
-        });
-        return api.register(request).pipe(
-          switchMap(() =>
-            api.login({
-              email: request.email,
-              password: request.password,
+            finalize(() => {
+              patchState(store, {
+                registerInProgress: false,
+              });
             }),
-          ),
-          tap((user) => {
-            patchState(store, {
-              user,
-              initialized: true,
-            });
-          }),
-          catchError((error: HttpErrorResponse) => {
-            patchState(store, {
-              registerError:
-                error.status === 409
-                  ? 'An account with this email already exists.'
-                  : 'Registration failed. Please try again.',
-            });
-            return throwError(() => error);
-          }),
-          finalize(() => {
-            patchState(store, {
-              registerInProgress: false,
-            });
-          }),
-        );
-      },
-    };
-  }),
+          );
+        },
+      };
+    },
+  ),
 );

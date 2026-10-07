@@ -9,6 +9,7 @@ import { BodyLogStore } from './store/body-log.store';
 import { AppStore } from '../../store/app.store';
 import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { AuthStore } from '../auth/store/auth.store';
 
 @Component({
   selector: 'frontend-body-log',
@@ -27,6 +28,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 export class BodyLogComponent {
   readonly bodyStore = inject(BodyLogStore);
   readonly appStore = inject(AppStore);
+  readonly authStore = inject(AuthStore);
   readonly fb = inject(FormBuilder);
   readonly focusElement = signal<BodyArea>(null);
   readonly form = this.fb.group({
@@ -45,6 +47,10 @@ export class BodyLogComponent {
 
   constructor() {
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
       this.bodyStore.loadMeasurement(toDateString(this.appStore.selectedDate()));
     });
 

@@ -24,6 +24,7 @@ const initialState: WorkoutStore = {
 };
 
 export const WorkoutLogStore = signalStore(
+  { providedIn: 'root' },
   withState<WorkoutStore>(initialState),
   withMethods((store, api = inject(WorkoutApiService)) => {
     const loadExercises$ = () =>
@@ -73,6 +74,9 @@ export const WorkoutLogStore = signalStore(
         }),
       );
     return {
+      clearStore: () => {
+        patchState(store, initialState);
+      },
       loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
         pipe(
           switchMap(({ from, to }) => {

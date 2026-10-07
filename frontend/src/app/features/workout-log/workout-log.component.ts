@@ -11,6 +11,7 @@ import type { ExerciseEntry, WeightUnit, WorkoutEntry } from './workout.model';
 import { WorkoutLogStore } from './store/workout-log.store';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { toDateString } from '../../shared/helper/toDateString';
+import { AuthStore } from '../auth/store/auth.store';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -31,6 +32,7 @@ import { toDateString } from '../../shared/helper/toDateString';
 export class WorkoutLogComponent {
   readonly workoutStore = inject(WorkoutLogStore);
   readonly appStore = inject(AppStore);
+  readonly authStore = inject(AuthStore);
   readonly historyOpen = signal(false);
   readonly filteredExercises = signal<ExerciseEntry[]>([]);
   readonly unitOptions: WeightUnit[] = ['BW', 'kg', 'lbs'];
@@ -41,9 +43,17 @@ export class WorkoutLogComponent {
   );
 
   constructor() {
-    this.workoutStore.loadExercises();
+    effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+      this.workoutStore.loadExercises();
+    });
 
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
       this.loadWorkout(this.appStore.selectedDate());
     });
   }

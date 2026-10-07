@@ -9,6 +9,7 @@ import { NutritionLogStore } from './store/nutrition-log.store';
 import { AppStore } from '../../store/app.store';
 import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
+import { AuthStore } from '../auth/store/auth.store';
 
 @Component({
   selector: 'frontend-nutrition-and-sleep-log',
@@ -27,6 +28,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 export class NutritionAndSleepLogComponent {
   readonly nutritionStore = inject(NutritionLogStore);
   readonly appStore = inject(AppStore);
+  readonly authStore = inject(AuthStore);
   readonly fb = inject(FormBuilder);
 
   readonly ratingOptions = [1, 2, 3, 4, 5];
@@ -49,6 +51,10 @@ export class NutritionAndSleepLogComponent {
 
   constructor() {
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
       this.nutritionStore.loadNutritionEntry(toDateString(this.appStore.selectedDate()));
     });
 

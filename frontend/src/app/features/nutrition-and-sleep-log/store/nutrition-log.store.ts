@@ -22,6 +22,7 @@ const initialState: NutritionStore = {
 };
 
 export const NutritionLogStore = signalStore(
+  { providedIn: 'root' },
   withState<NutritionStore>(initialState),
   withMethods((store, api = inject(NutritionApiService)) => {
     const loadNutritionEntry = rxMethod<string>(
@@ -60,6 +61,9 @@ export const NutritionLogStore = signalStore(
         }),
       );
     return {
+      clearStore: () => {
+        patchState(store, initialState);
+      },
       loadNutritionEntry,
       getNutritionDates: rxMethod<void>(pipe(switchMap(() => loadNutritionDates$()))),
       loadNutritionHistory: rxMethod<GetNutritionHistory>(
