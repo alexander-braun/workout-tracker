@@ -343,7 +343,7 @@ export interface components {
             password: string;
         };
         WorkoutDatesResponse: {
-            dates?: string[];
+            dates: string[];
         };
         NutritionDatesResponse: {
             dates: string[];
