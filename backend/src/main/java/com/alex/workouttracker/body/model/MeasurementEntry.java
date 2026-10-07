@@ -48,6 +48,9 @@ public class MeasurementEntry {
   private LocalDate date;
 
   @Column(precision = 5, scale = 2)
+  private BigDecimal weight;
+
+  @Column(precision = 5, scale = 2)
   private BigDecimal chest;
 
   @Column(precision = 5, scale = 2)

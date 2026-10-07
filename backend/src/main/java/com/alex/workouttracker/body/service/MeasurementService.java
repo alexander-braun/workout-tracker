@@ -69,6 +69,7 @@ public class MeasurementService {
     measurement.setThighRight(request.thighRight());
     measurement.setCalfLeft(request.calfLeft());
     measurement.setCalfRight(request.calfRight());
+    measurement.setWeight(request.weight());
 
     MeasurementEntry measurementEntry = measurementEntryRepository.save(measurement);
     return toResponse(measurementEntry);
@@ -83,6 +84,7 @@ public class MeasurementService {
     return new MeasurementEntryResponse(
         entry.getId(),
         entry.getDate(),
+        entry.getWeight(),
         entry.getChest(),
         entry.getWaist(),
         entry.getNeck(),

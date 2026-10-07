@@ -67,6 +67,7 @@ CREATE TABLE measurement_entry (
     measurement_date DATE NOT NULL,
     user_id UUID NOT NULL,
 
+    weight NUMERIC(5, 2),
     chest NUMERIC(5, 2),
     waist NUMERIC(5, 2),
     neck NUMERIC(5, 2),

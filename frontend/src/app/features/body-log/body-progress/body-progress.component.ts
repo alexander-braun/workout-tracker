@@ -11,12 +11,28 @@ interface MeasurementSession {
   date: Date;
   value: number;
 }
-
 interface MeasurementProgressRow {
   measurement: string;
-  unit: 'cm';
+  unit: 'cm' | 'kg';
   sessions: MeasurementSession[];
 }
+
+const measurementDefinitions: {
+  key: MeasurementKey;
+  label: string;
+  unit: 'cm' | 'kg';
+}[] = [
+  { key: 'weight', label: 'Weight', unit: 'kg' },
+  { key: 'chest', label: 'Chest', unit: 'cm' },
+  { key: 'waist', label: 'Waist', unit: 'cm' },
+  { key: 'neck', label: 'Neck', unit: 'cm' },
+  { key: 'bicepsLeft', label: 'Biceps (L)', unit: 'cm' },
+  { key: 'bicepsRight', label: 'Biceps (R)', unit: 'cm' },
+  { key: 'thighLeft', label: 'Thigh (L)', unit: 'cm' },
+  { key: 'thighRight', label: 'Thigh (R)', unit: 'cm' },
+  { key: 'calfLeft', label: 'Calf (L)', unit: 'cm' },
+  { key: 'calfRight', label: 'Calf (R)', unit: 'cm' },
+];
 
 type Range = '1M' | '3M' | '6M' | '1Y' | 'All';
 
@@ -29,22 +45,8 @@ type MeasurementKey =
   | 'thighLeft'
   | 'thighRight'
   | 'calfLeft'
-  | 'calfRight';
-
-const measurementDefinitions: {
-  key: MeasurementKey;
-  label: string;
-}[] = [
-  { key: 'chest', label: 'Chest' },
-  { key: 'waist', label: 'Waist' },
-  { key: 'neck', label: 'Neck' },
-  { key: 'bicepsLeft', label: 'Biceps (L)' },
-  { key: 'bicepsRight', label: 'Biceps (R)' },
-  { key: 'thighLeft', label: 'Thigh (L)' },
-  { key: 'thighRight', label: 'Thigh (R)' },
-  { key: 'calfLeft', label: 'Calf (L)' },
-  { key: 'calfRight', label: 'Calf (R)' },
-];
+  | 'calfRight'
+  | 'weight';
 
 @Component({
   selector: 'frontend-body-progress',
@@ -64,9 +66,9 @@ export class BodyProgressComponent {
     const history = this.bodyStore.measurementHistory();
 
     return measurementDefinitions
-      .map(({ key, label }) => ({
+      .map(({ key, label, unit }) => ({
         measurement: label,
-        unit: 'cm' as const,
+        unit,
         sessions: history
           .filter((entry) => entry[key] !== null)
           .map((entry) => ({

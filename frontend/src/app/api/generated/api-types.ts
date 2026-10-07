@@ -305,6 +305,7 @@ export interface components {
             chest: number | null;
             waist: number | null;
             neck: number | null;
+            weight: number | null;
             bicepsLeft: number | null;
             bicepsRight: number | null;
             thighLeft: number | null;
@@ -317,6 +318,7 @@ export interface components {
             id: string | null;
             /** Format: date */
             date: string;
+            weight: number | null;
             chest: number | null;
             waist: number | null;
             neck: number | null;

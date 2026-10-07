@@ -1,11 +1,19 @@
 .body-main {
   fill: none;
   stroke: rgb(255, 255, 255);
+  transition:
+    stroke 180ms ease,
+    stroke-width 180ms ease,
+    opacity 180ms ease,
+    filter 180ms ease;
 }
 
 .body-secondary {
   fill: none;
   stroke: rgba(85, 85, 85, 0.65);
+  transition:
+    stroke 180ms ease,
+    opacity 180ms ease;
 }
 
 svg {
@@ -16,6 +24,28 @@ svg {
   &.has-focus {
     .measurement-marker:not(.focussed) {
       opacity: 0.55;
+    }
+  }
+
+  &.body-focussed {
+    .body-shape {
+      .body-main {
+        stroke: var(--p-inputtext-focus-border-color);
+        stroke-width: 1.5px;
+        stroke-dasharray: 6 4;
+
+        filter: drop-shadow(0 0 3px var(--p-inputtext-focus-border-color));
+
+        animation: body-focus-flow 800ms linear infinite;
+      }
+
+      .body-secondary {
+        opacity: 0.45;
+      }
+    }
+
+    .measurement-marker {
+      opacity: 0.3;
     }
   }
 }
@@ -174,6 +204,12 @@ svg.is-loading {
 }
 
 @keyframes body-loading-flow {
+  to {
+    stroke-dashoffset: -10;
+  }
+}
+
+@keyframes body-focus-flow {
   to {
     stroke-dashoffset: -10;
   }

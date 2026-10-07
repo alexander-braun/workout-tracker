@@ -41,6 +41,7 @@ export class BodyLogComponent {
     thighRight: this.fb.control<number | null>(null),
     calfLeft: this.fb.control<number | null>(null),
     calfRight: this.fb.control<number | null>(null),
+    weight: this.fb.control<number | null>(null),
   });
 
   historyOpen = false;

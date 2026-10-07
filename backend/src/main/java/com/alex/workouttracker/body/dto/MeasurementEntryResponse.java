@@ -8,6 +8,7 @@ import java.util.UUID;
 public record MeasurementEntryResponse(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) UUID id,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED) LocalDate date,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) BigDecimal weight,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) BigDecimal chest,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) BigDecimal waist,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) BigDecimal neck,
@@ -20,6 +21,6 @@ public record MeasurementEntryResponse(
 
   public static MeasurementEntryResponse empty(LocalDate date) {
     return new MeasurementEntryResponse(
-        null, date, null, null, null, null, null, null, null, null, null);
+        null, date, null, null, null, null, null, null, null, null, null, null);
   }
 }

@@ -21,7 +21,11 @@ public class SecurityConfig {
     http.authorizeHttpRequests(
             authorize ->
                 authorize
-                    .requestMatchers("/api/auth/login", "/api/auth/register", "/api/auth/csrf")
+                    .requestMatchers(
+                        "/api/auth/login",
+                        "/api/auth/register",
+                        "/api/auth/csrf",
+                        "/v3/api-docs/**")
                     .permitAll()
                     .anyRequest()
                     .authenticated())

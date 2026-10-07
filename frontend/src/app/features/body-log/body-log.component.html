@@ -59,6 +59,22 @@
         <div class="measurement-columns">
           <div class="measurement-column">
             <div class="measurement-row">
+              <span>Weight</span>
+
+              <div class="measurement-input">
+                <p-inputnumber
+                  (onFocus)="focus('body')"
+                  (onBlur)="removeFocus()"
+                  formControlName="weight"
+                  [minFractionDigits]="1"
+                  [maxFractionDigits]="1"
+                  [useGrouping]="false"
+                />
+
+                <span class="unit">kg</span>
+              </div>
+            </div>
+            <div class="measurement-row">
               <span>Chest</span>
 
               <div class="measurement-input">

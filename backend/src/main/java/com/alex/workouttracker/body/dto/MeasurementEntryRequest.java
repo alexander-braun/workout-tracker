@@ -12,6 +12,8 @@ public record MeasurementEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
         BigDecimal neck,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
+        BigDecimal weight,
+    @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
         BigDecimal bicepsLeft,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
         BigDecimal bicepsRight,
