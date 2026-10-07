@@ -4,374 +4,374 @@
  */
 
 export interface paths {
-  '/api/workouts/{date}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/workouts/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getWorkout"];
+        put: operations["saveWorkout"];
+        post?: never;
+        delete: operations["deleteWorkout"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getWorkout'];
-    put: operations['saveWorkout'];
-    post?: never;
-    delete: operations['deleteWorkout'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/nutrition/{date}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/nutrition/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNutrition"];
+        put: operations["saveNutrition"];
+        post?: never;
+        delete: operations["deleteNutrition"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getNutrition'];
-    put: operations['saveNutrition'];
-    post?: never;
-    delete: operations['deleteNutrition'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/measurements/{date}': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/measurements/{date}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMeasurement"];
+        put: operations["saveMeasurement"];
+        post?: never;
+        delete: operations["deleteMeasurement"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getMeasurement'];
-    put: operations['saveMeasurement'];
-    post?: never;
-    delete: operations['deleteMeasurement'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/register': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/register": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["register"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations['register'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/login': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/login": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["login"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get?: never;
-    put?: never;
-    post: operations['login'];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/workouts': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/workouts": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getWorkoutHistory"];
+        put?: never;
+        post?: never;
+        delete: operations["deleteAllWorkouts"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getWorkoutHistory'];
-    put?: never;
-    post?: never;
-    delete: operations['deleteAllWorkouts'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/workouts/dates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/workouts/dates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAllWorkoutDates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getAllWorkoutDates'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/nutrition': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/nutrition": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getNutritionHistory"];
+        put?: never;
+        post?: never;
+        delete: operations["deleteAllNutritionEntries"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getNutritionHistory'];
-    put?: never;
-    post?: never;
-    delete: operations['deleteAllNutritionEntries'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/nutrition/dates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/nutrition/dates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAllNutritionDates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getAllNutritionDates'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/measurements': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/measurements": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getMeasurementHistory"];
+        put?: never;
+        post?: never;
+        delete: operations["deleteAllMeasurements"];
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getMeasurementHistory'];
-    put?: never;
-    post?: never;
-    delete: operations['deleteAllMeasurements'];
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/measurements/dates': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/measurements/dates": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getAllMeasurementDates"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getAllMeasurementDates'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/exercises': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/exercises": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getExercises"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getExercises'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/me': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/me": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getCurrentUser"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['getCurrentUser'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  '/api/auth/csrf': {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
+    "/api/auth/csrf": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["csrf"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
     };
-    get: operations['csrf'];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
-  schemas: {
-    SaveWorkoutRequest: {
-      entries: components['schemas']['WorkoutEntryRequest'][];
+    schemas: {
+        SaveWorkoutRequest: {
+            entries: components["schemas"]["WorkoutEntryRequest"][];
+        };
+        WorkoutEntryRequest: {
+            /** Format: uuid */
+            exerciseId: string | null;
+            newExerciseName: string | null;
+            /** Format: int32 */
+            sets: number;
+            /** Format: int32 */
+            reps: number;
+            weight: number | null;
+            /** @enum {string} */
+            unit: "kg" | "lbs" | "BW";
+            notes: string | null;
+            /** Format: int32 */
+            position: number;
+        };
+        WorkoutEntryResponse: {
+            /** Format: uuid */
+            id: string;
+            /** Format: uuid */
+            exerciseId: string;
+            /** Format: int32 */
+            sets: number;
+            /** Format: int32 */
+            reps: number;
+            weight: number | null;
+            /** @enum {string} */
+            unit: "kg" | "lbs" | "BW";
+            notes: string | null;
+            /** Format: int32 */
+            position: number;
+        };
+        WorkoutResponse: {
+            /** Format: uuid */
+            id: string | null;
+            /** Format: date */
+            date: string;
+            entries: components["schemas"]["WorkoutEntryResponse"][];
+        };
+        NutritionEntryRequest: {
+            calories: number | null;
+            protein: number | null;
+            sleepHours: number | null;
+            /** Format: int32 */
+            steps: number | null;
+            /** Format: int32 */
+            sleepQuality: number | null;
+            /** Format: int32 */
+            energy: number | null;
+            notes: string | null;
+        };
+        NutritionEntryResponse: {
+            /** Format: uuid */
+            id: string | null;
+            /** Format: date */
+            date: string;
+            calories: number | null;
+            protein: number | null;
+            sleepHours: number | null;
+            /** Format: int32 */
+            steps: number | null;
+            /** Format: int32 */
+            sleepQuality: number | null;
+            /** Format: int32 */
+            energy: number | null;
+            notes: string | null;
+        };
+        MeasurementEntryRequest: {
+            chest: number | null;
+            waist: number | null;
+            neck: number | null;
+            bicepsLeft: number | null;
+            bicepsRight: number | null;
+            thighLeft: number | null;
+            thighRight: number | null;
+            calfLeft: number | null;
+            calfRight: number | null;
+        };
+        MeasurementEntryResponse: {
+            /** Format: uuid */
+            id: string | null;
+            /** Format: date */
+            date: string;
+            chest: number | null;
+            waist: number | null;
+            neck: number | null;
+            bicepsLeft: number | null;
+            bicepsRight: number | null;
+            thighLeft: number | null;
+            thighRight: number | null;
+            calfLeft: number | null;
+            calfRight: number | null;
+        };
+        RegisterRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        RegisterResponse: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+        };
+        LoginRequest: {
+            /** Format: email */
+            email: string;
+            password: string;
+        };
+        WorkoutDatesResponse: {
+            dates?: string[];
+        };
+        NutritionDatesResponse: {
+            dates: string[];
+        };
+        MeasurementDatesResponse: {
+            dates: string[];
+        };
+        ExerciseResponse: {
+            /** Format: uuid */
+            id: string;
+            name: string;
+        };
+        CurrentUserResponse: {
+            /** Format: uuid */
+            id: string;
+            email: string;
+        };
+        CsrfToken: {
+            parameterName?: string;
+            token?: string;
+            headerName?: string;
+        };
     };
-    WorkoutEntryRequest: {
-      /** Format: uuid */
-      exerciseId: string | null;
-      newExerciseName: string | null;
-      /** Format: int32 */
-      sets: number;
-      /** Format: int32 */
-      reps: number;
-      weight: number | null;
-      /** @enum {string} */
-      unit: 'kg' | 'lbs' | 'BW';
-      notes: string | null;
-      /** Format: int32 */
-      position: number;
-    };
-    WorkoutEntryResponse: {
-      /** Format: uuid */
-      id: string;
-      /** Format: uuid */
-      exerciseId: string;
-      /** Format: int32 */
-      sets: number;
-      /** Format: int32 */
-      reps: number;
-      weight: number | null;
-      /** @enum {string} */
-      unit: 'kg' | 'lbs' | 'BW';
-      notes: string | null;
-      /** Format: int32 */
-      position: number;
-    };
-    WorkoutResponse: {
-      /** Format: uuid */
-      id: string | null;
-      /** Format: date */
-      date: string;
-      entries: components['schemas']['WorkoutEntryResponse'][];
-    };
-    NutritionEntryRequest: {
-      calories: number | null;
-      protein: number | null;
-      sleepHours: number | null;
-      /** Format: int32 */
-      steps: number | null;
-      /** Format: int32 */
-      sleepQuality: number | null;
-      /** Format: int32 */
-      energy: number | null;
-      notes: string | null;
-    };
-    NutritionEntryResponse: {
-      /** Format: uuid */
-      id: string | null;
-      /** Format: date */
-      date: string;
-      calories: number | null;
-      protein: number | null;
-      sleepHours: number | null;
-      /** Format: int32 */
-      steps: number | null;
-      /** Format: int32 */
-      sleepQuality: number | null;
-      /** Format: int32 */
-      energy: number | null;
-      notes: string | null;
-    };
-    MeasurementEntryRequest: {
-      chest: number | null;
-      waist: number | null;
-      neck: number | null;
-      bicepsLeft: number | null;
-      bicepsRight: number | null;
-      thighLeft: number | null;
-      thighRight: number | null;
-      calfLeft: number | null;
-      calfRight: number | null;
-    };
-    MeasurementEntryResponse: {
-      /** Format: uuid */
-      id?: string;
-      /** Format: date */
-      date?: string;
-      chest?: number;
-      waist?: number;
-      neck?: number;
-      bicepsLeft?: number;
-      bicepsRight?: number;
-      thighLeft?: number;
-      thighRight?: number;
-      calfLeft?: number;
-      calfRight?: number;
-    };
-    RegisterRequest: {
-      /** Format: email */
-      email: string;
-      password: string;
-    };
-    RegisterResponse: {
-      /** Format: uuid */
-      id?: string;
-      email?: string;
-    };
-    LoginRequest: {
-      /** Format: email */
-      email: string;
-      password: string;
-    };
-    WorkoutDatesResponse: {
-      dates?: string[];
-    };
-    NutritionDatesResponse: {
-      dates: string[];
-    };
-    MeasurementDatesResponse: {
-      dates?: string[];
-    };
-    ExerciseResponse: {
-      /** Format: uuid */
-      id: string;
-      name: string;
-    };
-    CurrentUserResponse: {
-      /** Format: uuid */
-      id?: string;
-      email?: string;
-    };
-    CsrfToken: {
-      parameterName?: string;
-      token?: string;
-      headerName?: string;
-    };
-  };
-  responses: never;
-  parameters: never;
-  requestBodies: never;
-  headers: never;
-  pathItems: never;
+    responses: never;
+    parameters: never;
+    requestBodies: never;
+    headers: never;
+    pathItems: never;
 }
 export type SaveWorkoutRequest = components['schemas']['SaveWorkoutRequest'];
 export type WorkoutEntryRequest = components['schemas']['WorkoutEntryRequest'];
@@ -392,483 +392,541 @@ export type CurrentUserResponse = components['schemas']['CurrentUserResponse'];
 export type CsrfToken = components['schemas']['CsrfToken'];
 export type $defs = Record<string, never>;
 export interface operations {
-  getWorkout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['WorkoutResponse'];
+    getWorkout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  saveWorkout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['SaveWorkoutRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['WorkoutResponse'];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["WorkoutResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  deleteWorkout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getNutrition: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['NutritionEntryResponse'];
+    saveWorkout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  saveNutrition: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['NutritionEntryRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['NutritionEntryResponse'];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["SaveWorkoutRequest"];
+            };
         };
-      };
-    };
-  };
-  deleteNutrition: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getMeasurement: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['MeasurementEntryResponse'];
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["WorkoutResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  saveMeasurement: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['MeasurementEntryRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['MeasurementEntryResponse'];
+    deleteWorkout: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  deleteMeasurement: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        date: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  register: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['RegisterRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['RegisterResponse'];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-      /** @description Conflict */
-      409: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
     };
-  };
-  login: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody: {
-      content: {
-        'application/json': components['schemas']['LoginRequest'];
-      };
-    };
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-      /** @description Conflict */
-      409: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getWorkoutHistory: {
-    parameters: {
-      query?: {
-        from?: string;
-        to?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['WorkoutResponse'][];
+    getNutrition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  deleteAllWorkouts: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getAllWorkoutDates: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['WorkoutDatesResponse'];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NutritionEntryResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  getNutritionHistory: {
-    parameters: {
-      query?: {
-        from?: string;
-        to?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['NutritionEntryResponse'][];
+    saveNutrition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  deleteAllNutritionEntries: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getAllNutritionDates: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['NutritionDatesResponse'];
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["NutritionEntryRequest"];
+            };
         };
-      };
-    };
-  };
-  getMeasurementHistory: {
-    parameters: {
-      query?: {
-        from?: string;
-        to?: string;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['MeasurementEntryResponse'][];
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NutritionEntryResponse"];
+                };
+            };
         };
-      };
     };
-  };
-  deleteAllMeasurements: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  getAllMeasurementDates: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['MeasurementDatesResponse'];
+    deleteNutrition: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-    };
-  };
-  getExercises: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['ExerciseResponse'][];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
         };
-      };
     };
-  };
-  getCurrentUser: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['CurrentUserResponse'];
+    getMeasurement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
         };
-      };
-      /** @description Unauthorized */
-      401: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-      /** @description Conflict */
-      409: {
-        headers: Record<string, unknown>;
-        content?: never;
-      };
-    };
-  };
-  csrf: {
-    parameters: {
-      query: {
-        csrfToken: components['schemas']['CsrfToken'];
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      /** @description OK */
-      200: {
-        headers: Record<string, unknown>;
-        content: {
-          '*/*': components['schemas']['CsrfToken'];
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MeasurementEntryResponse"];
+                };
+            };
         };
-      };
     };
-  };
+    saveMeasurement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MeasurementEntryRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MeasurementEntryResponse"];
+                };
+            };
+        };
+    };
+    deleteMeasurement: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                date: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    register: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RegisterRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["RegisterResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    login: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["LoginRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getWorkoutHistory: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["WorkoutResponse"][];
+                };
+            };
+        };
+    };
+    deleteAllWorkouts: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAllWorkoutDates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["WorkoutDatesResponse"];
+                };
+            };
+        };
+    };
+    getNutritionHistory: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NutritionEntryResponse"][];
+                };
+            };
+        };
+    };
+    deleteAllNutritionEntries: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAllNutritionDates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["NutritionDatesResponse"];
+                };
+            };
+        };
+    };
+    getMeasurementHistory: {
+        parameters: {
+            query?: {
+                from?: string;
+                to?: string;
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MeasurementEntryResponse"][];
+                };
+            };
+        };
+    };
+    deleteAllMeasurements: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getAllMeasurementDates: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["MeasurementDatesResponse"];
+                };
+            };
+        };
+    };
+    getExercises: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ExerciseResponse"][];
+                };
+            };
+        };
+    };
+    getCurrentUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CurrentUserResponse"];
+                };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    csrf: {
+        parameters: {
+            query: {
+                csrfToken: components["schemas"]["CsrfToken"];
+            };
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["CsrfToken"];
+                };
+            };
+        };
+    };
 }

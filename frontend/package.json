@@ -3,8 +3,6 @@
   "version": "0.0.0",
   "scripts": {
     "generate:api-types": "openapi-typescript http://localhost:8080/v3/api-docs -o src/app/api/generated/api-types.ts --root-types --root-types-no-schema-prefix",
-    "prestart": "npm run generate:api-types",
-    "prebuild": "npm run generate:api-types",
     "ng": "ng",
     "start": "ng serve --proxy-config proxy.conf.json",
     "build": "ng build",
