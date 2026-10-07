@@ -12,4 +12,9 @@ public record NutritionEntryResponse(
     Integer steps,
     Integer sleepQuality,
     Integer energy,
-    String notes) {}
+    String notes) {
+
+  public static NutritionEntryResponse empty(LocalDate date) {
+    return new NutritionEntryResponse(null, date, null, null, null, null, null, null, null);
+  }
+}

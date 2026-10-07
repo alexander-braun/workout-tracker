@@ -7,10 +7,8 @@ import com.alex.workouttracker.body.repository.MeasurementEntryRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -42,15 +40,10 @@ public class MeasurementService {
 
   @Transactional(readOnly = true)
   public MeasurementEntryResponse getMeasurement(LocalDate date) {
-    MeasurementEntry measurement =
-        measurementEntryRepository
-            .findByDate(date)
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No measurement found for " + date));
-
-    return toResponse(measurement);
+    return measurementEntryRepository
+        .findByDate(date)
+        .map(this::toResponse)
+        .orElseGet(() -> MeasurementEntryResponse.empty(date));
   }
 
   @Transactional

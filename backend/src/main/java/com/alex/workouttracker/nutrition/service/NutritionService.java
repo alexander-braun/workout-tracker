@@ -7,10 +7,8 @@ import com.alex.workouttracker.nutrition.repository.NutritionEntryRepository;
 import java.time.LocalDate;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -41,14 +39,10 @@ public class NutritionService {
 
   @Transactional(readOnly = true)
   public NutritionEntryResponse getNutritionEntry(LocalDate date) {
-    NutritionEntry nutritionEntry =
-        nutritionEntryRepository
-            .findByDate(date)
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No nutrition entry for " + date));
-    return toResponse(nutritionEntry);
+    return nutritionEntryRepository
+        .findByDate(date)
+        .map(this::toResponse)
+        .orElseGet(() -> NutritionEntryResponse.empty(date));
   }
 
   @Transactional

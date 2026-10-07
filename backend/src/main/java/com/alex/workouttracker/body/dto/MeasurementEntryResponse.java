@@ -14,4 +14,10 @@ public record MeasurementEntryResponse(
     BigDecimal thighLeft,
     BigDecimal thighRight,
     BigDecimal calfLeft,
-    BigDecimal calfRight) {}
+    BigDecimal calfRight) {
+
+  public static MeasurementEntryResponse empty(LocalDate date) {
+    return new MeasurementEntryResponse(
+        null, date, null, null, null, null, null, null, null, null, null);
+  }
+}

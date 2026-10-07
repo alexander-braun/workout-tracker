@@ -15,10 +15,8 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.server.ResponseStatusException;
 
 @Service
 @RequiredArgsConstructor
@@ -34,15 +32,10 @@ public class WorkoutService {
 
   @Transactional(readOnly = true)
   public WorkoutResponse getWorkout(LocalDate date) {
-    Workout workout =
-        workoutRepository
-            .findByDate(date)
-            .orElseThrow(
-                () ->
-                    new ResponseStatusException(
-                        HttpStatus.NOT_FOUND, "No workout found for " + date));
-
-    return toResponse(workout);
+    return workoutRepository
+        .findByDate(date)
+        .map(this::toResponse)
+        .orElseGet(() -> WorkoutResponse.empty(date));
   }
 
   @Transactional
