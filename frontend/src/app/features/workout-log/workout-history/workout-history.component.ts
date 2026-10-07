@@ -10,6 +10,7 @@ import {
   type WorkoutSession,
 } from './workout-history.model';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
+import { AuthStore } from '../../auth/store/auth.store';
 
 @Component({
   selector: 'frontend-workout-history',
@@ -20,6 +21,8 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 })
 export class WorkoutHistoryComponent {
   readonly store = inject(WorkoutLogStore);
+  readonly authStore = inject(AuthStore);
+
   readonly selectedRange = signal<Range>('1M');
   readonly ranges: Range[] = ['1M', '3M', '6M', 'All'];
   readonly rows = computed<ProgressRow[]>(() =>
@@ -80,8 +83,19 @@ export class WorkoutHistoryComponent {
   });
 
   constructor() {
-    this.selectRange('1M');
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
+      this.loadSelectedRange();
+    });
+
+    effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
       if (this.store.workoutHistoryStale()) {
         this.loadSelectedRange();
       }
@@ -90,7 +104,6 @@ export class WorkoutHistoryComponent {
 
   selectRange(range: Range): void {
     this.selectedRange.set(range);
-    this.loadSelectedRange();
   }
 
   private loadSelectedRange(): void {

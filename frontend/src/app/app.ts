@@ -32,7 +32,6 @@ import { ButtonModule } from 'primeng/button';
   selector: 'frontend-root',
   styleUrl: './app.scss',
   templateUrl: './app.html',
-  providers: [],
 })
 export class App {
   readonly store = inject(AppStore);

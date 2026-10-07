@@ -23,11 +23,10 @@ public class AuthService {
   public AppUser register(RegisterRequest request) {
     String email = request.email().trim().toLowerCase();
     if (appUserRepository.existsByEmailIgnoreCase(email)) {
-      throw new IllegalArgumentException("Email already registered");
+      throw new EmailAlreadyRegisteredException();
     }
 
     String passwordHash = passwordEncoder.encode(request.password());
-
     return appUserRepository.save(new AppUser(email, passwordHash));
   }
 
@@ -39,12 +38,8 @@ public class AuthService {
   }
 
   public AppUser getUserByEmail(String email) {
-    if (appUserRepository.existsByEmailIgnoreCase(email)) {
-      throw new EmailAlreadyRegisteredException();
-    }
-
     return appUserRepository
-        .findByEmailIgnoreCase(email)
+        .findByEmailIgnoreCase(email.trim().toLowerCase())
         .orElseThrow(() -> new UsernameNotFoundException("User not found"));
   }
 }

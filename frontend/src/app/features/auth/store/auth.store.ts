@@ -93,16 +93,9 @@ export const AuthStore = signalStore(
           ),
         ),
       );
-      const setUser = (user: AuthUser): void => {
-        patchState(store, {
-          user,
-          initialized: true,
-        });
-      };
       return {
         loadCurrentUser,
         logout,
-        setUser,
         login(request: LoginRequest): Observable<AuthUser> {
           patchState(store, {
             loginInProgress: true,

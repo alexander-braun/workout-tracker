@@ -6,6 +6,7 @@ import { type ChartConfiguration } from 'chart.js';
 import { NutritionLogStore } from '../store/nutrition-log.store';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { toDateString } from '../../../shared/helper/toDateString';
+import { AuthStore } from '../../auth/store/auth.store';
 
 type Range = '1W' | '1M' | '3M' | '6M' | 'All';
 
@@ -72,6 +73,7 @@ const metricDefinitions: {
 })
 export class NutritionAndSleepHistoryComponent {
   readonly nutritionStore = inject(NutritionLogStore);
+  readonly authStore = inject(AuthStore);
 
   readonly selectedRange = signal<Range>('1M');
   readonly ranges: Range[] = ['1W', '1M', '3M', '6M', 'All'];
@@ -127,9 +129,19 @@ export class NutritionAndSleepHistoryComponent {
   };
 
   constructor() {
-    this.loadSelectedRange();
+    effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
+      this.loadSelectedRange();
+    });
 
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
       if (this.nutritionStore.nutritionHistoryStale()) {
         this.loadSelectedRange();
       }
@@ -138,7 +150,6 @@ export class NutritionAndSleepHistoryComponent {
 
   selectRange(range: Range): void {
     this.selectedRange.set(range);
-    this.loadSelectedRange();
   }
 
   chartData(row: NutritionSleepHistoryRow): ChartConfiguration<'line'>['data'] {

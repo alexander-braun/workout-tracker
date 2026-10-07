@@ -5,6 +5,7 @@ import { type ChartConfiguration } from 'chart.js';
 import { BodyLogStore } from '../store/body-log.store';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { toDateString } from '../../../shared/helper/toDateString';
+import { AuthStore } from '../../auth/store/auth.store';
 
 interface MeasurementSession {
   date: Date;
@@ -54,6 +55,7 @@ const measurementDefinitions: {
 })
 export class BodyProgressComponent {
   readonly bodyStore = inject(BodyLogStore);
+  readonly authStore = inject(AuthStore);
 
   readonly selectedRange = signal<Range>('1M');
   readonly ranges: Range[] = ['1M', '3M', '6M', '1Y', 'All'];
@@ -110,9 +112,19 @@ export class BodyProgressComponent {
   };
 
   constructor() {
-    this.loadSelectedRange();
+    effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
+      this.loadSelectedRange();
+    });
 
     effect(() => {
+      if (!this.authStore.authenticated()) {
+        return;
+      }
+
       if (this.bodyStore.measurementHistoryStale()) {
         this.loadSelectedRange();
       }
@@ -121,7 +133,6 @@ export class BodyProgressComponent {
 
   selectRange(range: Range): void {
     this.selectedRange.set(range);
-    this.loadSelectedRange();
   }
 
   chartData(row: MeasurementProgressRow): ChartConfiguration<'line'>['data'] {
