@@ -12,8 +12,6 @@ import com.alex.workouttracker.nutrition.service.NutritionService;
 import com.alex.workouttracker.workout.service.WorkoutService;
 import jakarta.transaction.Transactional;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
@@ -21,7 +19,6 @@ import org.springframework.security.core.Authentication;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ExceptionHandler;
 
 @Service
 @RequiredArgsConstructor
@@ -91,10 +88,5 @@ public class AuthService {
     workoutService.deleteAllWorkoutsFromUser();
     nutritionService.deleteAllNutritionEntriesFromUser();
     appUserRepository.deleteById(user.getId());
-  }
-
-  @ExceptionHandler(BadCredentialsException.class)
-  public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
   }
 }
