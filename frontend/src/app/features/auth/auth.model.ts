@@ -1,3 +1,5 @@
+import { type CurrentUserResponse } from '../../api/generated/api-types';
+
 export interface RegisterRequest {
   email: string;
   password: string;
@@ -13,14 +15,8 @@ export interface LoginRequest {
   password: string;
 }
 
-export interface AuthUser {
-  id: string;
-  email: string;
-  // add username etc. if your /me endpoint returns it
-}
-
 export interface AuthState {
-  user: AuthUser | null;
+  user: CurrentUserResponse | null;
   initialized: boolean;
   loading: boolean;
 

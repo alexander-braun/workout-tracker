@@ -11,17 +11,13 @@ import {
   tap,
   throwError,
 } from 'rxjs';
-import {
-  type LoginRequest,
-  type AuthState,
-  type AuthUser,
-  type RegisterRequest,
-} from '../auth.model';
+import { type LoginRequest, type AuthState, type RegisterRequest } from '../auth.model';
 import { AuthApiService } from '../auth-api.service';
 import { type HttpErrorResponse } from '@angular/common/http';
 import { WorkoutLogStore } from '../../workout-log/store/workout-log.store';
 import { NutritionLogStore } from '../../nutrition-and-sleep-log/store/nutrition-log.store';
 import { BodyLogStore } from '../../body-log/store/body-log.store';
+import { type CurrentUserResponse } from '../../../api/generated/api-types';
 
 const initialState: AuthState = {
   user: null,
@@ -96,7 +92,7 @@ export const AuthStore = signalStore(
       return {
         loadCurrentUser,
         logout,
-        login(request: LoginRequest): Observable<AuthUser> {
+        login(request: LoginRequest): Observable<CurrentUserResponse> {
           patchState(store, {
             loginInProgress: true,
             loginError: null,
@@ -124,7 +120,7 @@ export const AuthStore = signalStore(
             }),
           );
         },
-        register(request: RegisterRequest): Observable<AuthUser> {
+        register(request: RegisterRequest): Observable<CurrentUserResponse> {
           patchState(store, {
             registerInProgress: true,
             registerError: null,

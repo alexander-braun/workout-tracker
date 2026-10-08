@@ -4,8 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "backend:serve": "cd backend && mvnw.cmd spring-boot:run -Dspring-boot.run.profiles=local",
-    "backend:types": "wait-on http-get://localhost:8080/v3/api-docs && npm run generate:api-types",
+    "backend:serve": "cd backend && mvnw.cmd compile spring-boot:run -Dspring-boot.run.profiles=local",    "backend:types": "wait-on http-get://localhost:8080/v3/api-docs && npm run generate:api-types",
     "backend": "concurrently -n spring,types \"npm run backend:serve\" \"npm run backend:types\"",
     "backend:test": "cd backend && mvnw.cmd test -Dspring.profiles.active=local",
     "backend:format": "cd backend && mvnw.cmd spotless:apply",

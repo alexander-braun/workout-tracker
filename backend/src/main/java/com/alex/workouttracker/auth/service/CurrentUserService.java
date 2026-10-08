@@ -2,6 +2,7 @@ package com.alex.workouttracker.auth.service;
 
 import com.alex.workouttracker.auth.model.AppUser;
 import com.alex.workouttracker.auth.repository.AppUserRepository;
+import java.util.UUID;
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -17,10 +18,10 @@ public class CurrentUserService {
   public AppUser getUser() {
     Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
 
-    String email = authentication.getName();
-
+    String id = authentication.getName();
+    UUID uuid = UUID.fromString(id);
     return appUserRepository
-        .findByEmailIgnoreCase(email)
-        .orElseThrow(() -> new UsernameNotFoundException(email));
+        .findById(uuid)
+        .orElseThrow(() -> new UsernameNotFoundException(authentication.getName()));
   }
 }

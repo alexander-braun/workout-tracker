@@ -160,11 +160,11 @@ public class WorkoutService {
   }
 
   @Transactional
-  public void deleteAllWorkouts() {
+  public void deleteAllWorkoutsFromUser() {
     AppUser user = currentUserService.getUser();
     workoutRepository.deleteAllByUserId(user.getId());
     workoutRepository.flush();
-    exerciseService.deleteAllByUserId(user.getId());
+    exerciseService.deleteAll();
   }
 
   private WorkoutResponse toResponse(Workout workout) {

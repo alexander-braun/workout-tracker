@@ -52,6 +52,38 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/auth/password": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["updatePassword"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
+    "/api/auth/email": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put: operations["updateEmail"];
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -206,7 +238,7 @@ export interface paths {
         get: operations["getCurrentUser"];
         put?: never;
         post?: never;
-        delete?: never;
+        delete: operations["deleteUser"];
         options?: never;
         head?: never;
         patch?: never;
@@ -329,6 +361,14 @@ export interface components {
             calfLeft: number | null;
             calfRight: number | null;
         };
+        ChangePasswordRequest: {
+            currentPassword?: string;
+            newPassword?: string;
+        };
+        ChangeEmailRequest: {
+            /** Format: email */
+            email: string;
+        };
         RegisterRequest: {
             /** Format: email */
             email: string;
@@ -362,6 +402,8 @@ export interface components {
             /** Format: uuid */
             id: string;
             email: string;
+            /** Format: date-time */
+            createdAt: string;
         };
         CsrfToken: {
             parameterName?: string;
@@ -383,6 +425,8 @@ export type NutritionEntryRequest = components['schemas']['NutritionEntryRequest
 export type NutritionEntryResponse = components['schemas']['NutritionEntryResponse'];
 export type MeasurementEntryRequest = components['schemas']['MeasurementEntryRequest'];
 export type MeasurementEntryResponse = components['schemas']['MeasurementEntryResponse'];
+export type ChangePasswordRequest = components['schemas']['ChangePasswordRequest'];
+export type ChangeEmailRequest = components['schemas']['ChangeEmailRequest'];
 export type RegisterRequest = components['schemas']['RegisterRequest'];
 export type RegisterResponse = components['schemas']['RegisterResponse'];
 export type LoginRequest = components['schemas']['LoginRequest'];
@@ -575,6 +619,66 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+        };
+    };
+    updatePassword: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangePasswordRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+        };
+    };
+    updateEmail: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["ChangeEmailRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
                 headers: Record<string, unknown>;
                 content?: never;
             };
@@ -840,6 +944,32 @@ export interface operations {
                 content: {
                     "*/*": components["schemas"]["CurrentUserResponse"];
                 };
+            };
+            /** @description Unauthorized */
+            401: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+            /** @description Conflict */
+            409: {
+                headers: Record<string, unknown>;
+                content?: never;
+            };
+        };
+    };
+    deleteUser: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: Record<string, unknown>;
+                content?: never;
             };
             /** @description Unauthorized */
             401: {

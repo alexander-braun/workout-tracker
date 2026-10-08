@@ -47,6 +47,6 @@ public class WorkoutController {
 
   @DeleteMapping
   public void deleteAllWorkouts() {
-    workoutService.deleteAllWorkouts();
+    workoutService.deleteAllWorkoutsFromUser();
   }
 }

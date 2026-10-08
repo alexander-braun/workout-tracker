@@ -46,7 +46,7 @@ public class ExerciseService {
         .orElseGet(() -> exerciseRepository.save(new Exercise(user, trimmedName)));
   }
 
-  public void deleteAllByUserId(UUID userId) {
-    exerciseRepository.deleteAllByUserId(userId);
+  public void deleteAll() {
+    exerciseRepository.deleteAllByUserId(currentUserService.getUser().getId());
   }
 }

@@ -3,7 +3,8 @@ import { inject, Injectable } from '@angular/core';
 import type { Observable } from 'rxjs';
 import { switchMap } from 'rxjs';
 
-import type { AuthUser, LoginRequest, RegisterRequest, RegisterResponse } from './auth.model';
+import type { LoginRequest, RegisterRequest, RegisterResponse } from './auth.model';
+import { type CurrentUserResponse } from '../../api/generated/api-types';
 
 @Injectable({
   providedIn: 'root',
@@ -17,7 +18,7 @@ export class AuthApiService {
       .pipe(switchMap(() => this.http.post<RegisterResponse>('/api/auth/register', request)));
   }
 
-  login(request: LoginRequest): Observable<AuthUser> {
+  login(request: LoginRequest): Observable<CurrentUserResponse> {
     return this.http.get('/api/auth/csrf').pipe(
       switchMap(() => this.http.post<void>('/api/auth/login', request)),
       switchMap(() => this.http.get('/api/auth/csrf')),
@@ -25,8 +26,8 @@ export class AuthApiService {
     );
   }
 
-  getCurrentUser(): Observable<AuthUser> {
-    return this.http.get<AuthUser>('/api/auth/me');
+  getCurrentUser(): Observable<CurrentUserResponse> {
+    return this.http.get<CurrentUserResponse>('/api/auth/me');
   }
 
   logout(): Observable<void> {
