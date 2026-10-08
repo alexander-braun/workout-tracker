@@ -1,0 +1,5 @@
+# determine what docker excludes from build context
+# before processing the dockerfile
+node_modules
+dist
+.angular

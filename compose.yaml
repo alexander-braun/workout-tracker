@@ -1,0 +1,74 @@
+services:
+  # first service is the database
+  db:
+    # use the docker image (same version as my local postgres db)
+    image: postgres:18.6
+    # configure env vars
+    environment:
+        # use POSTGRES_DB var from .env file
+      POSTGRES_DB: ${POSTGRES_DB}
+      POSTGRES_USER: ${POSTGRES_USER}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD}
+    # mount the postgres_data volume into the db container 
+    # volume_name:container_directory
+    # when postgres access /var/lib/postgresql it accesses the persisted volume
+    # we are mounting the volume so postgres can persist the data
+    volumes:
+      - postgres_data:/var/lib/postgresql
+    # defines how docker checks if postgresql is ready
+    healthcheck:
+      # pg_isready = postgresql utility that checks if server accepts connections
+      # interval = run the check every 5 sec
+      # timeout = allow each check up to 5 sec
+      # retries = mark as unhealthy after x failures
+      # -U = specify the database user
+      # -d = specify the database name
+      # $$ = ${POSTGRES_USER} -> docker compose uses the .env var
+      #    = $$POSTGRES_USER -> compose turns $$ into $ so the containers
+      #      shell replaces $POSTGRES_USER later
+      # when connection accepted - container is marked healthy
+      test: ["CMD-SHELL", "pg_isready -U $$POSTGRES_USER -d $$POSTGRES_DB"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 30s
+  backend:
+    # look inside /backend folder for Dockerfile
+    # execute to build image
+    # use image to start container for backend service
+    build: ./backend
+    environment:
+      # Spring application.properties expect 3 properties
+              # db = name of service above ("db") with 5432 as postgres internal port
+      DB_URL: jdbc:postgresql://db:5432/${POSTGRES_DB}
+      DB_USERNAME: ${POSTGRES_USER}
+      DB_PASSWORD: ${POSTGRES_PASSWORD}
+    # backend depends on other service (db)
+    depends_on:
+      # reference to that service
+      db:
+        # wait until health check succeeds
+        condition: service_healthy
+    # make spring boot accessible on my machine
+    ports:
+      # HOST_PORT:CONTAINER_PORT
+      # port on local machine : port inside docker container where spring is listening
+      # open http://localhost:8080 and docker forwards the request to the spring boot container
+      - "8080:8080"
+  frontend:
+    build: ./frontend
+    ports:
+      # HOST_PORT:CONTAINER_PORT
+      # 4200 on my local machine
+      # 80 - port nginx listeens on inside container
+      # localhost:4200 will reach my angular app
+      - "4200:80"
+    # dont start before backend starts
+    depends_on:
+      backend:
+        condition: service_started
+
+
+# declare postgres_data volume (gets created if it doesnt exist)
+volumes:
+  postgres_data:
