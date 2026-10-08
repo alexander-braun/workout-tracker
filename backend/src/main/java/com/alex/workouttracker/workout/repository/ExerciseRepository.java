@@ -13,4 +13,8 @@ public interface ExerciseRepository extends JpaRepository<Exercise, UUID> {
   List<Exercise> findAllByUserIdOrderByNameAsc(UUID userId);
 
   Optional<Exercise> findByUserIdAndId(UUID userId, UUID id);
+
+  void deleteByUserIdAndId(UUID userId, UUID exerciseId);
+
+  void deleteAllByUserId(UUID userId);
 }

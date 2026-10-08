@@ -13,6 +13,7 @@ import com.alex.workouttracker.workout.model.Workout;
 import com.alex.workouttracker.workout.model.WorkoutEntry;
 import com.alex.workouttracker.workout.repository.WorkoutRepository;
 import java.time.LocalDate;
+import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
@@ -45,11 +46,35 @@ public class WorkoutService {
 
   @Transactional
   public WorkoutResponse saveWorkout(LocalDate date, SaveWorkoutRequest request) {
+    if (request.entries().isEmpty()) {
+      deleteWorkout(date);
+      return WorkoutResponse.empty(date);
+    }
+
     AppUser user = currentUserService.getUser();
+    List<WorkoutEntry> currentEntries = new ArrayList<>();
     Workout workout =
         workoutRepository
             .findByUserIdAndDate(user.getId(), date)
+            .map(
+                currentWorkout -> {
+                  currentEntries.addAll(currentWorkout.getEntries());
+                  return currentWorkout;
+                })
             .orElseGet(() -> new Workout(user, date));
+
+    List<UUID> exercisesToRemove = new ArrayList<>();
+
+    for (WorkoutEntry workoutEntry : currentEntries) {
+      UUID exerciseId = workoutEntry.getExercise().getId();
+
+      boolean stillExists =
+          request.entries().stream().anyMatch(entry -> exerciseId.equals(entry.exerciseId()));
+
+      if (!stillExists) {
+        exercisesToRemove.add(exerciseId);
+      }
+    }
 
     if (workout.getId() != null) {
       workout.clearEntries();
@@ -82,27 +107,17 @@ public class WorkoutService {
     }
 
     Workout savedWorkout = workoutRepository.save(workout);
+    workoutRepository.flush();
+
+    for (UUID exerciseIdToRemove : exercisesToRemove) {
+      boolean exerciseExistsOnUser =
+          workoutRepository.existsByUserIdAndEntriesExerciseId(user.getId(), exerciseIdToRemove);
+      if (!exerciseExistsOnUser) {
+        exerciseService.deleteExercise(user.getId(), exerciseIdToRemove);
+      }
+    }
 
     return toResponse(savedWorkout);
-  }
-
-  private WorkoutResponse toResponse(Workout workout) {
-    return new WorkoutResponse(
-        workout.getId(),
-        workout.getDate(),
-        workout.getEntries().stream()
-            .map(
-                entry ->
-                    new WorkoutEntryResponse(
-                        entry.getId(),
-                        entry.getExercise().getId(),
-                        entry.getSets(),
-                        entry.getReps(),
-                        entry.getWeight(),
-                        entry.getUnit(),
-                        entry.getNotes(),
-                        entry.getPosition()))
-            .toList());
   }
 
   @Transactional(readOnly = true)
@@ -122,11 +137,52 @@ public class WorkoutService {
 
   @Transactional
   public void deleteWorkout(LocalDate date) {
-    workoutRepository.deleteByUserIdAndDate(currentUserService.getUser().getId(), date);
+    AppUser user = currentUserService.getUser();
+    List<Exercise> exercises = new ArrayList<>();
+    workoutRepository
+        .findByUserIdAndDate(user.getId(), date)
+        .ifPresent(
+            workout -> {
+              for (WorkoutEntry entry : workout.getEntries()) {
+                exercises.add(entry.getExercise());
+              }
+            });
+    workoutRepository.deleteByUserIdAndDate(user.getId(), date);
+    workoutRepository.flush();
+
+    for (Exercise exercise : exercises) {
+      boolean exerciseExistsInOtherWorkout =
+          workoutRepository.existsByUserIdAndEntriesExerciseId(user.getId(), exercise.getId());
+      if (!exerciseExistsInOtherWorkout) {
+        exerciseService.deleteExercise(user.getId(), exercise.getId());
+      }
+    }
   }
 
   @Transactional
   public void deleteAllWorkouts() {
-    workoutRepository.deleteAllByUserId(currentUserService.getUser().getId());
+    AppUser user = currentUserService.getUser();
+    workoutRepository.deleteAllByUserId(user.getId());
+    workoutRepository.flush();
+    exerciseService.deleteAllByUserId(user.getId());
+  }
+
+  private WorkoutResponse toResponse(Workout workout) {
+    return new WorkoutResponse(
+        workout.getId(),
+        workout.getDate(),
+        workout.getEntries().stream()
+            .map(
+                entry ->
+                    new WorkoutEntryResponse(
+                        entry.getId(),
+                        entry.getExercise().getId(),
+                        entry.getSets(),
+                        entry.getReps(),
+                        entry.getWeight(),
+                        entry.getUnit(),
+                        entry.getNotes(),
+                        entry.getPosition()))
+            .toList());
   }
 }

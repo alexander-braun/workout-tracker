@@ -4,7 +4,18 @@
       <h2>Workout History</h2>
       <p>Your workout progress over time</p>
     </div>
-
+    <div class="metric-selector">
+      @for (metric of metrics; track metric) {
+        <button
+          type="button"
+          class="metric-button"
+          [class.active]="selectedMetric() === metric"
+          (click)="selectedMetric.set(metric)"
+        >
+          {{ metric }}
+        </button>
+      }
+    </div>
     <div class="range-selector">
       @for (range of ranges; track range) {
         <button
@@ -27,7 +38,7 @@
         <div class="history-row history-head">
           <span>Exercise</span>
           <span>Progress</span>
-          <span>Best</span>
+          <span>Previous</span>
           <span>Latest</span>
           <span>Change</span>
           <span></span>
@@ -49,8 +60,8 @@
             </div>
 
             <div class="value">
-              <strong>{{ row.best }}</strong>
-              <span>{{ row.bestSub }}</span>
+              <strong>{{ row.previous }}</strong>
+              <span>{{ row.previousSub }}</span>
             </div>
 
             <div class="value">
@@ -58,21 +69,35 @@
               <span>{{ row.latestSub }}</span>
             </div>
 
-            <div
-              class="change"
-              [class.positive]="row.change > 0"
-              [class.negative]="row.change < 0"
-              [class.neutral]="row.change === 0"
-            >
-              @if (row.change > 0) {
-                <i class="pi pi-arrow-up"></i>
-                +{{ row.change }} {{ row.unit }}
-              } @else if (row.change < 0) {
-                <i class="pi pi-arrow-down"></i>
-                {{ row.change }} {{ row.unit }}
+            <div class="change">
+              @if (row.change; as change) {
+                @if (change.sets !== 0) {
+                  <div [class.positive]="change.sets > 0" [class.negative]="change.sets < 0">
+                    {{ change.sets > 0 ? '+' : '' }}{{ change.sets }} sets
+                  </div>
+                }
+
+                @if (change.reps !== 0) {
+                  <div [class.positive]="change.reps > 0" [class.negative]="change.reps < 0">
+                    {{ change.reps > 0 ? '+' : '' }}{{ change.reps }} reps
+                  </div>
+                }
+
+                @if (change.weight !== null && change.weight !== 0) {
+                  <div [class.positive]="change.weight > 0" [class.negative]="change.weight < 0">
+                    {{ change.weight > 0 ? '+' : '' }}{{ change.weight }} {{ change.weightUnit }}
+                  </div>
+                }
+
+                @if (
+                  change.sets === 0 &&
+                  change.reps === 0 &&
+                  (change.weight === null || change.weight === 0)
+                ) {
+                  <span>—</span>
+                }
               } @else {
                 <span>—</span>
-                0 {{ row.unit }}
               }
             </div>
 

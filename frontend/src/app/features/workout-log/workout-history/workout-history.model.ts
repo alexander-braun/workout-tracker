@@ -15,13 +15,19 @@ export interface ExerciseHistory {
   sessions: WorkoutSession[];
 }
 
+export interface ProgressChange {
+  sets: number;
+  reps: number;
+  weight: number | null;
+  weightUnit?: WeightUnit;
+}
+
 export interface ProgressRow {
   exercise: string;
   sessions: WorkoutSession[];
-  best: string;
-  bestSub: string;
+  previous: string;
+  previousSub: string;
   latest: string;
   latestSub: string;
-  change: number;
-  unit: string;
+  change: ProgressChange | null;
 }

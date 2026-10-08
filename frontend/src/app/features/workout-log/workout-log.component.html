@@ -53,7 +53,7 @@
         <span></span>
       </div>
 
-      @for (workoutEntry of workoutEntries(); track workoutEntry; let i = $index) {
+      @for (workoutEntry of workoutEntries(); track $index; let i = $index) {
         <div class="exercise-grid">
           <p-autocomplete
             [ngModel]="getExerciseValue(workoutEntry)"

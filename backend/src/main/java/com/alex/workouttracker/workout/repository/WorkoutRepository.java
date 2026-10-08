@@ -30,4 +30,6 @@ public interface WorkoutRepository extends JpaRepository<Workout, UUID> {
   void deleteByUserIdAndDate(UUID userId, LocalDate date);
 
   void deleteAllByUserId(UUID userId);
+
+  boolean existsByUserIdAndEntriesExerciseId(UUID userId, UUID exerciseId);
 }

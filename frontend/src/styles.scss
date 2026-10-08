@@ -129,3 +129,17 @@ textarea {
     color: #08f;
   }
 }
+
+#workout-history-tooltip {
+  position: absolute;
+  z-index: 10000;
+  pointer-events: none;
+  padding: 6px 10px;
+  border-radius: 6px;
+  background: #111827;
+  color: white;
+  font-size: 12px;
+  white-space: nowrap;
+  opacity: 0;
+  transform: translate(-50%, calc(-100% - 10px));
+}

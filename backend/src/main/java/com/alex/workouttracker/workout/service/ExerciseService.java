@@ -24,6 +24,10 @@ public class ExerciseService {
         .toList();
   }
 
+  public void deleteExercise(UUID userId, UUID exerciseId) {
+    exerciseRepository.deleteByUserIdAndId(userId, exerciseId);
+  }
+
   public Exercise findOrCreateExercise(AppUser user, UUID exerciseId, String newExerciseName) {
     if (exerciseId != null) {
       return exerciseRepository
@@ -40,5 +44,9 @@ public class ExerciseService {
     return exerciseRepository
         .findByUserIdAndNameIgnoreCase(user.getId(), trimmedName)
         .orElseGet(() -> exerciseRepository.save(new Exercise(user, trimmedName)));
+  }
+
+  public void deleteAllByUserId(UUID userId) {
+    exerciseRepository.deleteAllByUserId(userId);
   }
 }

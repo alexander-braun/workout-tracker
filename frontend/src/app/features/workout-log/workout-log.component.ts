@@ -221,14 +221,11 @@ export class WorkoutLogComponent {
   }
 
   isWorkoutValid(): boolean {
-    return (
-      this.workoutEntries().length > 0 &&
-      this.workoutEntries().every(
-        (entry) =>
-          (entry.exerciseId !== null || !!entry.newExerciseName?.trim()) &&
-          entry.sets >= 0 &&
-          entry.reps >= 0,
-      )
+    return this.workoutEntries().every(
+      (entry) =>
+        (entry.exerciseId !== null || !!entry.newExerciseName?.trim()) &&
+        entry.sets >= 0 &&
+        entry.reps >= 0,
     );
   }
 

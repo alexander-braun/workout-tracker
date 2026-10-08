@@ -166,7 +166,6 @@ export const WorkoutLogStore = signalStore(
           ),
         ),
       ),
-
       saveWorkout: rxMethod<SaveWorkout>(
         pipe(
           tap(() => {
