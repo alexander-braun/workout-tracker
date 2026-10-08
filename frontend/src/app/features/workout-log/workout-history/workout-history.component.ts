@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, OnDestroy, signal } from '@angular/core';
+import { Component, computed, effect, inject, type OnDestroy, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { BaseChartDirective } from 'ng2-charts';
 import { type ChartConfiguration } from 'chart.js';
