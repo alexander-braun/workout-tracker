@@ -1,12 +1,12 @@
-# provide node.js and npm to build angular + name stage build
+# Use Node.js to build Angular with pnpm
 FROM node:24-alpine AS build
 
 WORKDIR /app
 
-COPY package.json package-lock.json ./
+COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 
-# do this before copying src code so docker can cache deps
-RUN npm ci --legacy-peer-deps
+RUN npm install -g pnpm@12.10.1
+RUN pnpm install --frozen-lockfile
 
 COPY src ./src
 COPY angular.json .
@@ -15,7 +15,7 @@ COPY tsconfig*.json ./
 COPY public ./public
 
 
-RUN npm run build
+RUN pnpm run build
 
 # nginx webserver delivers the created files to the browser
 FROM nginx:alpine AS runtime
