@@ -82,7 +82,17 @@ export class BodyLogComponent {
     this.focusElement.set(null);
   }
 
+  isFormEmpty(): boolean {
+    return Object.values(this.form.getRawValue()).every((value) => value === null);
+  }
+
   saveMeasurements(): void {
+    if (this.bodyStore.currentMeasurement() === null && this.isFormEmpty()) {
+      return;
+    } else if (this.isFormEmpty() && this.bodyStore.currentMeasurement() !== null) {
+      this.bodyStore.deleteMeasurement({ date: toDateString(this.appStore.selectedDate()) });
+      return;
+    }
     this.bodyStore.saveMeasurement({
       date: toDateString(this.appStore.selectedDate()),
       request: this.form.getRawValue(),

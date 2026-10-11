@@ -49,7 +49,7 @@ export const BodyLogStore = signalStore(
           const startedAt = Date.now();
           return api.getMeasurement(date).pipe(
             map((measurement) => ({
-              measurement,
+              measurement: measurement.id === null ? null : measurement,
               error: null,
             })),
             catchError((error) =>
@@ -201,7 +201,7 @@ export const BodyLogStore = signalStore(
             return api.saveMeasurement(date, request).pipe(
               map((measurement) => ({
                 success: true as const,
-                measurement,
+                measurement: measurement.id === null ? null : measurement,
               })),
               catchError((error) =>
                 of({

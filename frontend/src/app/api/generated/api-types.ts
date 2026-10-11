@@ -406,9 +406,9 @@ export interface components {
             createdAt: string;
         };
         CsrfToken: {
+            headerName?: string;
             parameterName?: string;
             token?: string;
-            headerName?: string;
         };
     };
     responses: never;

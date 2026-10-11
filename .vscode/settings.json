@@ -7,5 +7,6 @@
     "editor.formatOnSave": true
   },
   "java.configuration.updateBuildConfiguration": "interactive",
-  "java.format.settings.google.mode": "jar-file"
+  "java.format.settings.google.mode": "jar-file",
+  "java.compile.nullAnalysis.mode": "automatic"
 }

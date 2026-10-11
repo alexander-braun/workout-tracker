@@ -3,6 +3,8 @@ package com.alex.workouttracker.body.dto;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
+import java.util.Objects;
+import java.util.stream.Stream;
 
 public record MeasurementEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
@@ -24,4 +26,20 @@ public record MeasurementEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
         BigDecimal calfLeft,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
-        BigDecimal calfRight) {}
+        BigDecimal calfRight) {
+
+  public boolean isEmpty() {
+    return Stream.of(
+            chest,
+            waist,
+            neck,
+            weight,
+            bicepsLeft,
+            bicepsRight,
+            thighLeft,
+            thighRight,
+            calfLeft,
+            calfRight)
+        .allMatch(Objects::isNull);
+  }
+}

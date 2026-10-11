@@ -8,6 +8,7 @@ import com.alex.workouttracker.body.model.MeasurementEntry;
 import com.alex.workouttracker.body.repository.MeasurementEntryRepository;
 import java.time.LocalDate;
 import java.util.List;
+import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -55,11 +56,17 @@ public class MeasurementService {
   @Transactional
   public MeasurementEntryResponse saveMeasurement(LocalDate date, MeasurementEntryRequest request) {
     AppUser user = currentUserService.getUser();
-    MeasurementEntry measurement =
-        measurementEntryRepository
-            .findByUserIdAndDate(user.getId(), date)
-            .orElseGet(() -> new MeasurementEntry(user, date));
+    Optional<MeasurementEntry> currentEntry =
+        measurementEntryRepository.findByUserIdAndDate(user.getId(), date);
 
+    if (request.isEmpty()) {
+      if (currentEntry.isPresent()) {
+        deleteMeasurement(date);
+      }
+      return MeasurementEntryResponse.empty(date);
+    }
+
+    MeasurementEntry measurement = currentEntry.orElseGet(() -> new MeasurementEntry(user, date));
     measurement.setChest(request.chest());
     measurement.setWaist(request.waist());
     measurement.setNeck(request.neck());
