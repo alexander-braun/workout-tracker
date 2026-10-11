@@ -14,9 +14,7 @@
         class="header-icon-button"
         aria-label="Save Log"
         title="Save Log"
-        [disabled]="
-          nutritionStore.nutritionEntryLoading() || nutritionStore.nutritionEntrySaveInProgress()
-        "
+        [disabled]="!nutritionReady()"
       >
         <i class="pi pi-save" pButtonIcon></i>
       </button>
@@ -30,9 +28,7 @@
           class="header-icon-button"
           aria-label="Delete Log"
           title="Delete Log"
-          [disabled]="
-            nutritionStore.nutritionEntryLoading() || nutritionStore.nutritionEntrySaveInProgress()
-          "
+          [disabled]="!nutritionReady()"
           (click)="deleteNutritionEntry()"
         >
           <i class="pi pi-trash" pButtonIcon></i>

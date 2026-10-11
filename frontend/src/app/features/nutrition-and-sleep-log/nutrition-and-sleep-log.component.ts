@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject } from '@angular/core';
+import { Component, computed, effect, inject, untracked } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { TextareaModule } from 'primeng/textarea';
@@ -32,7 +32,13 @@ export class NutritionAndSleepLogComponent {
   readonly fb = inject(FormBuilder);
 
   readonly ratingOptions = [1, 2, 3, 4, 5];
-
+  readonly nutritionReady = computed(
+    () =>
+      this.authStore.authenticated() &&
+      this.nutritionStore.loadedDate() === toDateString(this.appStore.selectedDate()) &&
+      !this.nutritionStore.nutritionEntryLoading() &&
+      !this.nutritionStore.nutritionEntrySaveInProgress(),
+  );
   readonly form = this.fb.group({
     calories: this.fb.control<number | null>(null),
     protein: this.fb.control<number | null>(null),
@@ -51,20 +57,27 @@ export class NutritionAndSleepLogComponent {
 
   constructor() {
     effect(() => {
-      if (!this.authStore.authenticated()) {
+      const date = this.appStore.selectedDate();
+
+      if (!this.authStore.authenticated() || this.nutritionStore.nutritionEntrySaveInProgress()) {
         return;
       }
 
-      this.nutritionStore.loadNutritionEntry(toDateString(this.appStore.selectedDate()));
+      untracked(() => {
+        if (this.nutritionStore.loadedDate() !== toDateString(date)) {
+          this.nutritionStore.loadNutritionEntry(toDateString(date));
+        }
+      });
     });
 
     effect(() => {
-      const nutritionEntry = this.nutritionStore.currentNutritionEntry();
+      const loadedDate = this.nutritionStore.loadedDate();
+      const entry = this.nutritionStore.currentNutritionEntry();
 
-      if (nutritionEntry) {
-        this.form.patchValue(nutritionEntry);
-      } else {
+      if (loadedDate === null || entry === null) {
         this.form.reset();
+      } else {
+        this.form.patchValue(entry);
       }
     });
   }
@@ -78,6 +91,8 @@ export class NutritionAndSleepLogComponent {
   }
 
   saveLog(): void {
+    if (!this.nutritionReady()) return;
+
     this.nutritionStore.saveNutritionEntry({
       date: toDateString(this.appStore.selectedDate()),
       request: this.form.getRawValue(),
@@ -85,6 +100,8 @@ export class NutritionAndSleepLogComponent {
   }
 
   deleteNutritionEntry(): void {
+    if (!this.nutritionReady()) return;
+
     this.nutritionStore.deleteNutritionEntry({
       date: toDateString(this.appStore.selectedDate()),
     });

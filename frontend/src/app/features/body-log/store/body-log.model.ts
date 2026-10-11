@@ -11,6 +11,7 @@ export interface BodyStore {
   measurementsLoading: boolean;
   measurementSaveInProgress: boolean;
   measurementDates: string[];
+  loadedDate: string | null;
 }
 
 export interface DeleteMeasurement {

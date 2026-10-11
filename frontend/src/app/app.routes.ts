@@ -12,7 +12,7 @@ export const routes: Routes = [
     path: 'account',
     loadComponent: () =>
       import('./features/account/account.component').then((m) => m.AccountComponent),
-    canActivate: [userGuard]
+    canActivate: [userGuard],
   },
   { path: '**', redirectTo: '' },
 ];

@@ -14,7 +14,7 @@
         class="header-icon-button"
         aria-label="Save Workout"
         title="Save Workout"
-        [disabled]="!isWorkoutValid() || workoutStore.workoutSaveInProgress()"
+        [disabled]="!workoutReady() || !isWorkoutValid()"
         (click)="saveWorkout()"
       >
         <i class="pi pi-save" pButtonIcon></i>
@@ -29,6 +29,7 @@
           class="header-icon-button"
           aria-label="Delete Workout"
           title="Delete Workout"
+          [disabled]="!workoutReady()"
           (click)="deleteWorkout()"
         >
           <i class="pi pi-trash" pButtonIcon></i>
@@ -104,13 +105,7 @@
   }
 
   <footer class="card-footer">
-    <button
-      [disabled]="workoutStore.workoutSaveInProgress() || workoutStore.workoutsLoading()"
-      pButton
-      type="button"
-      class="add-exercise-button"
-      (click)="addWorkoutEntry()"
-    >
+    <button pButton type="button" class="add-exercise-button" (click)="addWorkoutEntry()">
       <i class="pi pi-plus" pButtonIcon></i>
       <span pButtonLabel>Add Exercise</span>
     </button>

@@ -54,6 +54,12 @@ public class NutritionService {
   @Transactional
   public NutritionEntryResponse saveNutritionEntry(LocalDate date, NutritionEntryRequest request) {
     AppUser user = currentUserService.getUser();
+
+    if (request.isEmpty()) {
+      nutritionEntryRepository.deleteByUserIdAndDate(user.getId(), date);
+      return NutritionEntryResponse.empty(date);
+    }
+
     NutritionEntry nutritionEntry =
         nutritionEntryRepository
             .findByUserIdAndDate(user.getId(), date)

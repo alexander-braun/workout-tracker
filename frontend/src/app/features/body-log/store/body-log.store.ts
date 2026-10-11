@@ -31,6 +31,7 @@ const initialState: BodyStore = {
   measurementsLoading: false,
   measurementSaveInProgress: false,
   measurementDates: [],
+  loadedDate: null,
 };
 
 export const BodyLogStore = signalStore(
@@ -44,7 +45,12 @@ export const BodyLogStore = signalStore(
 
     const loadMeasurement = rxMethod<string>(
       pipe(
-        tap(() => patchState(store, { measurementsLoading: true })),
+        tap(() =>
+          patchState(store, {
+            measurementsLoading: true,
+            loadedDate: null,
+          }),
+        ),
         switchMap((date) => {
           const startedAt = Date.now();
           return api.getMeasurement(date).pipe(
@@ -60,9 +66,13 @@ export const BodyLogStore = signalStore(
             ),
             delayWhen(() => remainingLoadingTime(startedAt)),
             tap(({ measurement, error }) => {
+              const dateLoaded =
+                !error || (error instanceof HttpErrorResponse && error.status === 404);
+
               patchState(store, {
                 currentMeasurement: measurement,
                 measurementsLoading: false,
+                loadedDate: dateLoaded ? date : null,
               });
               if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
                 console.error(error);
@@ -155,6 +165,12 @@ export const BodyLogStore = signalStore(
       loadMeasurement,
       deleteMeasurement: rxMethod<DeleteMeasurement>(
         pipe(
+          filter(
+            ({ date }) =>
+              store.loadedDate() === date &&
+              !store.measurementsLoading() &&
+              !store.measurementSaveInProgress(),
+          ),
           tap(() => {
             patchState(store, { measurementSaveInProgress: true });
           }),
@@ -174,10 +190,13 @@ export const BodyLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    currentMeasurement: null,
                     measurementSaveInProgress: false,
                     measurementHistoryStale: true,
                   });
+
+                  if (store.loadedDate() === date) {
+                    patchState(store, { currentMeasurement: null });
+                  }
                 } else {
                   patchState(store, {
                     measurementSaveInProgress: false,
@@ -193,6 +212,12 @@ export const BodyLogStore = signalStore(
       ),
       saveMeasurement: rxMethod<SaveMeasurement>(
         pipe(
+          filter(
+            ({ date }) =>
+              store.loadedDate() === date &&
+              !store.measurementsLoading() &&
+              !store.measurementSaveInProgress(),
+          ),
           tap(() => {
             patchState(store, { measurementSaveInProgress: true });
           }),
@@ -213,10 +238,15 @@ export const BodyLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    currentMeasurement: result.measurement,
                     measurementSaveInProgress: false,
                     measurementHistoryStale: true,
                   });
+
+                  if (store.loadedDate() === date) {
+                    patchState(store, {
+                      currentMeasurement: result.measurement,
+                    });
+                  }
                 } else {
                   patchState(store, {
                     measurementSaveInProgress: false,

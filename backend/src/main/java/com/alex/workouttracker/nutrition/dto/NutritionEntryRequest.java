@@ -21,4 +21,15 @@ public record NutritionEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @Min(1) @Max(5)
         Integer energy,
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @Size(max = 1000)
-        String notes) {}
+        String notes) {
+
+  public boolean isEmpty() {
+    return calories == null
+        && protein == null
+        && sleepHours == null
+        && steps == null
+        && sleepQuality == null
+        && energy == null
+        && (notes == null || notes.isBlank());
+  }
+}

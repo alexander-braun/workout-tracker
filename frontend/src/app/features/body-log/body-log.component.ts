@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
@@ -45,23 +45,37 @@ export class BodyLogComponent {
   });
 
   historyOpen = false;
+  readonly measurementReady = computed(
+    () =>
+      this.authStore.authenticated() &&
+      this.bodyStore.loadedDate() === toDateString(this.appStore.selectedDate()) &&
+      !this.bodyStore.measurementsLoading() &&
+      !this.bodyStore.measurementSaveInProgress(),
+  );
 
   constructor() {
     effect(() => {
-      if (!this.authStore.authenticated()) {
+      const date = this.appStore.selectedDate();
+
+      if (!this.authStore.authenticated() || this.bodyStore.measurementSaveInProgress()) {
         return;
       }
 
-      this.bodyStore.loadMeasurement(toDateString(this.appStore.selectedDate()));
+      untracked(() => {
+        if (this.bodyStore.loadedDate() !== toDateString(date)) {
+          this.bodyStore.loadMeasurement(toDateString(date));
+        }
+      });
     });
 
     effect(() => {
+      const loadedDate = this.bodyStore.loadedDate();
       const measurement = this.bodyStore.currentMeasurement();
 
-      if (measurement) {
-        this.form.patchValue(measurement);
-      } else {
+      if (loadedDate === null || measurement === null) {
         this.form.reset();
+      } else {
+        this.form.patchValue(measurement);
       }
     });
   }
@@ -69,6 +83,7 @@ export class BodyLogComponent {
   readonly hasSavedMeasurement = computed(() => this.bodyStore.currentMeasurement() !== null);
 
   deleteMeasurement() {
+    if (!this.measurementReady()) return;
     this.bodyStore.deleteMeasurement({
       date: toDateString(this.appStore.selectedDate()),
     });
@@ -87,6 +102,8 @@ export class BodyLogComponent {
   }
 
   saveMeasurements(): void {
+    if (!this.measurementReady()) return;
+
     if (this.bodyStore.currentMeasurement() === null && this.isFormEmpty()) {
       return;
     } else if (this.isFormEmpty() && this.bodyStore.currentMeasurement() !== null) {

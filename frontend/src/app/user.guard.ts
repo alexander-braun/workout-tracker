@@ -11,10 +11,6 @@ export const userGuard: CanActivateFn = () => {
   return toObservable(authStore.initialized).pipe(
     filter(Boolean),
     take(1),
-    map(() =>
-      authStore.authenticated()
-        ? true
-        : router.createUrlTree(['/'])
-    ),
+    map(() => (authStore.authenticated() ? true : router.createUrlTree(['/']))),
   );
 };

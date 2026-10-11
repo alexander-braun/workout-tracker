@@ -10,6 +10,7 @@ export interface WorkoutStore {
   workoutsLoading: boolean;
   workoutHistoryStale: boolean;
   workoutDates: string[];
+  loadedDate: string | null;
 }
 
 export interface SaveWorkout {

@@ -1,4 +1,12 @@
-import { Component, effect, inject, linkedSignal, signal } from '@angular/core';
+import {
+  Component,
+  computed,
+  effect,
+  inject,
+  linkedSignal,
+  signal,
+  untracked,
+} from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { type AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
 import { ButtonModule } from 'primeng/button';
@@ -42,6 +50,13 @@ export class WorkoutLogComponent {
       ...entry,
     })),
   );
+  readonly workoutReady = computed(
+    () =>
+      this.authStore.authenticated() &&
+      this.workoutStore.loadedDate() === toDateString(this.appStore.selectedDate()) &&
+      !this.workoutStore.workoutsLoading() &&
+      !this.workoutStore.workoutSaveInProgress(),
+  );
 
   constructor() {
     effect(() => {
@@ -52,14 +67,23 @@ export class WorkoutLogComponent {
     });
 
     effect(() => {
-      if (!this.authStore.authenticated()) {
+      const date = this.appStore.selectedDate();
+
+      if (!this.authStore.authenticated() || this.workoutStore.workoutSaveInProgress()) {
         return;
       }
-      this.loadWorkout(this.appStore.selectedDate());
+
+      untracked(() => {
+        if (this.workoutStore.loadedDate() !== toDateString(date)) {
+          this.loadWorkout(date);
+        }
+      });
     });
   }
 
   saveWorkout(): void {
+    if (!this.workoutReady() || !this.isWorkoutValid()) return;
+
     this.workoutStore.saveWorkout({
       date: toDateString(this.appStore.selectedDate()),
       entries: this.workoutEntries(),
@@ -72,12 +96,16 @@ export class WorkoutLogComponent {
   }
 
   deleteWorkout(): void {
+    if (!this.workoutReady()) return;
+
     this.workoutStore.deleteWorkout({
       date: toDateString(this.appStore.selectedDate()),
     });
   }
 
   addWorkoutEntry(): void {
+    if (this.authStore.authenticated() && !this.workoutReady()) return;
+
     this.workoutEntries.update((rows) => [
       ...rows,
       {

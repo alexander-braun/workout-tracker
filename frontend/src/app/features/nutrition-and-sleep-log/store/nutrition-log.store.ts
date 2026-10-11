@@ -19,6 +19,7 @@ const initialState: NutritionStore = {
   nutritionHistoryStale: false,
   currentNutritionEntry: null,
   nutritionDates: [],
+  loadedDate: null,
 };
 
 export const NutritionLogStore = signalStore(
@@ -27,7 +28,7 @@ export const NutritionLogStore = signalStore(
   withMethods((store, api = inject(NutritionApiService)) => {
     const loadNutritionEntry = rxMethod<string>(
       pipe(
-        tap(() => patchState(store, { nutritionEntryLoading: true })),
+        tap(() => patchState(store, { nutritionEntryLoading: true, loadedDate: null })),
         switchMap((date) => {
           return api.getNutritionForDate(date).pipe(
             map((nutritionEntry) => ({
@@ -36,9 +37,12 @@ export const NutritionLogStore = signalStore(
             })),
             catchError((error) => of({ nutritionEntry: null, error })),
             tap(({ nutritionEntry, error }) => {
+              const dateLoaded =
+                !error || (error instanceof HttpErrorResponse && error.status === 404);
               patchState(store, {
-                currentNutritionEntry: nutritionEntry,
+                currentNutritionEntry: nutritionEntry?.id === null ? null : nutritionEntry,
                 nutritionEntryLoading: false,
+                loadedDate: dateLoaded ? date : null,
               });
               if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
                 console.error(error);
@@ -125,6 +129,12 @@ export const NutritionLogStore = signalStore(
       ),
       deleteNutritionEntry: rxMethod<DeleteNutritionEntry>(
         pipe(
+          filter(
+            ({ date }) =>
+              store.loadedDate() === date &&
+              !store.nutritionEntryLoading() &&
+              !store.nutritionEntrySaveInProgress(),
+          ),
           tap(() => {
             patchState(store, { nutritionEntrySaveInProgress: true });
           }),
@@ -137,10 +147,13 @@ export const NutritionLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    currentNutritionEntry: null,
                     nutritionEntrySaveInProgress: false,
                     nutritionHistoryStale: true,
                   });
+
+                  if (store.loadedDate() === date) {
+                    patchState(store, { currentNutritionEntry: null });
+                  }
                 } else {
                   patchState(store, {
                     nutritionEntrySaveInProgress: false,
@@ -156,6 +169,12 @@ export const NutritionLogStore = signalStore(
       ),
       saveNutritionEntry: rxMethod<SaveNutritionEntry>(
         pipe(
+          filter(
+            ({ date }) =>
+              store.loadedDate() === date &&
+              !store.nutritionEntryLoading() &&
+              !store.nutritionEntrySaveInProgress(),
+          ),
           tap(() => {
             patchState(store, { nutritionEntrySaveInProgress: true });
           }),
@@ -163,16 +182,21 @@ export const NutritionLogStore = signalStore(
             return api.saveNutritionEntry(date, request).pipe(
               map((nutritionEntry) => ({
                 success: true as const,
-                nutritionEntry,
+                nutritionEntry: nutritionEntry?.id === null ? null : nutritionEntry,
               })),
               catchError((error) => of({ success: false as const, error })),
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    currentNutritionEntry: result.nutritionEntry,
                     nutritionEntrySaveInProgress: false,
                     nutritionHistoryStale: true,
                   });
+
+                  if (store.loadedDate() === date) {
+                    patchState(store, {
+                      currentNutritionEntry: result.nutritionEntry,
+                    });
+                  }
                 } else {
                   patchState(store, {
                     nutritionEntrySaveInProgress: false,
