@@ -17,7 +17,9 @@ import {
   map,
   of,
   pipe,
+  Subject,
   switchMap,
+  takeUntil,
   tap,
   timer,
 } from 'rxjs';
@@ -38,6 +40,7 @@ export const BodyLogStore = signalStore(
   { providedIn: 'root' },
   withState<BodyStore>(initialState),
   withMethods((store, api = inject(BodyApiService)) => {
+    const reset$ = new Subject<void>();
     const MIN_LOADING_TIME = 1000;
 
     const remainingLoadingTime = (startedAt: number) =>
@@ -78,6 +81,7 @@ export const BodyLogStore = signalStore(
                 console.error(error);
               }
             }),
+            takeUntil(reset$),
           );
         }),
       ),
@@ -94,9 +98,11 @@ export const BodyLogStore = signalStore(
           console.error(error);
           return EMPTY;
         }),
+        takeUntil(reset$),
       );
     return {
       clearStore: () => {
+        reset$.next();
         patchState(store, initialState);
       },
       deleteAllMeasurements: rxMethod<void>(
@@ -133,6 +139,7 @@ export const BodyLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              takeUntil(reset$),
             );
           }),
         ),
@@ -158,6 +165,7 @@ export const BodyLogStore = signalStore(
               finalize(() => {
                 patchState(store, { measurementHistoryLoading: false });
               }),
+              takeUntil(reset$),
             );
           }),
         ),
@@ -190,7 +198,6 @@ export const BodyLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    measurementSaveInProgress: false,
                     measurementHistoryStale: true,
                   });
 
@@ -198,14 +205,15 @@ export const BodyLogStore = signalStore(
                     patchState(store, { currentMeasurement: null });
                   }
                 } else {
-                  patchState(store, {
-                    measurementSaveInProgress: false,
-                  });
                   console.error(result.error);
                 }
               }),
               filter((result) => result.success),
               switchMap(() => loadMeasurementDates$()),
+              takeUntil(reset$),
+              finalize(() => {
+                patchState(store, { measurementSaveInProgress: false });
+              }),
             );
           }),
         ),
@@ -238,7 +246,6 @@ export const BodyLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    measurementSaveInProgress: false,
                     measurementHistoryStale: true,
                   });
 
@@ -248,14 +255,15 @@ export const BodyLogStore = signalStore(
                     });
                   }
                 } else {
-                  patchState(store, {
-                    measurementSaveInProgress: false,
-                  });
                   console.error(result.error);
                 }
               }),
               filter((result) => result.success),
               switchMap(() => loadMeasurementDates$()),
+              takeUntil(reset$),
+              finalize(() => {
+                patchState(store, { measurementSaveInProgress: false });
+              }),
             );
           }),
         ),

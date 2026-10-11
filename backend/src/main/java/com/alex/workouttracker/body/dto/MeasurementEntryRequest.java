@@ -1,5 +1,6 @@
 package com.alex.workouttracker.body.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.PositiveOrZero;
 import java.math.BigDecimal;
@@ -28,6 +29,7 @@ public record MeasurementEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @PositiveOrZero
         BigDecimal calfRight) {
 
+  @JsonIgnore
   public boolean isEmpty() {
     return Stream.of(
             chest,

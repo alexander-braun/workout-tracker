@@ -1,5 +1,6 @@
 package com.alex.workouttracker.nutrition.dto;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;
@@ -23,6 +24,7 @@ public record NutritionEntryRequest(
     @Schema(requiredMode = Schema.RequiredMode.REQUIRED, nullable = true) @Size(max = 1000)
         String notes) {
 
+  @JsonIgnore
   public boolean isEmpty() {
     return calories == null
         && protein == null

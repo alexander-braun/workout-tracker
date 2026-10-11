@@ -2,7 +2,19 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { inject } from '@angular/core';
 import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, filter, finalize, map, merge, pipe, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  filter,
+  finalize,
+  map,
+  merge,
+  pipe,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { WorkoutApiService } from '../workout-api.service';
 import {
   type GetWorkoutHistory,
@@ -29,11 +41,13 @@ export const WorkoutLogStore = signalStore(
   { providedIn: 'root' },
   withState<WorkoutStore>(initialState),
   withMethods((store, api = inject(WorkoutApiService)) => {
+    const reset$ = new Subject<void>();
     const loadExercises$ = () =>
       api.getExercises().pipe(
         tap((exerciseEntries) => {
           patchState(store, { exerciseEntries });
         }),
+        takeUntil(reset$),
       );
     const toWorkoutEntries = (entries: WorkoutEntryResponse[]): WorkoutEntry[] =>
       entries.map((entry) => ({
@@ -51,9 +65,11 @@ export const WorkoutLogStore = signalStore(
           console.error(error);
           return EMPTY;
         }),
+        takeUntil(reset$),
       );
     return {
       clearStore: () => {
+        reset$.next();
         patchState(store, initialState);
       },
       loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
@@ -70,6 +86,7 @@ export const WorkoutLogStore = signalStore(
                 });
               }),
               catchError(() => EMPTY),
+              takeUntil(reset$),
               finalize(() => {
                 patchState(store, {
                   workoutHistoryLoading: false,
@@ -99,6 +116,7 @@ export const WorkoutLogStore = signalStore(
                 console.error(error);
                 return EMPTY;
               }),
+              takeUntil(reset$),
             ),
           ),
         ),
@@ -112,6 +130,7 @@ export const WorkoutLogStore = signalStore(
                 console.error(error);
                 return EMPTY;
               }),
+              takeUntil(reset$),
             ),
           ),
         ),
@@ -136,6 +155,7 @@ export const WorkoutLogStore = signalStore(
                 console.error(error);
                 return EMPTY;
               }),
+              takeUntil(reset$),
               finalize(() => {
                 patchState(store, { workoutSaveInProgress: false });
               }),
@@ -177,6 +197,7 @@ export const WorkoutLogStore = signalStore(
                 console.error(error);
                 return EMPTY;
               }),
+              takeUntil(reset$),
               finalize(() => {
                 patchState(store, { workoutSaveInProgress: false });
               }),
@@ -233,6 +254,7 @@ export const WorkoutLogStore = signalStore(
                   console.error(error);
                   return EMPTY;
                 }),
+                takeUntil(reset$),
                 finalize(() => {
                   patchState(store, { workoutSaveInProgress: false });
                 }),

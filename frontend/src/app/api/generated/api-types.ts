@@ -316,7 +316,6 @@ export interface components {
             /** Format: int32 */
             energy: number | null;
             notes: string | null;
-            empty?: boolean;
         };
         NutritionEntryResponse: {
             /** Format: uuid */
@@ -345,7 +344,6 @@ export interface components {
             thighRight: number | null;
             calfLeft: number | null;
             calfRight: number | null;
-            empty?: boolean;
         };
         MeasurementEntryResponse: {
             /** Format: uuid */

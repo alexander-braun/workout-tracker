@@ -8,7 +8,19 @@ import {
 } from './nutrition-log.model';
 import { inject } from '@angular/core';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import { catchError, EMPTY, filter, finalize, map, of, pipe, switchMap, tap } from 'rxjs';
+import {
+  catchError,
+  EMPTY,
+  filter,
+  finalize,
+  map,
+  of,
+  pipe,
+  Subject,
+  switchMap,
+  takeUntil,
+  tap,
+} from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
 
 const initialState: NutritionStore = {
@@ -26,6 +38,7 @@ export const NutritionLogStore = signalStore(
   { providedIn: 'root' },
   withState<NutritionStore>(initialState),
   withMethods((store, api = inject(NutritionApiService)) => {
+    const reset$ = new Subject<void>();
     const loadNutritionEntry = rxMethod<string>(
       pipe(
         tap(() => patchState(store, { nutritionEntryLoading: true, loadedDate: null })),
@@ -48,6 +61,7 @@ export const NutritionLogStore = signalStore(
                 console.error(error);
               }
             }),
+            takeUntil(reset$),
           );
         }),
       ),
@@ -63,9 +77,11 @@ export const NutritionLogStore = signalStore(
           console.error(error);
           return EMPTY;
         }),
+        takeUntil(reset$),
       );
     return {
       clearStore: () => {
+        reset$.next();
         patchState(store, initialState);
       },
       loadNutritionEntry,
@@ -87,6 +103,7 @@ export const NutritionLogStore = signalStore(
                 console.error(error);
                 return EMPTY;
               }),
+              takeUntil(reset$),
               finalize(() => {
                 patchState(store, {
                   nutritionHistoryLoading: false,
@@ -123,6 +140,7 @@ export const NutritionLogStore = signalStore(
                   console.error(result.error);
                 }
               }),
+              takeUntil(reset$),
             ),
           ),
         ),
@@ -147,7 +165,6 @@ export const NutritionLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    nutritionEntrySaveInProgress: false,
                     nutritionHistoryStale: true,
                   });
 
@@ -155,14 +172,15 @@ export const NutritionLogStore = signalStore(
                     patchState(store, { currentNutritionEntry: null });
                   }
                 } else {
-                  patchState(store, {
-                    nutritionEntrySaveInProgress: false,
-                  });
                   console.error(result.error);
                 }
               }),
               filter((result) => result.success),
               switchMap(() => loadNutritionDates$()),
+              takeUntil(reset$),
+              finalize(() => {
+                patchState(store, { nutritionEntrySaveInProgress: false });
+              }),
             );
           }),
         ),
@@ -188,7 +206,6 @@ export const NutritionLogStore = signalStore(
               tap((result) => {
                 if (result.success) {
                   patchState(store, {
-                    nutritionEntrySaveInProgress: false,
                     nutritionHistoryStale: true,
                   });
 
@@ -198,14 +215,15 @@ export const NutritionLogStore = signalStore(
                     });
                   }
                 } else {
-                  patchState(store, {
-                    nutritionEntrySaveInProgress: false,
-                  });
                   console.error(result.error);
                 }
               }),
               filter((result) => result.success),
               switchMap(() => loadNutritionDates$()),
+              takeUntil(reset$),
+              finalize(() => {
+                patchState(store, { nutritionEntrySaveInProgress: false });
+              }),
             );
           }),
         ),
