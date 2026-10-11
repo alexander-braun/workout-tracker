@@ -20,8 +20,11 @@ RUN pnpm run build
 # nginx webserver delivers the created files to the browser
 FROM nginx:alpine AS runtime
 
+ENV BACKEND_HOST=backend
+ENV NGINX_ENTRYPOINT_LOCAL_RESOLVERS=1
+
 # put generated build into nginx default folder
 COPY --from=build /app/dist/frontend/browser /usr/share/nginx/html
 
 # copy config from frontend to nginx image
-COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY nginx.conf /etc/nginx/templates/default.conf.template
