@@ -63,14 +63,6 @@ public class AuthController {
     return ResponseEntity.noContent().build();
   }
 
-  @ExceptionHandler(AuthenticationException.class)
-  @ResponseStatus(HttpStatus.UNAUTHORIZED)
-  void handleAuthenticationException() {}
-
-  @ExceptionHandler(EmailAlreadyRegisteredException.class)
-  @ResponseStatus(HttpStatus.CONFLICT)
-  void handleEmailAlreadyRegistered() {}
-
   @GetMapping("/me")
   public ResponseEntity<CurrentUserResponse> getCurrentUser(Authentication authentication) {
     if (authentication == null || !authentication.isAuthenticated()) {
@@ -108,6 +100,14 @@ public class AuthController {
 
   @ExceptionHandler(BadCredentialsException.class)
   public ResponseEntity<String> handleBadCredentials(BadCredentialsException ex) {
-    return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(ex.getMessage());
+    return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body(ex.getMessage());
   }
+
+  @ExceptionHandler(AuthenticationException.class)
+  @ResponseStatus(HttpStatus.UNAUTHORIZED)
+  void handleAuthenticationException() {}
+
+  @ExceptionHandler(EmailAlreadyRegisteredException.class)
+  @ResponseStatus(HttpStatus.CONFLICT)
+  void handleEmailAlreadyRegistered() {}
 }
