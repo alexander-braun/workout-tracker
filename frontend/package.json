@@ -10,7 +10,8 @@
     "test": "ng test",
     "lint": "ng lint",
     "lint:fix": "ng lint --fix",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "test:run": "ng test --watch=false"
   },
   "private": true,
   "packageManager": "pnpm@12.10.1",
