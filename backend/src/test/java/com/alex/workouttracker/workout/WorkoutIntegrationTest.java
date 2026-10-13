@@ -13,6 +13,7 @@ import com.alex.workouttracker.workout.dto.SaveWorkoutRequest;
 import com.alex.workouttracker.workout.dto.WorkoutEntryRequest;
 import com.alex.workouttracker.workout.model.WeightUnit;
 import java.util.List;
+import java.util.Optional;
 import java.util.UUID;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,6 +21,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.ResultActions;
 import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
@@ -80,17 +82,8 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
         .andExpect(status().isOk());
 
     // Alice tries to get her workout
-    mvc.perform(get("/api/workouts/" + date).session(aliceSession))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.entries[1]").doesNotExist())
-        .andExpect(jsonPath("$.entries[0].sets").value(3))
-        .andExpect(jsonPath("$.entries[0].reps").value(10))
-        .andExpect(jsonPath("$.entries[0].weight").isEmpty())
-        .andExpect(jsonPath("$.entries[0].notes").value("notes alice"))
-        .andExpect(jsonPath("$.entries[0].position").value(3))
-        .andExpect(jsonPath("$.entries[0].unit").value("kg"))
-        .andExpect(jsonPath("$.entries[0].exerciseId").isNotEmpty())
-        .andExpect(jsonPath("$.entries[0].id").isNotEmpty());
+    assertAliceWorkout(
+        mvc.perform(get("/api/workouts/" + date).session(aliceSession)), Optional.empty());
 
     // Bob tries to get his workout
     mvc.perform(get("/api/workouts/" + date).session(bobSession))
@@ -115,17 +108,8 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
         .andExpect(jsonPath("$.entries").isEmpty());
 
     // Alices workout still exists
-    mvc.perform(get("/api/workouts/" + date).session(aliceSession))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.entries[1]").doesNotExist())
-        .andExpect(jsonPath("$.entries[0].sets").value(3))
-        .andExpect(jsonPath("$.entries[0].reps").value(10))
-        .andExpect(jsonPath("$.entries[0].weight").isEmpty())
-        .andExpect(jsonPath("$.entries[0].notes").value("notes alice"))
-        .andExpect(jsonPath("$.entries[0].position").value(3))
-        .andExpect(jsonPath("$.entries[0].unit").value("kg"))
-        .andExpect(jsonPath("$.entries[0].exerciseId").isNotEmpty())
-        .andExpect(jsonPath("$.entries[0].id").isNotEmpty());
+    assertAliceWorkout(
+        mvc.perform(get("/api/workouts/" + date).session(aliceSession)), Optional.empty());
   }
 
   @Test
@@ -135,7 +119,7 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
     var bobEmail = "bob@test.de";
     var bobPassword = "supersafe123";
     authHelper.registerUser(aliceEmail, alicePassword);
-    authHelper.registerUser("bob@test.de", bobPassword);
+    authHelper.registerUser(bobEmail, bobPassword);
     var aliceSession = authHelper.loginUser(aliceEmail, alicePassword);
     var bobSession = authHelper.loginUser(bobEmail, bobPassword);
 
@@ -186,17 +170,8 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
         .andExpect(jsonPath("$.entries").isEmpty());
 
     // Alices workout still exists
-    mvc.perform(get("/api/workouts/" + date).session(aliceSession))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.entries[1]").doesNotExist())
-        .andExpect(jsonPath("$.entries[0].sets").value(3))
-        .andExpect(jsonPath("$.entries[0].reps").value(10))
-        .andExpect(jsonPath("$.entries[0].weight").isEmpty())
-        .andExpect(jsonPath("$.entries[0].notes").value("notes alice"))
-        .andExpect(jsonPath("$.entries[0].position").value(3))
-        .andExpect(jsonPath("$.entries[0].unit").value("kg"))
-        .andExpect(jsonPath("$.entries[0].exerciseId").value(exerciseId))
-        .andExpect(jsonPath("$.entries[0].id").isNotEmpty());
+    assertAliceWorkout(
+        mvc.perform(get("/api/workouts/" + date).session(aliceSession)), Optional.of(exerciseId));
   }
 
   @Test
@@ -264,12 +239,14 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
   @Test
   void isolatesWorkoutHistoryBetweenUsers() throws Exception {
     var password = "supersafe123";
+    var aliceEmail = "alice@test.de";
+    var bobEmail = "bob@test.de";
 
-    authHelper.registerUser("alice@test.de", password);
-    authHelper.registerUser("bob@test.de", password);
+    authHelper.registerUser(aliceEmail, password);
+    authHelper.registerUser(bobEmail, password);
 
-    var aliceSession = authHelper.loginUser("alice@test.de", password);
-    var bobSession = authHelper.loginUser("bob@test.de", password);
+    var aliceSession = authHelper.loginUser(aliceEmail, password);
+    var bobSession = authHelper.loginUser(bobEmail, password);
 
     var aliceWorkout1 =
         new SaveWorkoutRequest(
@@ -330,5 +307,24 @@ public class WorkoutIntegrationTest extends PostgresIntegrationTest {
         .andExpect(jsonPath("$[0].date").value("2026-10-11"))
         .andExpect(jsonPath("$[0].entries.length()").value(1))
         .andExpect(jsonPath("$[0].entries[0].notes").value("Bob workout"));
+  }
+
+  private void assertAliceWorkout(ResultActions actions, Optional<String> exerciseId)
+      throws Exception {
+    actions
+        .andExpect(status().isOk())
+        .andExpect(jsonPath("$.entries[1]").doesNotExist())
+        .andExpect(jsonPath("$.entries[0].sets").value(3))
+        .andExpect(jsonPath("$.entries[0].reps").value(10))
+        .andExpect(jsonPath("$.entries[0].weight").isEmpty())
+        .andExpect(jsonPath("$.entries[0].notes").value("notes alice"))
+        .andExpect(jsonPath("$.entries[0].position").value(3))
+        .andExpect(jsonPath("$.entries[0].unit").value("kg"))
+        .andExpect(jsonPath("$.entries[0].exerciseId").isNotEmpty())
+        .andExpect(jsonPath("$.entries[0].id").isNotEmpty());
+
+    if (exerciseId.isPresent()) {
+      actions.andExpect(jsonPath("$.entries[0].exerciseId").value(exerciseId.get()));
+    }
   }
 }
