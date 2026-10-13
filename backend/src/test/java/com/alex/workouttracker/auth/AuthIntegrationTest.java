@@ -3,7 +3,6 @@ package com.alex.workouttracker.auth;
 import static com.alex.workouttracker.testsupport.CsrfTestHelper.withCsrf;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertNotEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
@@ -15,6 +14,8 @@ import com.alex.workouttracker.auth.dto.ChangeEmailRequest;
 import com.alex.workouttracker.auth.dto.LoginRequest;
 import com.alex.workouttracker.auth.dto.RegisterRequest;
 import com.alex.workouttracker.auth.repository.AppUserRepository;
+import com.alex.workouttracker.testsupport.AuthHelper;
+import com.alex.workouttracker.testsupport.PostgresIntegrationTest;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -22,32 +23,17 @@ import org.springframework.boot.webmvc.test.autoconfigure.AutoConfigureMockMvc;
 import org.springframework.http.MediaType;
 import org.springframework.mock.web.MockHttpSession;
 import org.springframework.security.crypto.password.PasswordEncoder;
-import org.springframework.test.context.DynamicPropertyRegistry;
-import org.springframework.test.context.DynamicPropertySource;
 import org.springframework.test.web.servlet.MockMvc;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
-import org.testcontainers.postgresql.PostgreSQLContainer;
 import tools.jackson.databind.json.JsonMapper;
 
 @SpringBootTest
 @AutoConfigureMockMvc
-@Testcontainers
-class AuthIntegrationTest {
-  @Container
-  static final PostgreSQLContainer postgres = new PostgreSQLContainer("postgres:17-alpine");
-
-  @DynamicPropertySource
-  static void databaseProperties(DynamicPropertyRegistry registry) {
-    registry.add("spring.datasource.url", postgres::getJdbcUrl);
-    registry.add("spring.datasource.username", postgres::getUsername);
-    registry.add("spring.datasource.password", postgres::getPassword);
-  }
-
+class AuthIntegrationTest extends PostgresIntegrationTest {
   private final MockMvc mvc;
   private final JsonMapper jsonMapper;
   private final AppUserRepository appUsers;
   private final PasswordEncoder encoder;
+  private final AuthHelper authHelper;
 
   @Autowired
   AuthIntegrationTest(
@@ -56,41 +42,14 @@ class AuthIntegrationTest {
     this.jsonMapper = jsonMapper;
     this.appUsers = appUser;
     this.encoder = encoder;
-  }
-
-  private void registerUser(String email, String password) throws Exception {
-    var request = new RegisterRequest(email, password);
-    mvc.perform(
-            withCsrf(mvc, post("/api/auth/register"))
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(jsonMapper.writeValueAsString(request)))
-        .andExpect(status().isOk())
-        .andExpect(jsonPath("$.email").value(email))
-        .andExpect(jsonPath("$.id").exists());
-  }
-
-  private MockHttpSession loginUser(String email, String password) throws Exception {
-    var request = new LoginRequest(email, password);
-
-    var result =
-        mvc.perform(
-                withCsrf(mvc, post("/api/auth/login"))
-                    .contentType(MediaType.APPLICATION_JSON)
-                    .content(jsonMapper.writeValueAsString(request)))
-            .andExpect(status().is(204))
-            .andReturn();
-
-    MockHttpSession session = (MockHttpSession) result.getRequest().getSession(false);
-
-    assertNotNull(session);
-    return session;
+    this.authHelper = new AuthHelper(mvc, jsonMapper);
   }
 
   @Test
   void registersUser() throws Exception {
     var email = "test@example.com";
     var pw = "testpassword123";
-    registerUser(email, pw);
+    authHelper.registerUser(email, pw);
     var user = appUsers.findByEmailIgnoreCase(email).orElseThrow();
     assertNotEquals(pw, user.getPasswordHash());
     assertTrue(encoder.matches(pw, user.getPasswordHash()));
@@ -101,7 +60,7 @@ class AuthIntegrationTest {
     var email = "test1@example.com";
     var pw = "testpassword123";
     var request1 = new RegisterRequest(email, pw);
-    registerUser(email, pw);
+    authHelper.registerUser(email, pw);
     mvc.perform(
             withCsrf(mvc, post("/api/auth/register"))
                 .contentType(MediaType.APPLICATION_JSON)
@@ -113,8 +72,8 @@ class AuthIntegrationTest {
   void logsInRegisteredUser() throws Exception {
     var email = "test2@example.com";
     var pw = "testpassword123";
-    registerUser(email, pw);
-    var session = loginUser(email, pw);
+    authHelper.registerUser(email, pw);
+    var session = authHelper.loginUser(email, pw);
 
     mvc.perform(get("/api/auth/me").session(session))
         .andExpect(status().isOk())
@@ -125,7 +84,7 @@ class AuthIntegrationTest {
   void rejectsInvalidCredentials() throws Exception {
     var loginRequest = new LoginRequest("test3@example.com", "testpassword321");
     MockHttpSession session = new MockHttpSession();
-    registerUser("test3@example.com", "testpassword123");
+    authHelper.registerUser("test3@example.com", "testpassword123");
 
     mvc.perform(
             withCsrf(mvc, post("/api/auth/login"))
@@ -140,8 +99,8 @@ class AuthIntegrationTest {
   void logsOutAuthenticatedUser() throws Exception {
     var email = "test4@example.com";
     var pw = "testpassword123";
-    registerUser(email, pw);
-    var session = loginUser(email, pw);
+    authHelper.registerUser(email, pw);
+    var session = authHelper.loginUser(email, pw);
 
     mvc.perform(get("/api/auth/me").session(session))
         .andExpect(status().isOk())
