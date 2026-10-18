@@ -68,9 +68,8 @@
     font-weight: 500;
   }
 
-  span {
+  > .sets-text {
     font-size: 0.8rem;
-    color: #8d99a7;
   }
 }
 
@@ -107,4 +106,12 @@
 .metric-button {
   @extend .range-button;
   text-transform: capitalize;
+}
+
+.reps-text {
+  color: #3ea6ff;
+}
+
+.sets-text {
+  color: #ff5a5a;
 }

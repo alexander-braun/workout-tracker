@@ -51,6 +51,21 @@ describe('SparklineComponent', () => {
 
     expect(tooltipElement?.textContent).toBe('Oct 14 · 82.5 kg');
 
+    fixture.componentRef.setInput('secondaryPoints', [
+      { date: new Date(2026, 9, 14), value: 3, unit: 'sets' },
+      { date: new Date(2026, 9, 15), value: 4, unit: 'sets' },
+    ]);
+    fixture.detectChanges();
+
+    expect(component.chartData().datasets[1].data).toEqual([3, 4]);
+    expect(component.chartData().datasets[1].yAxisID).toBe('ySets');
+
+    external?.call(tooltip, {
+      chart: { canvas } as Chart<'line'>,
+      tooltip,
+    });
+    expect(tooltipElement?.textContent).toBe('Oct 14 · 82.5 kg · 3 sets');
+
     fixture.destroy();
     expect(tooltipElement?.isConnected).toBe(false);
   });

@@ -25,7 +25,8 @@ export interface ProgressChange {
 export interface ProgressRow {
   exercise: string;
   sessions: WorkoutSession[];
-  latest: string;
-  latestSub: string;
+  latestReps: number;
+  latestWeightSuffix: string;
+  latestSets: number;
   change: ProgressChange | null;
 }

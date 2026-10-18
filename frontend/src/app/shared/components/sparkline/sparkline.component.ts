@@ -1,4 +1,3 @@
-
 import { DOCUMENT } from '@angular/common';
 import {
   type AfterViewInit,
@@ -33,6 +32,8 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
   private tooltipRef!: ElementRef<HTMLDivElement>;
 
   readonly points = input.required<readonly SparklinePoint[]>();
+  readonly secondaryPoints = input<readonly SparklinePoint[]>([]);
+  readonly primaryColor = input('#3ea6ff');
   readonly unit = input('');
   readonly decimals = input(2);
 
@@ -47,7 +48,21 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
       {
         data: this.points().map((point) => point.value),
         fill: false,
+        yAxisID: 'y',
+        borderColor: this.primaryColor(),
+        backgroundColor: this.primaryColor(),
       },
+      ...(this.secondaryPoints().length
+        ? [
+            {
+              data: this.secondaryPoints().map((point) => point.value),
+              fill: false,
+              yAxisID: 'ySets',
+              borderColor: '#ff5a5a',
+              backgroundColor: '#ff5a5a',
+            },
+          ]
+        : []),
     ],
   }));
 
@@ -57,7 +72,7 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     animation: false,
 
     interaction: {
-      mode: 'nearest',
+      mode: 'index',
       intersect: false,
     },
 
@@ -76,6 +91,10 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     scales: {
       x: { display: false },
       y: { display: false },
+      ySets: {
+        display: false,
+        position: 'right',
+      },
     },
 
     elements: {
@@ -98,31 +117,34 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     this.tooltipRef.nativeElement.remove();
   }
 
-  private renderTooltip(
-    canvas: HTMLCanvasElement,
-    tooltip: TooltipModel<'line'>,
-  ): void {
+  private renderTooltip(canvas: HTMLCanvasElement, tooltip: TooltipModel<'line'>): void {
     const element = this.tooltipRef.nativeElement;
     const dataIndex = tooltip.dataPoints[0]?.dataIndex;
-    const point =
-      dataIndex === undefined ? undefined : this.points()[dataIndex];
+    const point = dataIndex === undefined ? undefined : this.points()[dataIndex];
+    const setsPoint = dataIndex === undefined ? undefined : this.secondaryPoints()[dataIndex];
 
-    if (tooltip.opacity === 0 || !point || point.value === null) {
+    if (tooltip.opacity === 0 || (point?.value == null && setsPoint?.value == null)) {
       element.style.opacity = '0';
       return;
     }
 
-    const date = point.date.toLocaleDateString('en-US', {
+    const date = (point ?? setsPoint)!.date.toLocaleDateString('en-US', {
       month: 'short',
       day: 'numeric',
     });
 
-    const value = point.value.toLocaleString('en-US', {
-      maximumFractionDigits: this.decimals(),
-    });
-
-    const unit = point.unit ?? this.unit();
-    element.textContent = `${date} · ${value}${unit ? ` ${unit}` : ''}`;
+    const values = [date];
+    if (point?.value != null) {
+      const value = point.value.toLocaleString('en-US', {
+        maximumFractionDigits: this.decimals(),
+      });
+      const unit = point.unit ?? this.unit();
+      values.push(`${value}${unit ? ` ${unit}` : ''}`);
+    }
+    if (setsPoint?.value != null) {
+      values.push(`${setsPoint.value} ${setsPoint.unit ?? 'sets'}`);
+    }
+    element.textContent = values.join(' · ');
 
     const rect = canvas.getBoundingClientRect();
     const x = rect.left + tooltip.caretX;
