@@ -15,7 +15,7 @@ import {
   type SparklinePoint,
 } from '../../../shared/components/sparkline/sparkline.component';
 
-type ProgressMetric = 'reps' | 'sets' | 'weight';
+type ProgressMetric = 'reps' | 'weight';
 
 @Component({
   selector: 'frontend-workout-history',
@@ -28,7 +28,7 @@ export class WorkoutHistoryComponent {
   readonly store = inject(WorkoutLogStore);
   readonly authStore = inject(AuthStore);
   readonly selectedMetric = signal<ProgressMetric>('reps');
-  readonly metrics: ProgressMetric[] = ['reps', 'sets', 'weight'];
+  readonly metrics: ProgressMetric[] = ['reps', 'weight'];
   readonly selectedRange = signal<Range>('1M');
   readonly ranges: Range[] = ['1M', '3M', '6M', 'All'];
   readonly rows = computed<ProgressRow[]>(() =>
@@ -76,22 +76,17 @@ export class WorkoutHistoryComponent {
       ...row,
       chartPoints: row.sessions.map<SparklinePoint>((session) => ({
         date: session.date,
-        value:
-          metric === 'reps'
-            ? session.reps
-            : metric === 'sets'
-              ? session.sets
-              : (session.weight ?? null),
-        unit: metric === 'weight' ? (session.weightUnit ?? '') : metric,
+        value: metric === 'reps' ? session.reps : (session.weight ?? null),
+        unit: metric === 'reps' ? 'reps' : (session.weightUnit ?? ''),
       })),
       setsPoints:
-        metric === 'sets'
-          ? []
-          : row.sessions.map<SparklinePoint>((session) => ({
+        metric === 'reps'
+          ? row.sessions.map<SparklinePoint>((session) => ({
               date: session.date,
               value: session.sets,
               unit: 'sets',
-            })),
+            }))
+          : [],
     }));
   });
 

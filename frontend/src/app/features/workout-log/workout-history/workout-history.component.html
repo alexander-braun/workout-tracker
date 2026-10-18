@@ -12,7 +12,7 @@
           [class.active]="selectedMetric() === metric"
           (click)="selectedMetric.set(metric)"
         >
-          {{ metric }}
+          {{ metric === 'reps' ? 'Reps + Sets' : 'Weight' }}
         </button>
       }
     </div>
@@ -49,15 +49,14 @@
             </div>
 
             <div class="sparkline">
-              <frontend-sparkline
-                [points]="row.chartPoints"
-                [secondaryPoints]="row.setsPoints"
-                [primaryColor]="selectedMetric() === 'sets' ? '#ff5a5a' : '#3ea6ff'"
-              />
+              <frontend-sparkline [points]="row.chartPoints" [secondaryPoints]="row.setsPoints" />
             </div>
 
             <div class="value">
-              <strong><span class="reps-text">{{ row.latestReps }} reps</span>{{ row.latestWeightSuffix }}</strong>
+              <strong>
+                <span class="reps-text">{{ row.latestReps }} reps</span>
+                {{ row.latestWeightSuffix }}
+              </strong>
               <span class="sets-text">{{ row.latestSets }} sets</span>
             </div>
 

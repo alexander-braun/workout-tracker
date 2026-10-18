@@ -123,7 +123,10 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     const point = dataIndex === undefined ? undefined : this.points()[dataIndex];
     const setsPoint = dataIndex === undefined ? undefined : this.secondaryPoints()[dataIndex];
 
-    if (tooltip.opacity === 0 || (point?.value == null && setsPoint?.value == null)) {
+    if (
+      tooltip.opacity === 0 ||
+      ((point?.value ?? null) === null && (setsPoint?.value ?? null) === null)
+    ) {
       element.style.opacity = '0';
       return;
     }
@@ -134,15 +137,15 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     });
 
     const values = [date];
-    if (point?.value != null) {
-      const value = point.value.toLocaleString('en-US', {
+    if ((point?.value ?? null) !== null) {
+      const value = point?.value?.toLocaleString('en-US', {
         maximumFractionDigits: this.decimals(),
       });
-      const unit = point.unit ?? this.unit();
+      const unit = point?.unit ?? this.unit();
       values.push(`${value}${unit ? ` ${unit}` : ''}`);
     }
-    if (setsPoint?.value != null) {
-      values.push(`${setsPoint.value} ${setsPoint.unit ?? 'sets'}`);
+    if ((setsPoint?.value ?? null) !== null) {
+      values.push(`${setsPoint?.value} ${setsPoint?.unit ?? 'sets'}`);
     }
     element.textContent = values.join(' · ');
 
