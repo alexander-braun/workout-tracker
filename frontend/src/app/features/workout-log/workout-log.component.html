@@ -88,17 +88,48 @@
             />
           </div>
           <input pInputText [(ngModel)]="workoutEntry.notes" />
-          <button
-            pButton
-            type="button"
-            severity="secondary"
-            [text]="true"
-            class="remove-button"
-            aria-label="Remove exercise"
-            (click)="removeWorkoutEntry(i)"
-          >
-            <i class="pi pi-times" pButtonIcon></i>
-          </button>
+
+          <div class="row-actions">
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              [text]="true"
+              class="row-action-button"
+              aria-label="Move exercise up"
+              title="Move up"
+              [disabled]="i === 0"
+              (click)="moveWorkoutEntry(i, -1)"
+            >
+              <i class="pi pi-chevron-up" pButtonIcon></i>
+            </button>
+
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              [text]="true"
+              class="row-action-button"
+              aria-label="Move exercise down"
+              title="Move down"
+              [disabled]="i === workoutEntries().length - 1"
+              (click)="moveWorkoutEntry(i, 1)"
+            >
+              <i class="pi pi-chevron-down" pButtonIcon></i>
+            </button>
+
+            <button
+              pButton
+              type="button"
+              severity="secondary"
+              [text]="true"
+              class="remove-button"
+              aria-label="Remove exercise"
+              (click)="removeWorkoutEntry(i)"
+            >
+              <i class="pi pi-times" pButtonIcon></i>
+            </button>
+          </div>
         </div>
       }
     </div>

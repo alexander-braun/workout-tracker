@@ -18,7 +18,7 @@
     16px
     130px
     minmax(180px, 1.6fr)
-    32px;
+    104px;
 
   gap: 8px;
   align-items: center;
@@ -70,6 +70,13 @@
   }
 }
 
+.row-actions {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+}
+
+.row-action-button,
 .remove-button {
   width: 32px;
   height: 32px;

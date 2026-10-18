@@ -121,6 +121,24 @@ export class WorkoutLogComponent {
     ]);
   }
 
+  moveWorkoutEntry(index: number, direction: -1 | 1): void {
+    this.workoutEntries.update((entries) => {
+      const targetIndex = index + direction;
+
+      if (targetIndex < 0 || targetIndex >= entries.length) {
+        return entries;
+      }
+
+      const reordered = [...entries];
+      [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
+
+      return reordered.map((entry, position) => ({
+        ...entry,
+        position,
+      }));
+    });
+  }
+
   removeWorkoutEntry(index: number): void {
     this.workoutEntries.update((rows) =>
       rows
