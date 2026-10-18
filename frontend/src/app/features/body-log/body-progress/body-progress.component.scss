@@ -81,12 +81,12 @@
   align-items: center;
   gap: 7px;
 
-  &.increase {
-    color: #ff6b6b;
+  &.positive {
+    color: #6bdd98;
   }
 
-  &.decrease {
-    color: #6bdd98;
+  &.negative {
+    color: #ff6b6b;
   }
 
   &.neutral {

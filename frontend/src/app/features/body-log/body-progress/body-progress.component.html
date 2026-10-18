@@ -46,9 +46,9 @@
 
             <div
               class="change"
-              [class.increase]="change(row) > 0"
-              [class.decrease]="change(row) < 0"
-              [class.neutral]="change(row) === 0"
+              [class.positive]="changeColor(row) === 'positive'"
+              [class.negative]="changeColor(row) === 'negative'"
+              [class.neutral]="changeColor(row) === 'neutral'"
             >
               @if (change(row) > 0) {
                 <i class="pi pi-arrow-up"></i>

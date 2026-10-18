@@ -11,6 +11,7 @@ interface MeasurementSession {
   value: number;
 }
 interface MeasurementProgressRow {
+  key: MeasurementKey;
   measurement: string;
   unit: 'cm' | 'kg';
   sessions: MeasurementSession[];
@@ -47,6 +48,20 @@ type MeasurementKey =
   | 'calfRight'
   | 'weight';
 
+type ChangeColor = 'positive' | 'negative' | 'neutral';
+
+export function getMeasurementChangeColor(key: MeasurementKey, delta: number): ChangeColor {
+  if (delta === 0 || key === 'weight' || key === 'neck') {
+    return 'neutral';
+  }
+
+  if (key === 'waist') {
+    return delta < 0 ? 'positive' : 'negative';
+  }
+
+  return delta > 0 ? 'positive' : 'negative';
+}
+
 @Component({
   selector: 'frontend-body-progress',
   standalone: true,
@@ -66,6 +81,7 @@ export class BodyProgressComponent {
 
     return measurementDefinitions
       .map(({ key, label, unit }) => ({
+        key,
         measurement: label,
         unit,
         sessions: history
@@ -96,6 +112,10 @@ export class BodyProgressComponent {
         this.loadSelectedRange();
       }
     });
+  }
+
+  changeColor(row: MeasurementProgressRow): ChangeColor {
+    return getMeasurementChangeColor(row.key, this.change(row));
   }
 
   selectRange(range: Range): void {
