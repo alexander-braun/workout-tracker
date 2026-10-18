@@ -49,24 +49,28 @@
             </div>
 
             <div class="sparkline">
-                <frontend-sparkline [points]="row.chartPoints" />
+              <frontend-sparkline
+                [points]="row.chartPoints"
+                [secondaryPoints]="row.setsPoints"
+                [primaryColor]="selectedMetric() === 'sets' ? '#ff5a5a' : '#3ea6ff'"
+              />
             </div>
 
             <div class="value">
-              <strong>{{ row.latest }}</strong>
-              <span>{{ row.latestSub }}</span>
+              <strong><span class="reps-text">{{ row.latestReps }} reps</span>{{ row.latestWeightSuffix }}</strong>
+              <span class="sets-text">{{ row.latestSets }} sets</span>
             </div>
 
             <div class="change">
               @if (row.change; as change) {
                 @if (change.sets !== 0) {
-                  <div [class.positive]="change.sets > 0" [class.negative]="change.sets < 0">
+                  <div class="sets-text">
                     {{ change.sets > 0 ? '+' : '' }}{{ change.sets }} sets
                   </div>
                 }
 
                 @if (change.reps !== 0) {
-                  <div [class.positive]="change.reps > 0" [class.negative]="change.reps < 0">
+                  <div class="reps-text">
                     {{ change.reps > 0 ? '+' : '' }}{{ change.reps }} reps
                   </div>
                 }
