@@ -39,26 +39,27 @@ export class WorkoutHistoryComponent {
           return null;
         }
 
+        const first = sessions[0];
         const latest = sessions[sessions.length - 1];
-        const previous = sessions[sessions.length - 2];
-        const change: ProgressChange | null = previous
-          ? {
-              sets: latest.sets - previous.sets,
-              reps: latest.reps - previous.reps,
-              weight:
-                latest.weightUnit === previous.weightUnit &&
-                latest.weight !== undefined &&
-                previous.weight !== undefined
-                  ? latest.weight - previous.weight
-                  : null,
-              weightUnit: latest.weightUnit,
-            }
-          : null;
+
+        const change: ProgressChange | null =
+          sessions.length > 1
+            ? {
+                sets: latest.sets - first.sets,
+                reps: latest.reps - first.reps,
+                weight:
+                  latest.weightUnit === first.weightUnit &&
+                  latest.weight !== undefined &&
+                  first.weight !== undefined
+                    ? latest.weight - first.weight
+                    : null,
+                weightUnit: latest.weightUnit,
+              }
+            : null;
+
         return {
           exercise: exercise.exercise,
           sessions,
-          previous: previous ? this.formatSession(previous) : '—',
-          previousSub: previous ? `${previous.sets} sets` : '',
           latest: this.formatSession(latest),
           latestSub: `${latest.sets} sets`,
           change,

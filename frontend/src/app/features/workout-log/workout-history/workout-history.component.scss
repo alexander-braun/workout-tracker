@@ -26,25 +26,20 @@
 }
 
 .history-table {
-  min-width: 850px;
+  min-width: 720px;
 }
 
 .history-row {
   display: grid;
-
   grid-template-columns:
     minmax(160px, 1.2fr)
     180px
     minmax(140px, 1fr)
-    minmax(140px, 1fr)
-    130px
-    80px;
+    150px;
 
   gap: 24px;
   align-items: center;
-
   min-height: 50px;
-
   border-bottom: 1px solid #2b3541;
 }
 

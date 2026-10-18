@@ -38,10 +38,8 @@
         <div class="history-row history-head">
           <span>Exercise</span>
           <span>Progress</span>
-          <span>Previous</span>
           <span>Latest</span>
           <span>Change</span>
-          <span></span>
         </div>
 
         @for (row of chartRows(); track row.exercise) {
@@ -52,11 +50,6 @@
 
             <div class="sparkline">
                 <frontend-sparkline [points]="row.chartPoints" />
-            </div>
-
-            <div class="value">
-              <strong>{{ row.previous }}</strong>
-              <span>{{ row.previousSub }}</span>
             </div>
 
             <div class="value">
