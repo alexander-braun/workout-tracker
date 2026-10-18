@@ -1,11 +1,10 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { BaseChartDirective } from 'ng2-charts';
-import { type ChartConfiguration } from 'chart.js';
 import { BodyLogStore } from '../store/body-log.store';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { toDateString } from '../../../shared/helper/toDateString';
 import { AuthStore } from '../../auth/store/auth.store';
+import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
 
 interface MeasurementSession {
   date: Date;
@@ -51,7 +50,7 @@ type MeasurementKey =
 @Component({
   selector: 'frontend-body-progress',
   standalone: true,
-  imports: [ButtonModule, BaseChartDirective, LoadingComponent],
+  imports: [ButtonModule, LoadingComponent, SparklineComponent],
   templateUrl: './body-progress.component.html',
   styleUrl: './body-progress.component.scss',
 })
@@ -79,40 +78,6 @@ export class BodyProgressComponent {
       .filter((row) => row.sessions.length > 0);
   });
 
-  readonly sparklineOptions: ChartConfiguration<'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: false,
-      },
-    },
-
-    elements: {
-      line: {
-        borderWidth: 2,
-        tension: 0.25,
-      },
-      point: {
-        radius: 2.5,
-        hoverRadius: 2.5,
-      },
-    },
-  };
-
   constructor() {
     effect(() => {
       if (!this.authStore.authenticated()) {
@@ -135,23 +100,6 @@ export class BodyProgressComponent {
 
   selectRange(range: Range): void {
     this.selectedRange.set(range);
-  }
-
-  chartData(row: MeasurementProgressRow): ChartConfiguration<'line'>['data'] {
-    return {
-      labels: row.sessions.map((session) =>
-        session.date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-        }),
-      ),
-      datasets: [
-        {
-          data: row.sessions.map((session) => session.value),
-          fill: false,
-        },
-      ],
-    };
   }
 
   latest(row: MeasurementProgressRow): number {

@@ -39,12 +39,11 @@
             </div>
 
             <div class="sparkline">
-              <canvas
-                baseChart
-                type="line"
-                [data]="chartData(row)"
-                [options]="sparklineOptions"
-              ></canvas>
+              <frontend-sparkline
+                [points]="row.sessions"
+                [unit]="row.unit"
+                [decimals]="row.decimals ?? 0"
+              />
             </div>
 
             <div class="latest">

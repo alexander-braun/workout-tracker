@@ -1,12 +1,11 @@
 import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { BaseChartDirective } from 'ng2-charts';
-import { type ChartConfiguration } from 'chart.js';
 
 import { NutritionLogStore } from '../store/nutrition-log.store';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { toDateString } from '../../../shared/helper/toDateString';
 import { AuthStore } from '../../auth/store/auth.store';
+import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
 
 type Range = '1W' | '1M' | '3M' | '6M' | 'All';
 
@@ -67,7 +66,7 @@ const metricDefinitions: {
 @Component({
   selector: 'frontend-nutrition-and-sleep-history',
   standalone: true,
-  imports: [ButtonModule, BaseChartDirective, LoadingComponent],
+  imports: [ButtonModule, SparklineComponent, LoadingComponent],
   templateUrl: './nutrition-and-sleep-history.component.html',
   styleUrl: './nutrition-and-sleep-history.component.scss',
 })
@@ -94,40 +93,6 @@ export class NutritionAndSleepHistoryComponent {
       .filter((row) => row.sessions.length > 0);
   });
 
-  readonly sparklineOptions: ChartConfiguration<'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-      },
-    },
-
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: false,
-      },
-    },
-
-    elements: {
-      line: {
-        borderWidth: 2,
-        tension: 0.25,
-      },
-      point: {
-        radius: 2.5,
-        hoverRadius: 2.5,
-      },
-    },
-  };
-
   constructor() {
     effect(() => {
       if (!this.authStore.authenticated()) {
@@ -150,23 +115,6 @@ export class NutritionAndSleepHistoryComponent {
 
   selectRange(range: Range): void {
     this.selectedRange.set(range);
-  }
-
-  chartData(row: NutritionSleepHistoryRow): ChartConfiguration<'line'>['data'] {
-    return {
-      labels: row.sessions.map((session) =>
-        session.date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-        }),
-      ),
-      datasets: [
-        {
-          data: row.sessions.map((session) => session.value),
-          fill: false,
-        },
-      ],
-    };
   }
 
   latest(row: NutritionSleepHistoryRow): number {

@@ -1,7 +1,5 @@
-import { Component, computed, effect, inject, type OnDestroy, signal } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
-import { BaseChartDirective } from 'ng2-charts';
-import { type ChartConfiguration } from 'chart.js';
 import { WorkoutLogStore } from '../store/workout-log.store';
 import {
   type ProgressChange,
@@ -12,18 +10,21 @@ import {
 } from './workout-history.model';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
 import { AuthStore } from '../../auth/store/auth.store';
-import { type TooltipModel } from 'chart.js';
+import {
+  SparklineComponent,
+  type SparklinePoint,
+} from '../../../shared/components/sparkline/sparkline.component';
 
 type ProgressMetric = 'reps' | 'sets' | 'weight';
 
 @Component({
   selector: 'frontend-workout-history',
   standalone: true,
-  imports: [ButtonModule, BaseChartDirective, LoadingComponent],
+  imports: [ButtonModule, SparklineComponent, LoadingComponent],
   templateUrl: './workout-history.component.html',
   styleUrl: './workout-history.component.scss',
 })
-export class WorkoutHistoryComponent implements OnDestroy {
+export class WorkoutHistoryComponent {
   readonly store = inject(WorkoutLogStore);
   readonly authStore = inject(AuthStore);
   readonly selectedMetric = signal<ProgressMetric>('reps');
@@ -65,6 +66,25 @@ export class WorkoutHistoryComponent implements OnDestroy {
       })
       .filter((row): row is ProgressRow => row !== null),
   );
+
+  readonly chartRows = computed(() => {
+    const metric = this.selectedMetric();
+
+    return this.rows().map((row) => ({
+      ...row,
+      chartPoints: row.sessions.map<SparklinePoint>((session) => ({
+        date: session.date,
+        value:
+          metric === 'reps'
+            ? session.reps
+            : metric === 'sets'
+              ? session.sets
+              : (session.weight ?? null),
+        unit: metric === 'weight' ? (session.weightUnit ?? '') : metric,
+      })),
+    }));
+  });
+
   readonly history = computed<ExerciseHistory[]>(() => {
     const workouts = this.store.workoutHistory();
     const exercises = this.store.exerciseEntries();
@@ -111,10 +131,6 @@ export class WorkoutHistoryComponent implements OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    document.getElementById('workout-history-tooltip')?.remove();
-  }
-
   selectRange(range: Range): void {
     this.selectedRange.set(range);
   }
@@ -154,105 +170,4 @@ export class WorkoutHistoryComponent implements OnDestroy {
     }
     return `${session.reps} reps @ ${session.weight} ${session.weightUnit}`;
   }
-
-  chartData(row: ProgressRow): ChartConfiguration<'line'>['data'] {
-    const metric = this.selectedMetric();
-    return {
-      labels: row.sessions.map((session) =>
-        session.date.toLocaleDateString('en-US', {
-          month: 'short',
-          day: 'numeric',
-        }),
-      ),
-      datasets: [
-        {
-          data: row.sessions.map((session) => {
-            switch (metric) {
-              case 'sets':
-                return session.sets;
-              case 'weight':
-                return session.weight ?? null;
-              case 'reps':
-                return session.reps;
-            }
-          }),
-          fill: false,
-        },
-      ],
-    };
-  }
-
-  private renderTooltip(canvas: HTMLCanvasElement, tooltip: TooltipModel<'line'>): void {
-    let element = document.getElementById('workout-history-tooltip');
-    if (!element) {
-      element = document.createElement('div');
-      element.id = 'workout-history-tooltip';
-      document.body.appendChild(element);
-    }
-
-    if (tooltip.opacity === 0) {
-      element.style.opacity = '0';
-      return;
-    }
-
-    const metric = this.selectedMetric();
-    const value = tooltip.dataPoints[0]?.parsed.y;
-    const date = tooltip.title[0] ?? '';
-
-    if (value === null || value === undefined) {
-      element.style.opacity = '0';
-      return;
-    }
-
-    const unit = metric === 'weight' ? 'kg' : metric;
-    element.textContent = `${date} · ${value} ${unit}`;
-
-    const rect = canvas.getBoundingClientRect();
-    element.style.left = `${rect.left + window.scrollX + tooltip.caretX}px`;
-    element.style.top = `${rect.top + window.scrollY + tooltip.caretY}px`;
-    element.style.opacity = '1';
-  }
-
-  readonly sparklineOptions: ChartConfiguration<'line'>['options'] = {
-    responsive: true,
-    maintainAspectRatio: false,
-
-    interaction: {
-      mode: 'nearest',
-      intersect: false,
-    },
-
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: false,
-        external: ({ chart, tooltip }) => {
-          console.log('External tooltip:', tooltip.opacity);
-          this.renderTooltip(chart.canvas, tooltip);
-        },
-      },
-    },
-
-    scales: {
-      x: {
-        display: false,
-      },
-      y: {
-        display: false,
-      },
-    },
-
-    elements: {
-      line: {
-        borderWidth: 2,
-        tension: 0.25,
-      },
-      point: {
-        radius: 2.5,
-        hoverRadius: 4,
-      },
-    },
-  };
 }

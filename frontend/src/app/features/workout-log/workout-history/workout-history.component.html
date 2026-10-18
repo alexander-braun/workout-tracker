@@ -44,19 +44,14 @@
           <span></span>
         </div>
 
-        @for (row of rows(); track row.exercise) {
+        @for (row of chartRows(); track row.exercise) {
           <div class="history-row">
             <div class="exercise-name">
               {{ row.exercise }}
             </div>
 
             <div class="sparkline">
-              <canvas
-                baseChart
-                [data]="chartData(row)"
-                [options]="sparklineOptions"
-                type="line"
-              ></canvas>
+                <frontend-sparkline [points]="row.chartPoints" />
             </div>
 
             <div class="value">

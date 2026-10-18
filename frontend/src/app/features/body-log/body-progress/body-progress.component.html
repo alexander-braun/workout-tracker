@@ -39,12 +39,7 @@
             </div>
 
             <div class="sparkline">
-              <canvas
-                baseChart
-                type="line"
-                [data]="chartData(row)"
-                [options]="sparklineOptions"
-              ></canvas>
+              <frontend-sparkline [points]="row.sessions" [unit]="row.unit" [decimals]="1" />
             </div>
 
             <div class="latest">{{ latest(row).toFixed(1) }} {{ row.unit }}</div>
