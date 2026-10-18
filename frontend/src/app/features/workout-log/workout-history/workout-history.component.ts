@@ -60,8 +60,9 @@ export class WorkoutHistoryComponent {
         return {
           exercise: exercise.exercise,
           sessions,
-          latest: this.formatSession(latest),
-          latestSub: `${latest.sets} sets`,
+          latestReps: latest.reps,
+          latestWeightSuffix: this.formatWeightSuffix(latest),
+          latestSets: latest.sets,
           change,
         };
       })
@@ -83,6 +84,14 @@ export class WorkoutHistoryComponent {
               : (session.weight ?? null),
         unit: metric === 'weight' ? (session.weightUnit ?? '') : metric,
       })),
+      setsPoints:
+        metric === 'sets'
+          ? []
+          : row.sessions.map<SparklinePoint>((session) => ({
+              date: session.date,
+              value: session.sets,
+              unit: 'sets',
+            })),
     }));
   });
 
@@ -162,13 +171,13 @@ export class WorkoutHistoryComponent {
     return `${year}-${month}-${day}`;
   }
 
-  private formatSession(session: WorkoutSession): string {
+  private formatWeightSuffix(session: WorkoutSession): string {
     if (session.weightUnit === 'BW') {
-      return `${session.reps} reps @ BW`;
+      return ' @ BW';
     }
     if (session.weight === null || session.weight === undefined) {
-      return `${session.reps} reps`;
+      return '';
     }
-    return `${session.reps} reps @ ${session.weight} ${session.weightUnit}`;
+    return ` @ ${session.weight} ${session.weightUnit}`;
   }
 }
