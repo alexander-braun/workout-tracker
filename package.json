@@ -17,7 +17,7 @@
     "frontend:format": "cd frontend && npm run format",
     "app:format": "npm run frontend:format && npm run frontend:lint:fix && npm run backend:format",
     "generate:api-types": "cd frontend && npm run generate:api-types",
-    "app": "concurrently -n backend,frontend -k \"npm run backend:serve\" \"npm run backend:types && npm run frontend\""
+    "app": "concurrently -n backend,frontend -k \"npm run backend:serve\" \"npm run frontend\""
   },
   "repository": {
     "type": "git",
