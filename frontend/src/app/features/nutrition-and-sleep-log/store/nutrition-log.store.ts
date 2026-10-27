@@ -1,4 +1,4 @@
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withFeature, withMethods, withState } from '@ngrx/signals';
 import { NutritionApiService } from '../nutrition-api.service';
 import {
   type GetNutritionHistory,
@@ -22,6 +22,7 @@ import {
   tap,
 } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { withAuthLifecycle } from '../../../shared/store/withAuthLifecycle';
 
 const initialState: NutritionStore = {
   nutritionHistory: [],
@@ -39,33 +40,12 @@ export const NutritionLogStore = signalStore(
   withState<NutritionStore>(initialState),
   withMethods((store, api = inject(NutritionApiService)) => {
     const reset$ = new Subject<void>();
-    const loadNutritionEntry = rxMethod<string>(
-      pipe(
-        tap(() => patchState(store, { nutritionEntryLoading: true, loadedDate: null })),
-        switchMap((date) => {
-          return api.getNutritionForDate(date).pipe(
-            map((nutritionEntry) => ({
-              nutritionEntry,
-              error: null,
-            })),
-            catchError((error) => of({ nutritionEntry: null, error })),
-            tap(({ nutritionEntry, error }) => {
-              const dateLoaded =
-                !error || (error instanceof HttpErrorResponse && error.status === 404);
-              patchState(store, {
-                currentNutritionEntry: nutritionEntry?.id === null ? null : nutritionEntry,
-                nutritionEntryLoading: false,
-                loadedDate: dateLoaded ? date : null,
-              });
-              if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
-                console.error(error);
-              }
-            }),
-            takeUntil(reset$),
-          );
-        }),
-      ),
-    );
+
+    const canEdit = ({ date }: { date: string }) =>
+      store.loadedDate() === date &&
+      !store.nutritionEntryLoading() &&
+      !store.nutritionEntrySaveInProgress();
+
     const loadNutritionDates$ = () =>
       api.getAllNutritionDates().pipe(
         tap((response) => {
@@ -84,14 +64,35 @@ export const NutritionLogStore = signalStore(
         reset$.next();
         patchState(store, initialState);
       },
-      loadNutritionEntry,
+      loadNutritionEntry: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { nutritionEntryLoading: true, loadedDate: null })),
+          switchMap((date) => {
+            return api.getNutritionForDate(date).pipe(
+              map((nutritionEntry) => ({ nutritionEntry, error: null })),
+              catchError((error) => of({ nutritionEntry: null, error })),
+              tap(({ nutritionEntry, error }) => {
+                const dateLoaded =
+                  !error || (error instanceof HttpErrorResponse && error.status === 404);
+                patchState(store, {
+                  currentNutritionEntry: nutritionEntry?.id === null ? null : nutritionEntry,
+                  nutritionEntryLoading: false,
+                  loadedDate: dateLoaded ? date : null,
+                });
+                if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
+                  console.error(error);
+                }
+              }),
+              takeUntil(reset$),
+            );
+          }),
+        ),
+      ),
       getNutritionDates: rxMethod<void>(pipe(switchMap(() => loadNutritionDates$()))),
       loadNutritionHistory: rxMethod<GetNutritionHistory>(
         pipe(
           switchMap(({ from, to }) => {
-            patchState(store, {
-              nutritionHistoryLoading: true,
-            });
+            patchState(store, { nutritionHistoryLoading: true });
             return api.getNutritionHistory(from, to).pipe(
               tap((nutritionHistory) => {
                 patchState(store, {
@@ -105,9 +106,7 @@ export const NutritionLogStore = signalStore(
               }),
               takeUntil(reset$),
               finalize(() => {
-                patchState(store, {
-                  nutritionHistoryLoading: false,
-                });
+                patchState(store, { nutritionHistoryLoading: false });
               }),
             );
           }),
@@ -120,9 +119,7 @@ export const NutritionLogStore = signalStore(
           }),
           switchMap(() =>
             api.deleteAllNutritionEntries().pipe(
-              map(() => ({
-                success: true as const,
-              })),
+              map(() => ({ success: true as const })),
               catchError((error) => of({ success: false as const, error })),
               tap((result) => {
                 if (result.success) {
@@ -134,9 +131,7 @@ export const NutritionLogStore = signalStore(
                     nutritionDates: [],
                   });
                 } else {
-                  patchState(store, {
-                    nutritionEntrySaveInProgress: false,
-                  });
+                  patchState(store, { nutritionEntrySaveInProgress: false });
                   console.error(result.error);
                 }
               }),
@@ -147,26 +142,17 @@ export const NutritionLogStore = signalStore(
       ),
       deleteNutritionEntry: rxMethod<DeleteNutritionEntry>(
         pipe(
-          filter(
-            ({ date }) =>
-              store.loadedDate() === date &&
-              !store.nutritionEntryLoading() &&
-              !store.nutritionEntrySaveInProgress(),
-          ),
+          filter<DeleteNutritionEntry>(canEdit),
           tap(() => {
             patchState(store, { nutritionEntrySaveInProgress: true });
           }),
           switchMap(({ date }) => {
             return api.deleteNutritionEntry(date).pipe(
-              map(() => ({
-                success: true as const,
-              })),
+              map(() => ({ success: true as const })),
               catchError((error) => of({ success: false as const, error })),
               tap((result) => {
                 if (result.success) {
-                  patchState(store, {
-                    nutritionHistoryStale: true,
-                  });
+                  patchState(store, { nutritionHistoryStale: true });
 
                   if (store.loadedDate() === date) {
                     patchState(store, { currentNutritionEntry: null });
@@ -187,12 +173,7 @@ export const NutritionLogStore = signalStore(
       ),
       saveNutritionEntry: rxMethod<SaveNutritionEntry>(
         pipe(
-          filter(
-            ({ date }) =>
-              store.loadedDate() === date &&
-              !store.nutritionEntryLoading() &&
-              !store.nutritionEntrySaveInProgress(),
-          ),
+          filter<SaveNutritionEntry>(canEdit),
           tap(() => {
             patchState(store, { nutritionEntrySaveInProgress: true });
           }),
@@ -210,9 +191,7 @@ export const NutritionLogStore = signalStore(
                   });
 
                   if (store.loadedDate() === date) {
-                    patchState(store, {
-                      currentNutritionEntry: result.nutritionEntry,
-                    });
+                    patchState(store, { currentNutritionEntry: result.nutritionEntry });
                   }
                 } else {
                   console.error(result.error);
@@ -230,4 +209,7 @@ export const NutritionLogStore = signalStore(
       ),
     };
   }),
+  withFeature(({ clearStore, getNutritionDates }) =>
+    withAuthLifecycle(clearStore, getNutritionDates),
+  ),
 );

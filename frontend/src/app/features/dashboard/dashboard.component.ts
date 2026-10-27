@@ -1,4 +1,4 @@
-import { Component, computed, inject } from '@angular/core';
+import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkoutLogComponent } from '../workout-log/workout-log.component';
 import { DatePickerModule } from 'primeng/datepicker';
@@ -48,6 +48,8 @@ export class DashboardComponent {
   readonly markedDates = computed(
     () => new Set([...this.workoutDates(), ...this.measurementDates(), ...this.nutritionDates()]),
   );
+  registerDialogVisible = false;
+  loginDialogVisible = false;
 
   readonly accountMenuItems = computed<MenuItem[]>(() => {
     const user = this.authStore.user();
@@ -88,8 +90,21 @@ export class DashboardComponent {
     ];
   });
 
-  registerDialogVisible = false;
-  loginDialogVisible = false;
+  readonly savingInProgress = computed(
+    () =>
+      this.workoutLogStore.workoutSaveInProgress() ||
+      this.bodyLogStore.measurementSaveInProgress() ||
+      this.nutritionLogStore.nutritionEntrySaveInProgress(),
+  );
+
+  constructor() {
+    effect(() => {
+      if (this.authStore.authenticated()) {
+        this.loginDialogVisible = false;
+        this.registerDialogVisible = false;
+      }
+    });
+  }
 
   dateKey(date: { year: number; month: number; day: number }): string {
     return [

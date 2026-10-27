@@ -4,20 +4,15 @@ import { rxMethod } from '@ngrx/signals/rxjs-interop';
 import {
   catchError,
   EMPTY,
+  exhaustMap,
   finalize,
-  type Observable,
   pipe,
   switchMap,
   tap,
-  throwError,
 } from 'rxjs';
 import { type LoginRequest, type AuthState, type RegisterRequest } from '../auth.model';
 import { AuthApiService } from '../auth-api.service';
 import { type HttpErrorResponse } from '@angular/common/http';
-import { WorkoutLogStore } from '../../workout-log/store/workout-log.store';
-import { NutritionLogStore } from '../../nutrition-and-sleep-log/store/nutrition-log.store';
-import { BodyLogStore } from '../../body-log/store/body-log.store';
-import { type CurrentUserResponse } from '../../../api/generated/api-types';
 
 const initialState: AuthState = {
   user: null,
@@ -37,15 +32,9 @@ export const AuthStore = signalStore(
   withComputed((store) => ({
     authenticated: computed(() => store.user() !== null),
   })),
-  withMethods(
-    (
-      store,
-      api = inject(AuthApiService),
-      workoutStore = inject(WorkoutLogStore),
-      nutritionStore = inject(NutritionLogStore),
-      bodyStore = inject(BodyLogStore),
-    ) => {
-      const loadCurrentUser = rxMethod<void>(
+  withMethods((store, api = inject(AuthApiService)) => {
+    return {
+      loadCurrentUser: rxMethod<void>(
         pipe(
           tap(() => patchState(store, { loading: true })),
           switchMap(() =>
@@ -67,15 +56,13 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      );
-      const logout = rxMethod<void>(
+      ),
+
+      logout: rxMethod<void>(
         pipe(
           switchMap(() =>
             api.logout().pipe(
               tap(() => {
-                workoutStore.clearStore();
-                nutritionStore.clearStore();
-                bodyStore.clearStore();
                 patchState(store, {
                   user: null,
                   initialized: true,
@@ -88,73 +75,80 @@ export const AuthStore = signalStore(
             ),
           ),
         ),
-      );
-      return {
-        loadCurrentUser,
-        logout,
-        login(request: LoginRequest): Observable<CurrentUserResponse> {
-          patchState(store, {
-            loginInProgress: true,
-            loginError: null,
-          });
-          return api.login(request).pipe(
-            tap((user) => {
-              patchState(store, {
-                user,
-                initialized: true,
-              });
-            }),
-            catchError((error: HttpErrorResponse) => {
-              patchState(store, {
-                loginError:
-                  error.status === 401
-                    ? 'Invalid email or password.'
-                    : 'Login failed. Please try again.',
-              });
-              return throwError(() => error);
-            }),
-            finalize(() => {
-              patchState(store, {
-                loginInProgress: false,
-              });
-            }),
-          );
-        },
-        register(request: RegisterRequest): Observable<CurrentUserResponse> {
-          patchState(store, {
-            registerInProgress: true,
-            registerError: null,
-          });
-          return api.register(request).pipe(
-            switchMap(() =>
-              api.login({
-                email: request.email,
-                password: request.password,
+      ),
+
+      login: rxMethod<LoginRequest>(
+        pipe(
+          exhaustMap((request) => {
+            patchState(store, {
+              loginInProgress: true,
+              loginError: null,
+            });
+
+            return api.login(request).pipe(
+              tap((user) => {
+                patchState(store, {
+                  user,
+                  initialized: true,
+                });
               }),
-            ),
-            tap((user) => {
-              patchState(store, {
-                user,
-                initialized: true,
-              });
-            }),
-            catchError((error: HttpErrorResponse) => {
-              patchState(store, {
-                registerError:
-                  error.status === 409
-                    ? 'An account with this email already exists.'
-                    : 'Registration failed. Please try again.',
-              });
-              return throwError(() => error);
-            }),
-            finalize(() => {
-              patchState(store, {
-                registerInProgress: false,
-              });
-            }),
-          );
-        },
-      };
-    },
-  ),
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, {
+                  loginError:
+                    error.status === 401
+                      ? 'Invalid email or password.'
+                      : 'Login failed. Please try again.',
+                });
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, {
+                  loginInProgress: false,
+                });
+              }),
+            );
+          }),
+        ),
+      ),
+
+      register: rxMethod<RegisterRequest>(
+        pipe(
+          exhaustMap((request) => {
+            patchState(store, {
+              registerInProgress: true,
+              registerError: null,
+            });
+            return api.register(request).pipe(
+              switchMap(() =>
+                api.login({
+                  email: request.email,
+                  password: request.password,
+                }),
+              ),
+              tap((user) => {
+                patchState(store, {
+                  user,
+                  initialized: true,
+                });
+              }),
+              catchError((error: HttpErrorResponse) => {
+                patchState(store, {
+                  registerError:
+                    error.status === 409
+                      ? 'An account with this email already exists.'
+                      : 'Registration failed. Please try again.',
+                });
+                return EMPTY;
+              }),
+              finalize(() => {
+                patchState(store, {
+                  registerInProgress: false,
+                });
+              }),
+            );
+          }),
+        ),
+      ),
+    };
+  }),
 );
