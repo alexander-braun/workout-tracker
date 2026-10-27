@@ -13,11 +13,9 @@ import { AuthStore } from '../store/auth.store';
 })
 export class LoginFormComponent {
   private readonly fb = inject(FormBuilder);
-  private readonly authStore = inject(AuthStore);
+  readonly authStore = inject(AuthStore);
 
-  readonly loggedIn = output<void>();
   readonly registerRequested = output<void>();
-  readonly closeRequested = output<void>();
   showPassword = false;
 
   readonly form = this.fb.nonNullable.group({
@@ -31,15 +29,6 @@ export class LoginFormComponent {
       return;
     }
 
-    this.authStore
-      .login({
-        email: this.form.controls.email.value,
-        password: this.form.controls.password.value,
-      })
-      .subscribe({
-        next: () => {
-          this.loggedIn.emit();
-        },
-      });
+    this.authStore.login(this.form.getRawValue());
   }
 }

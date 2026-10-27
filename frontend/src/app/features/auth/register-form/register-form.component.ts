@@ -16,7 +16,6 @@ export class RegisterFormComponent {
   private readonly fb = inject(FormBuilder);
   readonly authStore = inject(AuthStore);
 
-  readonly registered = output<void>();
   readonly loginRequested = output<void>();
 
   showPassword = false;
@@ -57,13 +56,7 @@ export class RegisterFormComponent {
       return;
     }
 
-    this.authStore
-      .register({
-        email: this.form.controls.email.value,
-        password: this.form.controls.password.value,
-      })
-      .subscribe({
-        next: () => this.registered.emit(),
-      });
+    const { email, password } = this.form.getRawValue();
+    this.authStore.register({ email, password });
   }
 }

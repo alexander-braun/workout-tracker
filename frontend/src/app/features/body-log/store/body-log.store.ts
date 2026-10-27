@@ -1,5 +1,5 @@
 import { inject } from '@angular/core';
-import { patchState, signalStore, withMethods, withState } from '@ngrx/signals';
+import { patchState, signalStore, withFeature, withMethods, withState } from '@ngrx/signals';
 import { BodyApiService } from '../body-api.service';
 import {
   type DeleteMeasurement,
@@ -12,6 +12,7 @@ import {
   catchError,
   delayWhen,
   EMPTY,
+  exhaustMap,
   filter,
   finalize,
   map,
@@ -24,6 +25,8 @@ import {
   timer,
 } from 'rxjs';
 import { HttpErrorResponse } from '@angular/common/http';
+import { withAuthLifecycle } from '../../../shared/store/withAuthLifecycle';
+import { type MeasurementEntryResponse } from '../../../api/generated/api-types';
 
 const initialState: BodyStore = {
   currentMeasurement: null,
@@ -43,56 +46,22 @@ export const BodyLogStore = signalStore(
     const reset$ = new Subject<void>();
     const MIN_LOADING_TIME = 1000;
 
+    // little wait so body svg animation has some time
     const remainingLoadingTime = (startedAt: number) =>
       timer(Math.max(0, MIN_LOADING_TIME - (Date.now() - startedAt)));
-
-    const loadMeasurement = rxMethod<string>(
-      pipe(
-        tap(() =>
-          patchState(store, {
-            measurementsLoading: true,
-            loadedDate: null,
-          }),
-        ),
-        switchMap((date) => {
-          const startedAt = Date.now();
-          return api.getMeasurement(date).pipe(
-            map((measurement) => ({
-              measurement: measurement.id === null ? null : measurement,
-              error: null,
-            })),
-            catchError((error) =>
-              of({
-                measurement: null,
-                error,
-              }),
-            ),
-            delayWhen(() => remainingLoadingTime(startedAt)),
-            tap(({ measurement, error }) => {
-              const dateLoaded =
-                !error || (error instanceof HttpErrorResponse && error.status === 404);
-
-              patchState(store, {
-                currentMeasurement: measurement,
-                measurementsLoading: false,
-                loadedDate: dateLoaded ? date : null,
-              });
-              if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
-                console.error(error);
-              }
-            }),
-            takeUntil(reset$),
-          );
-        }),
-      ),
-    );
-
+    
+    const canEdit = ({ date }: { date: string }) =>
+      store.loadedDate() === date &&
+      !store.measurementsLoading() &&
+      !store.measurementSaveInProgress();
+    
+      const normalizeMeasurement = (measurement: MeasurementEntryResponse) =>
+      measurement.id === null ? null : measurement;
+    
     const loadMeasurementDates$ = () =>
       api.getAllMeasurementDates().pipe(
         tap((response) => {
-          patchState(store, {
-            measurementDates: response.dates,
-          });
+          patchState(store, { measurementDates: response.dates });
         }),
         catchError((error) => {
           console.error(error);
@@ -100,6 +69,7 @@ export const BodyLogStore = signalStore(
         }),
         takeUntil(reset$),
       );
+
     return {
       clearStore: () => {
         reset$.next();
@@ -107,56 +77,45 @@ export const BodyLogStore = signalStore(
       },
       deleteAllMeasurements: rxMethod<void>(
         pipe(
-          tap(() => {
+          filter(() => !store.measurementSaveInProgress() && !store.measurementsLoading()),
+          exhaustMap(() => {
             patchState(store, { measurementSaveInProgress: true });
-          }),
-          switchMap(() => {
+
             const startedAt = Date.now();
+
             return api.deleteAllMeasurements().pipe(
-              map(() => ({
-                success: true as const,
-              })),
-              catchError((error) =>
-                of({
-                  success: false as const,
-                  error,
-                }),
-              ),
               delayWhen(() => remainingLoadingTime(startedAt)),
-              tap((result) => {
-                if (result.success) {
-                  patchState(store, {
-                    currentMeasurement: null,
-                    measurementHistory: [],
-                    measurementDates: [],
-                    measurementHistoryStale: false,
-                    measurementSaveInProgress: false,
-                  });
-                } else {
-                  patchState(store, {
-                    measurementSaveInProgress: false,
-                  });
-                  console.error(result.error);
-                }
+              tap(() => {
+                patchState(store, {
+                  currentMeasurement: null,
+                  measurementHistory: [],
+                  measurementDates: [],
+                  measurementHistoryStale: false,
+                  loadedDate: null,
+                });
+              }),
+              catchError((error) => {
+                console.error(error);
+                return EMPTY;
               }),
               takeUntil(reset$),
+              finalize(() => {
+                patchState(store, { measurementSaveInProgress: false });
+              }),
             );
           }),
         ),
       ),
+
       getMeasurementDates: rxMethod<void>(pipe(switchMap(() => loadMeasurementDates$()))),
+
       loadMeasurementHistory: rxMethod<GetMeasurementHistory>(
         pipe(
           switchMap(({ from, to }) => {
-            patchState(store, {
-              measurementHistoryLoading: true,
-            });
+            patchState(store, { measurementHistoryLoading: true });
             return api.getMeasurementHistory(from, to).pipe(
               tap((measurementHistory) => {
-                patchState(store, {
-                  measurementHistory,
-                  measurementHistoryStale: false,
-                });
+                patchState(store, { measurementHistory, measurementHistoryStale: false });
               }),
               catchError((error) => {
                 console.error(error);
@@ -170,36 +129,53 @@ export const BodyLogStore = signalStore(
           }),
         ),
       ),
-      loadMeasurement,
+
+      loadMeasurement: rxMethod<string>(
+        pipe(
+          tap(() => patchState(store, { measurementsLoading: true, loadedDate: null })),
+          switchMap((date) => {
+            const startedAt = Date.now();
+            return api.getMeasurement(date).pipe(
+              map((measurement) => ({
+                measurement: normalizeMeasurement(measurement),
+                error: null,
+              })),
+              catchError((error) => of({ measurement: null, error })),
+              delayWhen(() => remainingLoadingTime(startedAt)),
+              tap(({ measurement, error }) => {
+                const dateLoaded =
+                  !error || (error instanceof HttpErrorResponse && error.status === 404);
+
+                patchState(store, {
+                  currentMeasurement: measurement,
+                  measurementsLoading: false,
+                  loadedDate: dateLoaded ? date : null,
+                });
+                if (error && !(error instanceof HttpErrorResponse && error.status === 404)) {
+                  console.error(error);
+                }
+              }),
+              takeUntil(reset$),
+            );
+          }),
+        ),
+      ),
+
       deleteMeasurement: rxMethod<DeleteMeasurement>(
         pipe(
-          filter(
-            ({ date }) =>
-              store.loadedDate() === date &&
-              !store.measurementsLoading() &&
-              !store.measurementSaveInProgress(),
-          ),
+          filter<DeleteMeasurement>(canEdit),
           tap(() => {
             patchState(store, { measurementSaveInProgress: true });
           }),
           switchMap(({ date }) => {
             const startedAt = Date.now();
             return api.deleteMeasurement(date).pipe(
-              map(() => ({
-                success: true as const,
-              })),
-              catchError((error) =>
-                of({
-                  success: false as const,
-                  error,
-                }),
-              ),
+              map(() => ({ success: true as const })),
+              catchError((error) => of({ success: false as const, error })),
               delayWhen(() => remainingLoadingTime(startedAt)),
               tap((result) => {
                 if (result.success) {
-                  patchState(store, {
-                    measurementHistoryStale: true,
-                  });
+                  patchState(store, { measurementHistoryStale: true });
 
                   if (store.loadedDate() === date) {
                     patchState(store, { currentMeasurement: null });
@@ -218,14 +194,10 @@ export const BodyLogStore = signalStore(
           }),
         ),
       ),
+
       saveMeasurement: rxMethod<SaveMeasurement>(
         pipe(
-          filter(
-            ({ date }) =>
-              store.loadedDate() === date &&
-              !store.measurementsLoading() &&
-              !store.measurementSaveInProgress(),
-          ),
+          filter<SaveMeasurement>(canEdit),
           tap(() => {
             patchState(store, { measurementSaveInProgress: true });
           }),
@@ -234,25 +206,16 @@ export const BodyLogStore = signalStore(
             return api.saveMeasurement(date, request).pipe(
               map((measurement) => ({
                 success: true as const,
-                measurement: measurement.id === null ? null : measurement,
+                measurement: normalizeMeasurement(measurement),
               })),
-              catchError((error) =>
-                of({
-                  success: false as const,
-                  error,
-                }),
-              ),
+              catchError((error) => of({ success: false as const, error })),
               delayWhen(() => remainingLoadingTime(startedAt)),
               tap((result) => {
                 if (result.success) {
-                  patchState(store, {
-                    measurementHistoryStale: true,
-                  });
+                  patchState(store, { measurementHistoryStale: true });
 
                   if (store.loadedDate() === date) {
-                    patchState(store, {
-                      currentMeasurement: result.measurement,
-                    });
+                    patchState(store, { currentMeasurement: result.measurement });
                   }
                 } else {
                   console.error(result.error);
@@ -270,4 +233,7 @@ export const BodyLogStore = signalStore(
       ),
     };
   }),
+  withFeature(({ clearStore, getMeasurementDates }) =>
+    withAuthLifecycle(clearStore, getMeasurementDates),
+  ),
 );
