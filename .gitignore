@@ -4,3 +4,5 @@ backend/src/main/resources/application-local.properties
 .env
 /backups
 *.dump
+*.pem
+setup.txt
