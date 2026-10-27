@@ -11,7 +11,7 @@
     "backend:format": "cd backend && mvnw.cmd spotless:apply",
     "backend:format:check": "cd backend && mvnw.cmd spotless:check",
     "frontend": "cd frontend && npm run start",
-    "frontend:test": "cd frontend && npm run test",
+    "frontend:test": "cd frontend && npm run test:run",
     "frontend:lint": "cd frontend && npm run lint",
     "frontend:lint:fix": "cd frontend && npm run lint:fix",
     "frontend:format": "cd frontend && npm run format",
