@@ -11,6 +11,7 @@ import {
 } from '@angular/core';
 import { BaseChartDirective } from 'ng2-charts';
 import { type ChartConfiguration, type TooltipModel } from 'chart.js';
+import { sampleIndices } from '../../helper/sampleIndices';
 
 export interface SparklinePoint {
   date: Date;
@@ -36,35 +37,42 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
   readonly primaryColor = input('#3ea6ff');
   readonly unit = input('');
   readonly decimals = input(2);
+  readonly sampledIndices = computed(() => sampleIndices(this.points().length));
 
-  readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => ({
-    labels: this.points().map((point) =>
-      point.date.toLocaleDateString('en-US', {
-        month: 'short',
-        day: 'numeric',
-      }),
-    ),
-    datasets: [
-      {
-        data: this.points().map((point) => point.value),
-        fill: false,
-        yAxisID: 'y',
-        borderColor: this.primaryColor(),
-        backgroundColor: this.primaryColor(),
-      },
-      ...(this.secondaryPoints().length
-        ? [
-            {
-              data: this.secondaryPoints().map((point) => point.value),
-              fill: false,
-              yAxisID: 'ySets',
-              borderColor: '#ff5a5a',
-              backgroundColor: '#ff5a5a',
-            },
-          ]
-        : []),
-    ],
-  }));
+  readonly chartData = computed<ChartConfiguration<'line'>['data']>(() => {
+    const indices = this.sampledIndices();
+    const points = this.points();
+    const secondary = this.secondaryPoints();
+
+    return {
+      labels: indices.map((index) =>
+        points[index].date.toLocaleDateString('en-US', {
+          month: 'short',
+          day: 'numeric',
+        }),
+      ),
+      datasets: [
+        {
+          data: indices.map((index) => points[index].value),
+          fill: false,
+          yAxisID: 'y',
+          borderColor: this.primaryColor(),
+          backgroundColor: this.primaryColor(),
+        },
+        ...(secondary.length
+          ? [
+              {
+                data: indices.map((index) => secondary[index]?.value ?? null),
+                fill: false,
+                yAxisID: 'ySets',
+                borderColor: '#ff5a5a',
+                backgroundColor: '#ff5a5a',
+              },
+            ]
+          : []),
+      ],
+    };
+  });
 
   readonly chartOptions: ChartConfiguration<'line'>['options'] = {
     responsive: true,
@@ -120,9 +128,11 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
   private renderTooltip(canvas: HTMLCanvasElement, tooltip: TooltipModel<'line'>): void {
     const element = this.tooltipRef.nativeElement;
     const dataIndex = tooltip.dataPoints[0]?.dataIndex;
-    const point = dataIndex === undefined ? undefined : this.points()[dataIndex];
-    const setsPoint = dataIndex === undefined ? undefined : this.secondaryPoints()[dataIndex];
-
+    const originalIndex = dataIndex === undefined ? undefined : this.sampledIndices()[dataIndex];
+    const point = originalIndex === undefined ? undefined : this.points()[originalIndex];
+    const setsPoint =
+      originalIndex === undefined ? undefined : this.secondaryPoints()[originalIndex];
+    
     if (
       tooltip.opacity === 0 ||
       ((point?.value ?? null) === null && (setsPoint?.value ?? null) === null)
