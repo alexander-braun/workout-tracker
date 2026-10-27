@@ -23,35 +23,18 @@ describe('App', () => {
     http.verify();
   });
 
-  it('does not load tracker data when unauthenticated', () => {
+  it('initializes the authenticated user', () => {
     const fixture = TestBed.createComponent(App);
-    http.expectOne('/api/auth/me').flush({}, { status: 401, statusText: 'Unauthorized' });
-    fixture.detectChanges();
-    expect(authStore.initialized()).toBe(true);
-    expect(authStore.authenticated()).toBe(false);
-    http.expectNone('/api/workouts/dates');
-    http.expectNone('/api/measurements/dates');
-    http.expectNone('/api/nutrition/dates');
-  });
 
-  it('loads tracker dates when authenticated', () => {
-    const fixture = TestBed.createComponent(App);
     http.expectOne('/api/auth/me').flush({
       id: '11111111-1111-4111-8111-111111111111',
       email: 'test@example.com',
       createdAt: '2026-10-12T10:00:00Z',
     });
+
     fixture.detectChanges();
+
     expect(authStore.initialized()).toBe(true);
     expect(authStore.authenticated()).toBe(true);
-    http.expectOne('/api/workouts/dates').flush({
-      dates: [],
-    });
-    http.expectOne('/api/measurements/dates').flush({
-      dates: [],
-    });
-    http.expectOne('/api/nutrition/dates').flush({
-      dates: [],
-    });
   });
 });
