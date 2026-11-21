@@ -29,8 +29,4 @@ export class DeleteModalComponent {
       this.hide.emit();
     }
   }
-
-  confirmDelete(): void {
-    this.confirmDeletion.emit();
-  }
 }
