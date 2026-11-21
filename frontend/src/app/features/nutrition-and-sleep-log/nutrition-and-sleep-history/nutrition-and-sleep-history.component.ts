@@ -8,14 +8,11 @@ import { AuthStore } from '../../auth/store/auth.store';
 import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
 
 type Range = '1W' | '1M' | '3M' | '6M' | 'All';
-
 type NutritionKey = 'calories' | 'protein' | 'sleepHours' | 'sleepQuality' | 'steps' | 'energy';
-
 interface HistorySession {
   date: Date;
   value: number;
 }
-
 interface NutritionSleepHistoryRow {
   key: NutritionKey;
   metric: string;
@@ -76,7 +73,6 @@ export class NutritionAndSleepHistoryComponent {
 
   readonly selectedRange = signal<Range>('1M');
   readonly ranges: Range[] = ['1W', '1M', '3M', '6M', 'All'];
-
   readonly rows = computed<NutritionSleepHistoryRow[]>(() => {
     const history = this.nutritionStore.nutritionHistory();
 
@@ -165,23 +161,17 @@ export class NutritionAndSleepHistoryComponent {
       case '1W':
         from.setDate(from.getDate() - 7);
         break;
-
       case '1M':
         from.setMonth(from.getMonth() - 1);
         break;
-
       case '3M':
         from.setMonth(from.getMonth() - 3);
         break;
-
       case '6M':
         from.setMonth(from.getMonth() - 6);
         break;
     }
 
-    this.nutritionStore.loadNutritionHistory({
-      from: toDateString(from),
-      to: toDateString(to),
-    });
+    this.nutritionStore.loadNutritionHistory({ from: toDateString(from), to: toDateString(to) });
   }
 }

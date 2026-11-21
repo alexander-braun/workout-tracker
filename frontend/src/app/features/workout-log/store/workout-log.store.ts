@@ -43,7 +43,7 @@ export const WorkoutLogStore = signalStore(
   withState<WorkoutStore>(initialState),
   withMethods((store, api = inject(WorkoutApiService)) => {
     const reset$ = new Subject<void>();
-    
+
     const loadExercises$ = () =>
       api.getExercises().pipe(
         tap((exerciseEntries) => {
@@ -51,10 +51,10 @@ export const WorkoutLogStore = signalStore(
         }),
         takeUntil(reset$),
       );
-    
-      const toWorkoutEntries = (entries: WorkoutEntryResponse[]): WorkoutEntry[] =>
+
+    const toWorkoutEntries = (entries: WorkoutEntryResponse[]): WorkoutEntry[] =>
       entries.map((entry) => ({ ...entry, newExerciseName: null }));
-    
+
     const loadWorkoutDates$ = () =>
       api.getAllWorkoutDates().pipe(
         tap((response) => {
@@ -66,11 +66,9 @@ export const WorkoutLogStore = signalStore(
         }),
         takeUntil(reset$),
       );
-    
-        const canEdit = ({ date }: { date: string }) =>
-      store.loadedDate() === date &&
-      !store.workoutsLoading() &&
-      !store.workoutSaveInProgress();
+
+    const canEdit = ({ date }: { date: string }) =>
+      store.loadedDate() === date && !store.workoutsLoading() && !store.workoutSaveInProgress();
 
     return {
       clearStore: () => {

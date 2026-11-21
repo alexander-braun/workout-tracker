@@ -132,7 +132,7 @@ export class SparklineComponent implements AfterViewInit, OnDestroy {
     const point = originalIndex === undefined ? undefined : this.points()[originalIndex];
     const setsPoint =
       originalIndex === undefined ? undefined : this.secondaryPoints()[originalIndex];
-    
+
     if (
       tooltip.opacity === 0 ||
       ((point?.value ?? null) === null && (setsPoint?.value ?? null) === null)

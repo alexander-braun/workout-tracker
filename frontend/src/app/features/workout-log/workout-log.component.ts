@@ -6,6 +6,7 @@ import {
   linkedSignal,
   signal,
   untracked,
+  type WritableSignal,
 } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { type AutoCompleteCompleteEvent, AutoCompleteModule } from 'primeng/autocomplete';
@@ -45,10 +46,8 @@ export class WorkoutLogComponent {
   readonly historyOpen = signal(false);
   readonly filteredExercises = signal<ExerciseResponse[]>([]);
   readonly unitOptions: WeightUnit[] = ['BW', 'kg', 'lbs'];
-  readonly workoutEntries = linkedSignal(() =>
-    this.workoutStore.workoutEntries().map((entry) => ({
-      ...entry,
-    })),
+  readonly workoutEntries: WritableSignal<WorkoutEntry[]> = linkedSignal(() =>
+    this.workoutStore.workoutEntries().map((entry) => ({ ...entry })),
   );
   readonly workoutReady = computed(
     () =>
@@ -97,10 +96,7 @@ export class WorkoutLogComponent {
 
   deleteWorkout(): void {
     if (!this.workoutReady()) return;
-
-    this.workoutStore.deleteWorkout({
-      date: toDateString(this.appStore.selectedDate()),
-    });
+    this.workoutStore.deleteWorkout({ date: toDateString(this.appStore.selectedDate()) });
   }
 
   addWorkoutEntry(): void {
@@ -132,21 +128,13 @@ export class WorkoutLogComponent {
       const reordered = [...entries];
       [reordered[index], reordered[targetIndex]] = [reordered[targetIndex], reordered[index]];
 
-      return reordered.map((entry, position) => ({
-        ...entry,
-        position,
-      }));
+      return reordered.map((entry, position) => ({ ...entry, position }));
     });
   }
 
   removeWorkoutEntry(index: number): void {
     this.workoutEntries.update((rows) =>
-      rows
-        .filter((_, i) => i !== index)
-        .map((entry, position) => ({
-          ...entry,
-          position,
-        })),
+      rows.filter((_, i) => i !== index).map((entry, position) => ({ ...entry, position })),
     );
   }
 
@@ -169,13 +157,7 @@ export class WorkoutLogComponent {
 
     this.workoutEntries.update((entries) =>
       entries.map((entry, i) =>
-        i === index
-          ? {
-              ...entry,
-              exerciseId: exercise.id,
-              newExerciseName: null,
-            }
-          : entry,
+        i === index ? { ...entry, exerciseId: exercise.id, newExerciseName: null } : entry,
       ),
     );
   }
@@ -185,13 +167,7 @@ export class WorkoutLogComponent {
     if (!trimmedName) {
       this.workoutEntries.update((entries) =>
         entries.map((entry, i) =>
-          i === index
-            ? {
-                ...entry,
-                exerciseId: null,
-                newExerciseName: null,
-              }
-            : entry,
+          i === index ? { ...entry, exerciseId: null, newExerciseName: null } : entry,
         ),
       );
       return;
@@ -223,13 +199,7 @@ export class WorkoutLogComponent {
 
     this.workoutEntries.update((entries) =>
       entries.map((entry, i) =>
-        i === index
-          ? {
-              ...entry,
-              exerciseId: null,
-              newExerciseName: trimmedName,
-            }
-          : entry,
+        i === index ? { ...entry, exerciseId: null, newExerciseName: trimmedName } : entry,
       ),
     );
   }

@@ -84,9 +84,7 @@ export class BodyLogComponent {
 
   deleteMeasurement() {
     if (!this.measurementReady()) return;
-    this.bodyStore.deleteMeasurement({
-      date: toDateString(this.appStore.selectedDate()),
-    });
+    this.bodyStore.deleteMeasurement({ date: toDateString(this.appStore.selectedDate()) });
   }
 
   focus(area: BodyArea): void {

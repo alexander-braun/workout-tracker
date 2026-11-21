@@ -36,7 +36,7 @@ describe('SparklineComponent', () => {
     expect(external).toBeTypeOf('function');
 
     const canvas = document.createElement('canvas');
-    
+
     const tooltip = {
       opacity: 1,
       caretX: 20,

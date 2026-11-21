@@ -41,7 +41,6 @@ export class WorkoutHistoryComponent {
 
         const first = sessions[0];
         const latest = sessions[sessions.length - 1];
-
         const change: ProgressChange | null =
           sessions.length > 1
             ? {
@@ -149,11 +148,7 @@ export class WorkoutHistoryComponent {
 
     const to = new Date();
     const from = new Date(to);
-    const months: Record<Exclude<Range, 'All'>, number> = {
-      '1M': 1,
-      '3M': 3,
-      '6M': 6,
-    };
+    const months: Record<Exclude<Range, 'All'>, number> = { '1M': 1, '3M': 3, '6M': 6 };
 
     from.setMonth(from.getMonth() - months[range]);
     this.store.loadWorkoutHistory({ from: this.formatDate(from), to: this.formatDate(to) });

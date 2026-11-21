@@ -49,15 +49,15 @@ export const BodyLogStore = signalStore(
     // little wait so body svg animation has some time
     const remainingLoadingTime = (startedAt: number) =>
       timer(Math.max(0, MIN_LOADING_TIME - (Date.now() - startedAt)));
-    
+
     const canEdit = ({ date }: { date: string }) =>
       store.loadedDate() === date &&
       !store.measurementsLoading() &&
       !store.measurementSaveInProgress();
-    
-      const normalizeMeasurement = (measurement: MeasurementEntryResponse) =>
+
+    const normalizeMeasurement = (measurement: MeasurementEntryResponse) =>
       measurement.id === null ? null : measurement;
-    
+
     const loadMeasurementDates$ = () =>
       api.getAllMeasurementDates().pipe(
         tap((response) => {

@@ -102,8 +102,6 @@ export class NutritionAndSleepLogComponent {
   deleteNutritionEntry(): void {
     if (!this.nutritionReady()) return;
 
-    this.nutritionStore.deleteNutritionEntry({
-      date: toDateString(this.appStore.selectedDate()),
-    });
+    this.nutritionStore.deleteNutritionEntry({ date: toDateString(this.appStore.selectedDate()) });
   }
 }

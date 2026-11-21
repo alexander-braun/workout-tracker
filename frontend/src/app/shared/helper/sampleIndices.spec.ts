@@ -1,12 +1,9 @@
-
 import { describe, expect, it } from 'vitest';
 import { sampleIndices } from './sampleIndices';
 
 describe('sampleIndices', () => {
   it.each([0, 1, 5, 6])('keeps all indices for %i points', (count) => {
-    expect(sampleIndices(count)).toEqual(
-      Array.from({ length: count }, (_, index) => index),
-    );
+    expect(sampleIndices(count)).toEqual(Array.from({ length: count }, (_, index) => index));
   });
 
   it('samples 20 points evenly', () => {

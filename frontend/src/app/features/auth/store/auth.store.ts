@@ -1,15 +1,7 @@
 import { computed, inject } from '@angular/core';
 import { patchState, signalStore, withComputed, withMethods, withState } from '@ngrx/signals';
 import { rxMethod } from '@ngrx/signals/rxjs-interop';
-import {
-  catchError,
-  EMPTY,
-  exhaustMap,
-  finalize,
-  pipe,
-  switchMap,
-  tap,
-} from 'rxjs';
+import { catchError, EMPTY, exhaustMap, finalize, pipe, switchMap, tap } from 'rxjs';
 import { type LoginRequest, type AuthState, type RegisterRequest } from '../auth.model';
 import { AuthApiService } from '../auth-api.service';
 import { type HttpErrorResponse } from '@angular/common/http';

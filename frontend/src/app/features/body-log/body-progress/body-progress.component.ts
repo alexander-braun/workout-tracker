@@ -86,10 +86,7 @@ export class BodyProgressComponent {
         unit,
         sessions: history
           .filter((entry) => entry[key] !== null)
-          .map((entry) => ({
-            date: new Date(`${entry.date}T00:00:00`),
-            value: entry[key]!,
-          })),
+          .map((entry) => ({ date: new Date(`${entry.date}T00:00:00`), value: entry[key]! })),
       }))
       .filter((row) => row.sessions.length > 0);
   });
@@ -144,7 +141,6 @@ export class BodyProgressComponent {
 
     const to = new Date();
     const from = new Date(to);
-
     const months: Record<Exclude<Range, 'All'>, number> = {
       '1M': 1,
       '3M': 3,
@@ -153,10 +149,6 @@ export class BodyProgressComponent {
     };
 
     from.setMonth(from.getMonth() - months[range]);
-
-    this.bodyStore.loadMeasurementHistory({
-      from: toDateString(from),
-      to: toDateString(to),
-    });
+    this.bodyStore.loadMeasurementHistory({ from: toDateString(from), to: toDateString(to) });
   }
 }
