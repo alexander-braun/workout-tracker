@@ -120,7 +120,7 @@ export class BodyProgressComponent {
     return getMeasurementChangeColor(row.key, this.change(row));
   }
 
-  isMeasurementRange(range: Range): range is MeasurementRange {
+  private isMeasurementRange(range: Range): range is MeasurementRange {
     return this.ranges.some((r) => r === range);
   }
 

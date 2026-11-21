@@ -27,7 +27,6 @@ type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
     SparklineComponent,
     LoadingComponent,
     RangeSelectorComponent,
-    RangeSelectorComponent,
   ],
   templateUrl: './workout-history.component.html',
   styleUrl: './workout-history.component.scss',
@@ -144,7 +143,7 @@ export class WorkoutHistoryComponent {
     });
   }
 
-  isWorkoutRange(range: Range): range is WorkoutRange {
+  private isWorkoutRange(range: Range): range is WorkoutRange {
     return this.ranges.some(r => r === range);
   }
 

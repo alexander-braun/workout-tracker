@@ -11,6 +11,8 @@ import { type Range } from '../../../shared/types/range.model';
 
 type NutritionKey = 'calories' | 'protein' | 'sleepHours' | 'sleepQuality' | 'steps' | 'energy';
 
+type NutritionRange = Extract<Range, '1W' | '1M' | '3M' | '6M' | 'All'>;
+
 interface HistorySession {
   date: Date;
   value: number;
@@ -74,8 +76,8 @@ export class NutritionAndSleepHistoryComponent {
   readonly nutritionStore = inject(NutritionLogStore);
   readonly authStore = inject(AuthStore);
 
-  readonly selectedRange = signal<Range>('1M');
-  readonly ranges: Range[] = ['1W', '1M', '3M', '6M', 'All'];
+  readonly selectedRange = signal<NutritionRange>('1M');
+  readonly ranges: NutritionRange[] = ['1W', '1M', '3M', '6M', 'All'];
 
   readonly rows = computed<NutritionSleepHistoryRow[]>(() => {
     const history = this.nutritionStore.nutritionHistory();
@@ -113,7 +115,15 @@ export class NutritionAndSleepHistoryComponent {
     });
   }
 
+  private isNutritionRange(range: Range): range is NutritionRange {
+    return this.ranges.some((r) => r === range);
+  }
+
   selectRange(range: Range): void {
+    if (!this.isNutritionRange(range)) {
+      return;
+    }
+
     this.selectedRange.set(range);
   }
 
