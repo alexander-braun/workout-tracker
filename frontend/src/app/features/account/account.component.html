@@ -18,7 +18,7 @@
         </div>
         <div>
           <span class="muted-label">Registered on</span>
-          <strong>{{ registeredAt(user.createdAt) }}</strong>
+          <strong>{{ registeredAt() }}</strong>
         </div>
       </div>
     </section>
@@ -26,7 +26,7 @@
     <section class="card account-card">
       <h2>Change Email</h2>
       <p>Update the email address you use to sign in.</p>
-      <form class="setting-form" [formGroup]="emailForm" (ngSubmit)="changeEmail()">
+      <form class="setting-form" [formGroup]="emailForm" (ngSubmit)="handleEmailUpdateRequest()">
         <label for="account-email">Email address</label>
         <input
           id="account-email"
@@ -41,8 +41,8 @@
         @if (emailError()) {
           <p class="error" role="alert">{{ emailError() }}</p>
         }
-        @if (emailMessage()) {
-          <p class="success" role="status">{{ emailMessage() }}</p>
+        @if (emailConfigSuccess()) {
+          <p class="success" role="status">{{ emailConfigSuccess() }}</p>
         }
         <button
           pButton
@@ -57,7 +57,7 @@
     <section class="card account-card">
       <h2>Change Password</h2>
       <p>Use your current password to set a new one.</p>
-      <form class="setting-form" [formGroup]="passwordForm" (ngSubmit)="changePassword()">
+      <form class="setting-form" [formGroup]="passwordForm" (ngSubmit)="handlePasswordUpdateRequest()">
         <label for="current-password">Current password</label>
         <input
           id="current-password"
@@ -88,14 +88,14 @@
             Complete all fields. The new password must be 8–100 characters.
           </small>
         }
-        @if (passwordError()) {
-          <p class="error" role="alert">{{ passwordError() }}</p>
+        @if (passwordUpdateErrorMessage()) {
+          <p class="error" role="alert">{{ passwordUpdateErrorMessage() }}</p>
         }
-        @if (passwordMessage()) {
-          <p class="success" role="status">{{ passwordMessage() }}</p>
+        @if (passwordUpdateSuccessMessage()) {
+          <p class="success" role="status">{{ passwordUpdateSuccessMessage() }}</p>
         }
-        <button pButton type="submit" [disabled]="passwordPending() || passwordForm.invalid">
-          {{ passwordPending() ? 'Updating...' : 'Update Password' }}
+        <button pButton type="submit" [disabled]="passwordUpdatePending() || passwordForm.invalid">
+          {{ passwordUpdatePending() ? 'Updating...' : 'Update Password' }}
         </button>
       </form>
     </section>
@@ -113,7 +113,7 @@
           type="button"
           severity="danger"
           [outlined]="true"
-          (click)="requestDeletion('data')"
+          (click)="showDeletionModal('data')"
         >
           Delete All Data
         </button>
@@ -133,7 +133,7 @@
           type="button"
           severity="danger"
           [outlined]="true"
-          (click)="requestDeletion('account')"
+          (click)="showDeletionModal('account')"
         >
           Delete Account
         </button>
@@ -144,61 +144,25 @@
   }
 </div>
 
-<p-dialog
-  [visible]="confirmation() !== null"
-  (visibleChange)="onDialogVisibleChange($event)"
-  [modal]="true"
-  [closable]="!deletionPending()"
-  [draggable]="false"
-  [resizable]="false"
-  [header]="confirmation() === 'account' ? 'Delete Account' : 'Delete All Data'"
-  [style]="{ width: 'min(440px, 95vw)' }"
->
-  <div class="confirm-dialog">
-    <p>
-      @if (confirmation() === 'account') {
-        Your account and all your data will be permanently deleted.
-      } @else {
-        Your workout, exercise, nutrition, sleep and body measurement data will be permanently
-        deleted.
-      }
-    </p>
-    <label for="confirm-delete">
-      Type
-      <strong>DELETE</strong>
-      to confirm.
-    </label>
-    <input
-      id="confirm-delete"
-      pInputText
-      type="text"
-      autocomplete="off"
-      [value]="confirmationText()"
-      (input)="confirmationText.set($any($event.target).value)"
-    />
-    @if (deletionError()) {
-      <p class="error" role="alert">{{ deletionError() }}</p>
-    }
-    <div class="confirm-actions">
-      <button
-        pButton
-        type="button"
-        severity="secondary"
-        [outlined]="true"
-        [disabled]="deletionPending()"
-        (click)="confirmation.set(null)"
-      >
-        Cancel
-      </button>
-      <button
-        pButton
-        type="button"
-        severity="danger"
-        [disabled]="confirmationText() !== 'DELETE' || deletionPending()"
-        (click)="confirmDeletion()"
-      >
-        {{ deletionPending() ? 'Deleting...' : 'Delete Permanently' }}
-      </button>
-    </div>
-  </div>
-</p-dialog>
+<!-- Account deletion -->
+@if (deleteType() === 'account') {
+  <frontend-delete-modal
+    bodyText="Your account and all your data will be permanently deleted."
+    header="Delete Account"
+    [deletionPending]="deletionPending()"
+    [deletionError]="deletionError()"
+    (confirmDeletion)="handleDeletionRequest()"
+    (hide)="deleteType.set(null)"
+  ></frontend-delete-modal>
+}
+<!-- Workout data deletion -->
+@if (deleteType() === 'data') {
+  <frontend-delete-modal
+    bodyText="Your workout, exercise, nutrition, sleep and body measurement data will be permanently deleted."
+    header="Delete All Data"
+    [deletionPending]="deletionPending()"
+    [deletionError]="deletionError()"
+    (confirmDeletion)="handleDeletionRequest()"
+    (hide)="deleteType.set(null)"
+  ></frontend-delete-modal>
+}

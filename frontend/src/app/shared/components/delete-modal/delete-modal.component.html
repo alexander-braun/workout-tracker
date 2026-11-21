@@ -1,0 +1,52 @@
+<p-dialog
+  [visible]="true"
+  (visibleChange)="onDialogVisibleChange($event)"
+  [modal]="true"
+  [closable]="!deletionPending()"
+  [draggable]="false"
+  [resizable]="false"
+  [header]="header()"
+  [style]="{ width: 'min(440px, 95vw)' }"
+>
+  <div class="confirm-dialog">
+    <p>
+      {{ bodyText() }}
+    </p>
+    <label for="confirm-delete">
+      Type
+      <strong>DELETE</strong>
+      to confirm.
+    </label>
+    <input
+      id="confirm-delete"
+      pInputText
+      type="text"
+      autocomplete="off"
+      [formControl]="confirmationTextControl"
+    />
+    @if (deletionError()) {
+      <p class="error" role="alert">{{ deletionError() }}</p>
+    }
+    <div class="confirm-actions">
+      <button
+        pButton
+        type="button"
+        severity="secondary"
+        [outlined]="true"
+        [disabled]="deletionPending()"
+        (click)="hide.emit()"
+      >
+        Cancel
+      </button>
+      <button
+        pButton
+        type="button"
+        severity="danger"
+        [disabled]="confirmationTextControl.value !== 'DELETE' || deletionPending()"
+        (click)="confirmDeletion.emit()"
+      >
+        {{ deletionPending() ? 'Deleting...' : 'Delete Permanently' }}
+      </button>
+    </div>
+  </div>
+</p-dialog>

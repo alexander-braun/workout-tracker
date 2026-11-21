@@ -133,28 +133,6 @@
   }
 }
 
-.confirm-dialog {
-  display: flex;
-  flex-direction: column;
-  gap: 16px;
-  p {
-    margin: 0;
-  }
-  input {
-    width: 100%;
-  }
-  label {
-    font-size: 0.875rem;
-  }
-}
-
-.confirm-actions {
-  display: flex;
-  justify-content: flex-end;
-  gap: 10px;
-  flex-wrap: wrap;
-}
-
 @media (max-width: 640px) {
   .account-page {
     width: min(100% - 24px, 1100px);
