@@ -6,8 +6,8 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 import { toDateString } from '../../../shared/helper/toDateString';
 import { AuthStore } from '../../auth/store/auth.store';
 import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
-
-type Range = '1W' | '1M' | '3M' | '6M' | 'All';
+import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
+import { type Range } from '../../../shared/types/range.model';
 
 type NutritionKey = 'calories' | 'protein' | 'sleepHours' | 'sleepQuality' | 'steps' | 'energy';
 
@@ -66,7 +66,7 @@ const metricDefinitions: {
 @Component({
   selector: 'frontend-nutrition-and-sleep-history',
   standalone: true,
-  imports: [ButtonModule, SparklineComponent, LoadingComponent],
+  imports: [ButtonModule, SparklineComponent, LoadingComponent, RangeSelectorComponent],
   templateUrl: './nutrition-and-sleep-history.component.html',
   styleUrl: './nutrition-and-sleep-history.component.scss',
 })
@@ -165,15 +165,12 @@ export class NutritionAndSleepHistoryComponent {
       case '1W':
         from.setDate(from.getDate() - 7);
         break;
-
       case '1M':
         from.setMonth(from.getMonth() - 1);
         break;
-
       case '3M':
         from.setMonth(from.getMonth() - 3);
         break;
-
       case '6M':
         from.setMonth(from.getMonth() - 6);
         break;

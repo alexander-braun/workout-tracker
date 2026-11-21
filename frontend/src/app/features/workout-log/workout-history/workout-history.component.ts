@@ -5,7 +5,6 @@ import {
   type ProgressChange,
   type ExerciseHistory,
   type ProgressRow,
-  type Range,
   type WorkoutSession,
 } from './workout-history.model';
 import { LoadingComponent } from '../../../shared/components/loading/loading.component';
@@ -14,13 +13,22 @@ import {
   SparklineComponent,
   type SparklinePoint,
 } from '../../../shared/components/sparkline/sparkline.component';
+import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
+import { type Range } from '../../../shared/types/range.model';
 
 type ProgressMetric = 'reps' | 'weight';
+type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
 
 @Component({
   selector: 'frontend-workout-history',
   standalone: true,
-  imports: [ButtonModule, SparklineComponent, LoadingComponent],
+  imports: [
+    ButtonModule,
+    SparklineComponent,
+    LoadingComponent,
+    RangeSelectorComponent,
+    RangeSelectorComponent,
+  ],
   templateUrl: './workout-history.component.html',
   styleUrl: './workout-history.component.scss',
 })
@@ -29,8 +37,8 @@ export class WorkoutHistoryComponent {
   readonly authStore = inject(AuthStore);
   readonly selectedMetric = signal<ProgressMetric>('reps');
   readonly metrics: ProgressMetric[] = ['reps', 'weight'];
-  readonly selectedRange = signal<Range>('1M');
-  readonly ranges: Range[] = ['1M', '3M', '6M', 'All'];
+  readonly selectedRange = signal<WorkoutRange>('1M');
+  readonly ranges: WorkoutRange[] = ['1M', '3M', '6M', 'All'];
   readonly rows = computed<ProgressRow[]>(() =>
     this.history()
       .map((exercise) => {
@@ -136,7 +144,14 @@ export class WorkoutHistoryComponent {
     });
   }
 
+  isWorkoutRange(range: Range): range is WorkoutRange {
+    return this.ranges.some(r => r === range);
+  }
+
   selectRange(range: Range): void {
+    if (!this.isWorkoutRange(range)) {
+      return;
+    }
     this.selectedRange.set(range);
   }
 
@@ -149,7 +164,7 @@ export class WorkoutHistoryComponent {
 
     const to = new Date();
     const from = new Date(to);
-    const months: Record<Exclude<Range, 'All'>, number> = {
+    const months: Record<Exclude<WorkoutRange, 'All'>, number> = {
       '1M': 1,
       '3M': 3,
       '6M': 6,

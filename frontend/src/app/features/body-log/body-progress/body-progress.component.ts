@@ -5,6 +5,8 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 import { toDateString } from '../../../shared/helper/toDateString';
 import { AuthStore } from '../../auth/store/auth.store';
 import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
+import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
+import { type Range } from '../../../shared/types/range.model';
 
 interface MeasurementSession {
   date: Date;
@@ -16,6 +18,8 @@ interface MeasurementProgressRow {
   unit: 'cm' | 'kg';
   sessions: MeasurementSession[];
 }
+
+type MeasurementRange = Exclude<Range, '1W'>;
 
 const measurementDefinitions: {
   key: MeasurementKey;
@@ -33,8 +37,6 @@ const measurementDefinitions: {
   { key: 'calfLeft', label: 'Calf (L)', unit: 'cm' },
   { key: 'calfRight', label: 'Calf (R)', unit: 'cm' },
 ];
-
-type Range = '1M' | '3M' | '6M' | '1Y' | 'All';
 
 type MeasurementKey =
   | 'chest'
@@ -65,7 +67,7 @@ export function getMeasurementChangeColor(key: MeasurementKey, delta: number): C
 @Component({
   selector: 'frontend-body-progress',
   standalone: true,
-  imports: [ButtonModule, LoadingComponent, SparklineComponent],
+  imports: [ButtonModule, LoadingComponent, SparklineComponent, RangeSelectorComponent],
   templateUrl: './body-progress.component.html',
   styleUrl: './body-progress.component.scss',
 })
@@ -73,8 +75,8 @@ export class BodyProgressComponent {
   readonly bodyStore = inject(BodyLogStore);
   readonly authStore = inject(AuthStore);
 
-  readonly selectedRange = signal<Range>('1M');
-  readonly ranges: Range[] = ['1M', '3M', '6M', '1Y', 'All'];
+  readonly selectedRange = signal<MeasurementRange>('1M');
+  readonly ranges: MeasurementRange[] = ['1M', '3M', '6M', '1Y', 'All'];
 
   readonly rows = computed<MeasurementProgressRow[]>(() => {
     const history = this.bodyStore.measurementHistory();
@@ -118,7 +120,14 @@ export class BodyProgressComponent {
     return getMeasurementChangeColor(row.key, this.change(row));
   }
 
+  isMeasurementRange(range: Range): range is MeasurementRange {
+    return this.ranges.some((r) => r === range);
+  }
+
   selectRange(range: Range): void {
+    if (!this.isMeasurementRange(range)) {
+      return;
+    }
     this.selectedRange.set(range);
   }
 
@@ -145,7 +154,7 @@ export class BodyProgressComponent {
     const to = new Date();
     const from = new Date(to);
 
-    const months: Record<Exclude<Range, 'All'>, number> = {
+    const months: Record<Exclude<MeasurementRange, 'All'>, number> = {
       '1M': 1,
       '3M': 3,
       '6M': 6,

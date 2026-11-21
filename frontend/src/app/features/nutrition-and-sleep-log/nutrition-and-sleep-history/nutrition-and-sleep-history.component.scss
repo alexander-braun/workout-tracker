@@ -5,31 +5,6 @@
   font-weight: 400;
 }
 
-.range-selector {
-  display: flex;
-  padding: 3px;
-
-  border: 1px solid #35404d;
-  border-radius: 10px;
-}
-
-.range-button {
-  border: 0;
-  background: transparent;
-
-  color: #aeb8c4;
-
-  padding: 7px 14px;
-  border-radius: 8px;
-
-  cursor: pointer;
-
-  &.active {
-    background: #394451;
-    color: white;
-  }
-}
-
 .history-scroll {
   overflow-x: auto;
 }
