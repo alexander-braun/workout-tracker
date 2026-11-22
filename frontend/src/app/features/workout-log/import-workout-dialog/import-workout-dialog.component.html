@@ -1,0 +1,46 @@
+<p-dialog
+  header="Import Workout"
+  [visible]="modalVisible()"
+  (visibleChange)="modalVisible.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [closable]="!workoutImportInProgress()"
+  [closeOnEscape]="!workoutImportInProgress()"
+  [style]="{ width: '26rem', maxWidth: '95vw' }"
+  appendTo="body"
+>
+  <p>Select a previous workout to import into the current day.</p>
+
+  <frontend-datepicker
+    [(selectedDate)]="selectedDate"
+    [inline]="true"
+    [disabled]="workoutImportInProgress()"
+  />
+  @if (workoutImportInProgress()) {
+    <frontend-loading text="Importing workout..." />
+  }
+
+  <p>The imported workout will replace your current entries without saving them.</p>
+
+  @if (importError()) {
+    <small>{{ importError() }}</small>
+  }
+
+  <ng-template #footer>
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      [text]="true"
+      [disabled]="workoutImportInProgress()"
+      (click)="modalVisible.set(false)"
+    >
+      <span pButtonLabel>Cancel</span>
+    </button>
+
+    <button pButton type="button" [disabled]="!canImport()" (click)="importWorkout()">
+      <i class="pi pi-download" pButtonIcon></i>
+      <span pButtonLabel>Import Workout</span>
+    </button>
+  </ng-template>
+</p-dialog>

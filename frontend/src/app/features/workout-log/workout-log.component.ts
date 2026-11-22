@@ -23,6 +23,7 @@ import { AuthStore } from '../auth/store/auth.store';
 import { type ExerciseResponse } from '../../api/generated/api-types';
 import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
 import { HeaderActionsComponent } from '../../shared/components/header-actions/header-actions.component';
+import { ImportWorkoutDialogComponent } from './import-workout-dialog/import-workout-dialog.component';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -37,7 +38,8 @@ import { HeaderActionsComponent } from '../../shared/components/header-actions/h
     WorkoutHistoryComponent,
     LoadingComponent,
     HistorySectionComponent,
-    HeaderActionsComponent
+    HeaderActionsComponent,
+    ImportWorkoutDialogComponent,
   ],
   templateUrl: './workout-log.component.html',
   styleUrl: './workout-log.component.scss',
@@ -60,14 +62,25 @@ export class WorkoutLogComponent {
       !this.workoutStore.workoutsLoading() &&
       !this.workoutStore.workoutSaveInProgress(),
   );
+  readonly importDialogVisible = signal(false);
 
   constructor() {
     effect(() => this.loadExercises());
     effect(() => this.loadWorkoutEntryForSelectedDate());
   }
 
+  applyImportedWorkout(entries: WorkoutEntry[]): void {
+    if (!this.workoutReady()) {
+      return;
+    }
+
+    this.workoutEntries.set(entries);
+  }
+
   saveWorkout(): void {
-    if (!this.workoutReady() || !this.isWorkoutValid()) return;
+    if (!this.workoutReady() || !this.isWorkoutValid()) {
+      return;
+    }
 
     this.workoutStore.saveWorkout({
       date: toDateString(this.appStore.selectedDate()),
@@ -75,21 +88,27 @@ export class WorkoutLogComponent {
     });
   }
 
+  openImportWorkoutModal() {
+    this.importDialogVisible.set(true);
+  }
+
   hasSavedWorkout(): boolean {
-    const date = toDateString(this.appStore.selectedDate());
-    return this.workoutStore.workoutDates().includes(date);
+    const selectedDate = toDateString(this.appStore.selectedDate());
+    return this.workoutStore.workoutDates().includes(selectedDate);
   }
 
   deleteWorkout(): void {
-    if (!this.workoutReady()) return;
+    if (!this.workoutReady()) {
+      return;
+    }
 
-    this.workoutStore.deleteWorkout({
-      date: toDateString(this.appStore.selectedDate()),
-    });
+    this.workoutStore.deleteWorkout({ date: toDateString(this.appStore.selectedDate()) });
   }
 
   addWorkoutEntry(): void {
-    if (this.authStore.authenticated() && !this.workoutReady()) return;
+    if (this.authStore.authenticated() && !this.workoutReady()) {
+      return;
+    }
 
     this.workoutEntries.update((rows) => [
       ...rows,

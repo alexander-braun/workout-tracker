@@ -28,4 +28,20 @@
       <i class="pi pi-trash" pButtonIcon></i>
     </button>
   }
+
+  @if (hasCustomAction()) {
+    <button
+      pButton
+      type="button"
+      [text]="true"
+      severity="info"
+      class="header-icon-button"
+      [aria-label]="customActionTitle()"
+      [title]="customActionTitle()"
+      [disabled]="customActionDisabled()"
+      (click)="customAction.emit()"
+    >
+      <i class="pi pi-file-import" pButtonIcon></i>
+    </button>
+  }
 </div>
