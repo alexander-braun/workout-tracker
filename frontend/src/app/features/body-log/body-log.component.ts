@@ -10,6 +10,7 @@ import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { AuthStore } from '../auth/store/auth.store';
 import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
+import { HeaderActionsComponent } from '../../shared/components/header-actions/header-actions.component';
 
 @Component({
   selector: 'frontend-body-log',
@@ -22,6 +23,7 @@ import { HistorySectionComponent } from '../../shared/components/history-section
     BodyProgressComponent,
     LoadingComponent,
     HistorySectionComponent,
+    HeaderActionsComponent
   ],
   templateUrl: './body-log.component.html',
   styleUrl: './body-log.component.scss',

@@ -4,38 +4,15 @@
       <h2>Workout Log</h2>
       <p>Track your workout progress</p>
     </div>
-
-    <div class="header-actions">
-      <button
-        pButton
-        type="button"
-        [text]="true"
-        severity="success"
-        class="header-icon-button"
-        aria-label="Save Workout"
-        title="Save Workout"
-        [disabled]="!workoutReady() || !isWorkoutValid()"
-        (click)="saveWorkout()"
-      >
-        <i class="pi pi-save" pButtonIcon></i>
-      </button>
-
-      @if (hasSavedWorkout()) {
-        <button
-          pButton
-          type="button"
-          [text]="true"
-          severity="danger"
-          class="header-icon-button"
-          aria-label="Delete Workout"
-          title="Delete Workout"
-          [disabled]="!workoutReady()"
-          (click)="deleteWorkout()"
-        >
-          <i class="pi pi-trash" pButtonIcon></i>
-        </button>
-      }
-    </div>
+    <frontend-header-actions
+      [hasSavedEntry]="hasSavedWorkout()"
+      deleteTitle="Delete Workout"
+      saveTitle="Save Workout"
+      (delete)="deleteWorkout()"
+      (save)="saveWorkout()"
+      [readyForDelete]="workoutReady()"
+      [readyForSave]="workoutReady() && isWorkoutValid()"
+    ></frontend-header-actions>
   </header>
 
   @if (workoutStore.workoutSaveInProgress()) {

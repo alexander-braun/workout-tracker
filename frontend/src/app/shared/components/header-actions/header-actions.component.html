@@ -1,0 +1,31 @@
+<div class="header-actions">
+  <button
+    pButton
+    type="button"
+    [text]="true"
+    severity="success"
+    class="header-icon-button"
+    [aria-label]="saveTitle()"
+    [title]="saveTitle()"
+    (click)="save.emit()"
+    [disabled]="!readyForSave()"
+  >
+    <i class="pi pi-save" pButtonIcon></i>
+  </button>
+
+  @if (hasSavedEntry()) {
+    <button
+      pButton
+      type="button"
+      [text]="true"
+      severity="danger"
+      class="header-icon-button"
+      [aria-label]="deleteTitle()"
+      [title]="deleteTitle()"
+      [disabled]="!readyForDelete()"
+      (click)="delete.emit()"
+    >
+      <i class="pi pi-trash" pButtonIcon></i>
+    </button>
+  }
+</div>

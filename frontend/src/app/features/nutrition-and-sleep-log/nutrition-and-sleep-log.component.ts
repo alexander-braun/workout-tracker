@@ -11,6 +11,7 @@ import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { AuthStore } from '../auth/store/auth.store';
 import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
+import { HeaderActionsComponent } from '../../shared/components/header-actions/header-actions.component';
 
 @Component({
   selector: 'frontend-nutrition-and-sleep-log',
@@ -23,6 +24,7 @@ import { HistorySectionComponent } from '../../shared/components/history-section
     NutritionAndSleepHistoryComponent,
     LoadingComponent,
     HistorySectionComponent,
+    HeaderActionsComponent
   ],
   templateUrl: './nutrition-and-sleep-log.component.html',
   styleUrl: './nutrition-and-sleep-log.component.scss',

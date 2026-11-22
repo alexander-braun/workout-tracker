@@ -1,40 +1,19 @@
-<form class="card" [formGroup]="form" (ngSubmit)="saveLog()">
+<form class="card" [formGroup]="form">
   <header class="card-header">
     <div>
       <h2>Nutrition and Sleep Log</h2>
       <p class="subtitle">Track nutrition and recovery</p>
     </div>
 
-    <div class="header-actions">
-      <button
-        pButton
-        type="submit"
-        [text]="true"
-        severity="success"
-        class="header-icon-button"
-        aria-label="Save Log"
-        title="Save Log"
-        [disabled]="!nutritionReady()"
-      >
-        <i class="pi pi-save" pButtonIcon></i>
-      </button>
-
-      @if (hasSavedNutritionEntry()) {
-        <button
-          pButton
-          type="button"
-          [text]="true"
-          severity="danger"
-          class="header-icon-button"
-          aria-label="Delete Log"
-          title="Delete Log"
-          [disabled]="!nutritionReady()"
-          (click)="deleteNutritionEntry()"
-        >
-          <i class="pi pi-trash" pButtonIcon></i>
-        </button>
-      }
-    </div>
+    <frontend-header-actions
+      [hasSavedEntry]="hasSavedNutritionEntry()"
+      deleteTitle="Delete Log"
+      saveTitle="Save Log"
+      (delete)="deleteNutritionEntry()"
+      (save)="saveLog()"
+      [readyForDelete]="nutritionReady()"
+      [readyForSave]="nutritionReady()"
+    ></frontend-header-actions>
   </header>
 
   @if (nutritionStore.nutritionEntryLoading()) {
