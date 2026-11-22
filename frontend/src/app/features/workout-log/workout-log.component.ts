@@ -21,6 +21,7 @@ import { LoadingComponent } from '../../shared/components/loading/loading.compon
 import { toDateString } from '../../shared/helper/toDateString';
 import { AuthStore } from '../auth/store/auth.store';
 import { type ExerciseResponse } from '../../api/generated/api-types';
+import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -34,6 +35,7 @@ import { type ExerciseResponse } from '../../api/generated/api-types';
     AutoCompleteModule,
     WorkoutHistoryComponent,
     LoadingComponent,
+    HistorySectionComponent,
   ],
   templateUrl: './workout-log.component.html',
   styleUrl: './workout-log.component.scss',
@@ -42,7 +44,6 @@ export class WorkoutLogComponent {
   readonly workoutStore = inject(WorkoutLogStore);
   readonly appStore = inject(AppStore);
   readonly authStore = inject(AuthStore);
-  readonly historyOpen = signal(false);
   readonly filteredExercises = signal<ExerciseResponse[]>([]);
   readonly unitOptions: WeightUnit[] = ['BW', 'kg', 'lbs'];
   readonly workoutEntries = linkedSignal(() =>
@@ -59,26 +60,8 @@ export class WorkoutLogComponent {
   );
 
   constructor() {
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-      this.workoutStore.loadExercises();
-    });
-
-    effect(() => {
-      const date = this.appStore.selectedDate();
-
-      if (!this.authStore.authenticated() || this.workoutStore.workoutSaveInProgress()) {
-        return;
-      }
-
-      untracked(() => {
-        if (this.workoutStore.loadedDate() !== toDateString(date)) {
-          this.loadWorkout(date);
-        }
-      });
-    });
+    effect(() => this.loadExercises());
+    effect(() => this.loadWorkoutEntryForSelectedDate());
   }
 
   saveWorkout(): void {
@@ -275,11 +258,28 @@ export class WorkoutLogComponent {
     );
   }
 
-  private loadWorkout(date: Date): void {
-    this.workoutStore.loadWorkout(toDateString(date));
-  }
-
   private normalizeExerciseName(name: string): string {
     return name.trim().toLowerCase();
+  }
+
+  private loadWorkoutEntryForSelectedDate(): void {
+    const date = this.appStore.selectedDate();
+
+    if (!this.authStore.authenticated() || this.workoutStore.workoutSaveInProgress()) {
+      return;
+    }
+
+    untracked(() => {
+      if (this.workoutStore.loadedDate() !== toDateString(date)) {
+        this.workoutStore.loadWorkout(toDateString(date));
+      }
+    });
+  }
+
+  private loadExercises(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+    this.workoutStore.loadExercises();
   }
 }

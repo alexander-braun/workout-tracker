@@ -142,19 +142,9 @@
     </button>
   </footer>
 
-  <button type="button" class="history-toggle" (click)="historyOpen.set(!historyOpen())">
-    <i
-      class="pi"
-      [class.pi-chevron-down]="historyOpen()"
-      [class.pi-chevron-right]="!historyOpen()"
-    ></i>
-
-    {{ historyOpen() ? 'Hide Workout History' : 'Show Workout History' }}
-  </button>
-
-  @if (historyOpen()) {
-    <div class="history-content">
+  <frontend-history-section title="Workout History">
+    <ng-template>
       <frontend-workout-history />
-    </div>
-  }
+    </ng-template>
+  </frontend-history-section>
 </section>

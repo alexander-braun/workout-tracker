@@ -1,0 +1,11 @@
+  <button type="button" class="history-toggle" (click)="historyOpen.set(!historyOpen())">
+    <i class="pi" [class.pi-chevron-down]="historyOpen()" [class.pi-chevron-right]="!historyOpen()"></i>
+
+    {{ historyOpen() ? 'Hide ' + title() : 'Show ' + title() }}
+  </button>
+
+  @if (historyOpen()) {
+    <div class="history-content">
+      <ng-container [ngTemplateOutlet]="historyTemplate()" />
+    </div>
+  }

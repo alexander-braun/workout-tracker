@@ -160,15 +160,9 @@
     </div>
   }
 
-  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
-    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
-
-    {{ historyOpen ? 'Hide Nutrition and Sleep Progress' : 'Show Nutrition and Sleep Progress' }}
-  </button>
-
-  @if (historyOpen) {
-    <div class="history-content">
+  <frontend-history-section title="Nutrition and Sleep History">
+    <ng-template>
       <frontend-nutrition-and-sleep-history />
-    </div>
-  }
+    </ng-template>
+  </frontend-history-section>
 </form>

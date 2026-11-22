@@ -1,8 +1,4 @@
-import {
-  Component,
-  input,
-  output,
-} from '@angular/core';
+import { Component, input, output } from '@angular/core';
 import { type Range } from '../../types/range.model';
 
 @Component({
@@ -12,8 +8,8 @@ import { type Range } from '../../types/range.model';
   styleUrl: './range-selector.component.scss',
 })
 export class RangeSelectorComponent {
- ranges = input.required<Range[]>();
- selectedRange = input.required<Range>();
+  ranges = input.required<Range[]>();
+  selectedRange = input.required<Range>();
 
- selectedChange = output<Range>();
+  selectedRangeChange = output<Range>();
 }

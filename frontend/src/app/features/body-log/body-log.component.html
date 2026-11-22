@@ -234,15 +234,9 @@
     </div>
   </div>
 
-  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
-    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
-
-    {{ historyOpen ? 'Hide Body Progress' : 'Show Body Progress' }}
-  </button>
-
-  @if (historyOpen) {
-    <div class="history-content">
+  <frontend-history-section title="Body History">
+    <ng-template>
       <frontend-body-progress />
-    </div>
-  }
+    </ng-template>
+  </frontend-history-section>
 </form>

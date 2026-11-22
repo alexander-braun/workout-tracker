@@ -10,6 +10,7 @@ import { AppStore } from '../../store/app.store';
 import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { AuthStore } from '../auth/store/auth.store';
+import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
 
 @Component({
   selector: 'frontend-nutrition-and-sleep-log',
@@ -21,6 +22,7 @@ import { AuthStore } from '../auth/store/auth.store';
     InputNumberModule,
     NutritionAndSleepHistoryComponent,
     LoadingComponent,
+    HistorySectionComponent,
   ],
   templateUrl: './nutrition-and-sleep-log.component.html',
   styleUrl: './nutrition-and-sleep-log.component.scss',
@@ -49,37 +51,13 @@ export class NutritionAndSleepLogComponent {
     notes: this.fb.control<string | null>(null),
   });
 
-  historyOpen = false;
-
   readonly hasSavedNutritionEntry = computed(
     () => this.nutritionStore.currentNutritionEntry() !== null,
   );
 
   constructor() {
-    effect(() => {
-      const date = this.appStore.selectedDate();
-
-      if (!this.authStore.authenticated() || this.nutritionStore.nutritionEntrySaveInProgress()) {
-        return;
-      }
-
-      untracked(() => {
-        if (this.nutritionStore.loadedDate() !== toDateString(date)) {
-          this.nutritionStore.loadNutritionEntry(toDateString(date));
-        }
-      });
-    });
-
-    effect(() => {
-      const loadedDate = this.nutritionStore.loadedDate();
-      const entry = this.nutritionStore.currentNutritionEntry();
-
-      if (loadedDate === null || entry === null) {
-        this.form.reset();
-      } else {
-        this.form.patchValue(entry);
-      }
-    });
+    effect(() => this.loadNutritionEntryForSelectedDate());
+    effect(() => this.syncFormWithNutritionEntry());
   }
 
   setSleepQuality(value: number): void {
@@ -105,5 +83,31 @@ export class NutritionAndSleepLogComponent {
     this.nutritionStore.deleteNutritionEntry({
       date: toDateString(this.appStore.selectedDate()),
     });
+  }
+
+  private loadNutritionEntryForSelectedDate(): void {
+    const date = this.appStore.selectedDate();
+
+    if (!this.authStore.authenticated() || this.nutritionStore.nutritionEntrySaveInProgress()) {
+      return;
+    }
+
+    untracked(() => {
+      const dateString = toDateString(date);
+      if (this.nutritionStore.loadedDate() !== dateString) {
+        this.nutritionStore.loadNutritionEntry(dateString);
+      }
+    });
+  }
+
+  private syncFormWithNutritionEntry(): void {
+    const loadedDate = this.nutritionStore.loadedDate();
+    const entry = this.nutritionStore.currentNutritionEntry();
+
+    if (loadedDate === null || entry === null) {
+      this.form.reset();
+    } else {
+      this.form.patchValue(entry);
+    }
   }
 }

@@ -66,9 +66,7 @@ export class AccountComponent {
   readonly deleteType = signal<DestructiveAction | null>(null);
 
   constructor() {
-    effect(() => {
-      this.setCurrentUserEmail();
-    });
+    effect(() => this.setCurrentUserEmail());
   }
 
   handleEmailUpdateRequest(): void {
