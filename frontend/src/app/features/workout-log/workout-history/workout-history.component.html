@@ -23,7 +23,7 @@
     ></frontend-range-selector>
   </header>
   <p-menu #actionMenu [model]="actionMenuItems" [popup]="true" appendTo="body" />
-  @if (store.workoutHistoryLoading()) {
+  @if (store.workoutHistoryLoading() || store.workoutSaveInProgress()) {
     <frontend-loading text="Loading workout history..." />
   } @else {
     <div class="history-scroll">

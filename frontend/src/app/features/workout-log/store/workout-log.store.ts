@@ -141,7 +141,6 @@ export const WorkoutLogStore = signalStore(
           switchMap((action) => {
             patchState(store, {
               workoutSaveInProgress: true,
-              workoutHistoryLoading: true,
               exerciseUpdateSucceeded: false,
             });
 
@@ -163,7 +162,6 @@ export const WorkoutLogStore = signalStore(
               finalize(() => {
                 patchState(store, {
                   workoutSaveInProgress: false,
-                  workoutHistoryLoading: false,
                 });
               }),
             );
@@ -175,18 +173,12 @@ export const WorkoutLogStore = signalStore(
           switchMap((action) => {
             patchState(store, {
               workoutSaveInProgress: true,
-              workoutHistoryLoading: true,
               exerciseUpdateSucceeded: false,
             });
 
             return api.renameExercise(action).pipe(
               tap(() => {
                 patchState(store, { workoutHistoryStale: true });
-
-                const date = store.loadedDate();
-                if (date !== null) {
-                  loadWorkout(date);
-                }
               }),
               switchMap(() => loadExercises$()),
               tap(() => patchState(store, { exerciseUpdateSucceeded: true })),
@@ -198,7 +190,6 @@ export const WorkoutLogStore = signalStore(
               finalize(() => {
                 patchState(store, {
                   workoutSaveInProgress: false,
-                  workoutHistoryLoading: false,
                 });
               }),
             );
