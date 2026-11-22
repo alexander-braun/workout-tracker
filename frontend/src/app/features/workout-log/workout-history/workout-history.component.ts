@@ -22,12 +22,7 @@ type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
 @Component({
   selector: 'frontend-workout-history',
   standalone: true,
-  imports: [
-    ButtonModule,
-    SparklineComponent,
-    LoadingComponent,
-    RangeSelectorComponent,
-  ],
+  imports: [ButtonModule, SparklineComponent, LoadingComponent, RangeSelectorComponent],
   templateUrl: './workout-history.component.html',
   styleUrl: './workout-history.component.scss',
 })
@@ -124,27 +119,8 @@ export class WorkoutHistoryComponent {
   });
 
   constructor() {
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      this.loadSelectedRange();
-    });
-
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      if (this.store.workoutHistoryStale()) {
-        this.loadSelectedRange();
-      }
-    });
-  }
-
-  private isWorkoutRange(range: Range): range is WorkoutRange {
-    return this.ranges.some(r => r === range);
+    effect(() => this.loadWorkoutHistory());
+    effect(() => this.reloadStaleWorkoutHistory());
   }
 
   selectRange(range: Range): void {
@@ -188,5 +164,27 @@ export class WorkoutHistoryComponent {
       return '';
     }
     return ` @ ${session.weight} ${session.weightUnit}`;
+  }
+
+  private reloadStaleWorkoutHistory(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    if (this.store.workoutHistoryStale()) {
+      this.loadSelectedRange();
+    }
+  }
+
+  private loadWorkoutHistory(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    this.loadSelectedRange();
+  }
+
+  private isWorkoutRange(range: Range): range is WorkoutRange {
+    return this.ranges.some((r) => r === range);
   }
 }

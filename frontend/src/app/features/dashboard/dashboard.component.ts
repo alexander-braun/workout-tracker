@@ -98,12 +98,14 @@ export class DashboardComponent {
   );
 
   constructor() {
-    effect(() => {
-      if (this.authStore.authenticated()) {
-        this.loginDialogVisible = false;
-        this.registerDialogVisible = false;
-      }
-    });
+    effect(() => this.closeDialogsOnLogin());
+  }
+
+  private closeDialogsOnLogin(): void {
+    if (this.authStore.authenticated()) {
+      this.loginDialogVisible = false;
+      this.registerDialogVisible = false;
+    }
   }
 
   dateKey(date: { year: number; month: number; day: number }): string {

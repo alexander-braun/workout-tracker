@@ -96,23 +96,8 @@ export class NutritionAndSleepHistoryComponent {
   });
 
   constructor() {
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      this.loadSelectedRange();
-    });
-
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      if (this.nutritionStore.nutritionHistoryStale()) {
-        this.loadSelectedRange();
-      }
-    });
+    effect(() => this.loadNutritionHistory());
+    effect(() => this.reloadStaleNutritionHistory());
   }
 
   private isNutritionRange(range: Range): range is NutritionRange {
@@ -190,5 +175,23 @@ export class NutritionAndSleepHistoryComponent {
       from: toDateString(from),
       to: toDateString(to),
     });
+  }
+
+  private loadNutritionHistory() {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    this.loadSelectedRange();
+  }
+
+  private reloadStaleNutritionHistory(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    if (this.nutritionStore.nutritionHistoryStale()) {
+      this.loadSelectedRange();
+    }
   }
 }

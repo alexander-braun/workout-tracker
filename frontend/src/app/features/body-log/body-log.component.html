@@ -234,15 +234,7 @@
     </div>
   </div>
 
-  <button type="button" class="history-toggle" (click)="historyOpen = !historyOpen">
-    <i class="pi" [class.pi-chevron-down]="historyOpen" [class.pi-chevron-right]="!historyOpen"></i>
-
-    {{ historyOpen ? 'Hide Body Progress' : 'Show Body Progress' }}
-  </button>
-
-  @if (historyOpen) {
-    <div class="history-content">
-      <frontend-body-progress />
-    </div>
-  }
+  <frontend-history-section [historyOpen]="historyOpen()" title="Body History">
+    <frontend-body-progress />
+  </frontend-history-section>
 </form>

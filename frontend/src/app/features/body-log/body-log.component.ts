@@ -2,7 +2,6 @@ import { Component, computed, effect, inject, signal, untracked } from '@angular
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
 import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
-
 import { type BodyArea, BodyComponent } from './body/body.component';
 import { BodyProgressComponent } from './body-progress/body-progress.component';
 import { BodyLogStore } from './store/body-log.store';
@@ -10,6 +9,7 @@ import { AppStore } from '../../store/app.store';
 import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { AuthStore } from '../auth/store/auth.store';
+import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
 
 @Component({
   selector: 'frontend-body-log',
@@ -21,6 +21,7 @@ import { AuthStore } from '../auth/store/auth.store';
     BodyComponent,
     BodyProgressComponent,
     LoadingComponent,
+    HistorySectionComponent,
   ],
   templateUrl: './body-log.component.html',
   styleUrl: './body-log.component.scss',
@@ -44,7 +45,7 @@ export class BodyLogComponent {
     weight: this.fb.control<number | null>(null),
   });
 
-  historyOpen = false;
+  historyOpen = signal(false);
   readonly measurementReady = computed(
     () =>
       this.authStore.authenticated() &&
@@ -53,34 +54,12 @@ export class BodyLogComponent {
       !this.bodyStore.measurementSaveInProgress(),
   );
 
-  constructor() {
-    effect(() => {
-      const date = this.appStore.selectedDate();
-
-      if (!this.authStore.authenticated() || this.bodyStore.measurementSaveInProgress()) {
-        return;
-      }
-
-      untracked(() => {
-        if (this.bodyStore.loadedDate() !== toDateString(date)) {
-          this.bodyStore.loadMeasurement(toDateString(date));
-        }
-      });
-    });
-
-    effect(() => {
-      const loadedDate = this.bodyStore.loadedDate();
-      const measurement = this.bodyStore.currentMeasurement();
-
-      if (loadedDate === null || measurement === null) {
-        this.form.reset();
-      } else {
-        this.form.patchValue(measurement);
-      }
-    });
-  }
-
   readonly hasSavedMeasurement = computed(() => this.bodyStore.currentMeasurement() !== null);
+
+  constructor() {
+    effect(() => this.loadMeasurementOnDateChange());
+    effect(() => this.syncFormWithMeasurement());
+  }
 
   deleteMeasurement() {
     if (!this.measurementReady()) return;
@@ -97,10 +76,6 @@ export class BodyLogComponent {
     this.focusElement.set(null);
   }
 
-  isFormEmpty(): boolean {
-    return Object.values(this.form.getRawValue()).every((value) => value === null);
-  }
-
   saveMeasurements(): void {
     if (!this.measurementReady()) return;
 
@@ -114,5 +89,34 @@ export class BodyLogComponent {
       date: toDateString(this.appStore.selectedDate()),
       request: this.form.getRawValue(),
     });
+  }
+
+  private loadMeasurementOnDateChange(): void {
+    const date = this.appStore.selectedDate();
+
+    if (!this.authStore.authenticated() || this.bodyStore.measurementSaveInProgress()) {
+      return;
+    }
+
+    untracked(() => {
+      if (this.bodyStore.loadedDate() !== toDateString(date)) {
+        this.bodyStore.loadMeasurement(toDateString(date));
+      }
+    });
+  }
+
+  private syncFormWithMeasurement(): void {
+    const loadedDate = this.bodyStore.loadedDate();
+    const measurement = this.bodyStore.currentMeasurement();
+
+    if (loadedDate === null || measurement === null) {
+      this.form.reset();
+    } else {
+      this.form.patchValue(measurement);
+    }
+  }
+
+  private isFormEmpty(): boolean {
+    return Object.values(this.form.getRawValue()).every((value) => value === null);
   }
 }

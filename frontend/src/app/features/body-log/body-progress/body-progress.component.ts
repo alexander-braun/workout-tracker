@@ -97,31 +97,12 @@ export class BodyProgressComponent {
   });
 
   constructor() {
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      this.loadSelectedRange();
-    });
-
-    effect(() => {
-      if (!this.authStore.authenticated()) {
-        return;
-      }
-
-      if (this.bodyStore.measurementHistoryStale()) {
-        this.loadSelectedRange();
-      }
-    });
+    effect(() => this.loadBodyHistory());
+    effect(() => this.reloaStaleMeasurementHistory());
   }
 
   changeColor(row: MeasurementProgressRow): ChangeColor {
     return getMeasurementChangeColor(row.key, this.change(row));
-  }
-
-  private isMeasurementRange(range: Range): range is MeasurementRange {
-    return this.ranges.some((r) => r === range);
   }
 
   selectRange(range: Range): void {
@@ -167,5 +148,27 @@ export class BodyProgressComponent {
       from: toDateString(from),
       to: toDateString(to),
     });
+  }
+
+  private reloaStaleMeasurementHistory(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    if (this.bodyStore.measurementHistoryStale()) {
+      this.loadSelectedRange();
+    }
+  }
+
+  private loadBodyHistory(): void {
+    if (!this.authStore.authenticated()) {
+      return;
+    }
+
+    this.loadSelectedRange();
+  }
+
+  private isMeasurementRange(range: Range): range is MeasurementRange {
+    return this.ranges.some((r) => r === range);
   }
 }
