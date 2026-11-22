@@ -1,4 +1,4 @@
-import { Component, computed, effect, inject, signal, ViewChild } from '@angular/core';
+import { Component, computed, effect, inject, signal } from '@angular/core';
 import { ButtonModule } from 'primeng/button';
 import { WorkoutLogStore } from '../store/workout-log.store';
 import {
@@ -19,7 +19,6 @@ import { type MenuItem } from 'primeng/api';
 import { MenuModule } from 'primeng/menu';
 import { type ExerciseResponse } from '../../../api/generated/api-types';
 import { ReplaceExerciseDialogComponent } from './replace-exercise-dialog/replace-exercise-dialog.component';
-import { WorkoutApiService } from '../workout-api.service';
 
 type ProgressMetric = 'reps' | 'weight';
 type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
