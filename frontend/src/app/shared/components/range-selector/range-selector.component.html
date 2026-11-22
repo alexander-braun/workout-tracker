@@ -4,7 +4,7 @@
           type="button"
           class="range-button"
           [class.active]="selectedRange() === range"
-          (click)="selectedChange.emit(range)"
+          (click)="	selectedRangeChange.emit(range)"
         >
           {{ range }}
         </button>

@@ -97,8 +97,8 @@ export class BodyProgressComponent {
   });
 
   constructor() {
-    effect(() => this.loadBodyHistory());
-    effect(() => this.reloaStaleMeasurementHistory());
+    effect(() => this.loadMeasurementHistory());
+    effect(() => this.reloadStaleMeasurementHistory());
   }
 
   changeColor(row: MeasurementProgressRow): ChangeColor {
@@ -150,7 +150,7 @@ export class BodyProgressComponent {
     });
   }
 
-  private reloaStaleMeasurementHistory(): void {
+  private reloadStaleMeasurementHistory(): void {
     if (!this.authStore.authenticated()) {
       return;
     }
@@ -160,7 +160,7 @@ export class BodyProgressComponent {
     }
   }
 
-  private loadBodyHistory(): void {
+  private loadMeasurementHistory(): void {
     if (!this.authStore.authenticated()) {
       return;
     }

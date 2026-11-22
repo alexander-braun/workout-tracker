@@ -51,8 +51,6 @@ export class NutritionAndSleepLogComponent {
     notes: this.fb.control<string | null>(null),
   });
 
-  historyOpen = signal(false);
-
   readonly hasSavedNutritionEntry = computed(
     () => this.nutritionStore.currentNutritionEntry() !== null,
   );

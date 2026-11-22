@@ -44,7 +44,6 @@ export class WorkoutLogComponent {
   readonly workoutStore = inject(WorkoutLogStore);
   readonly appStore = inject(AppStore);
   readonly authStore = inject(AuthStore);
-  readonly historyOpen = signal(false);
   readonly filteredExercises = signal<ExerciseResponse[]>([]);
   readonly unitOptions: WeightUnit[] = ['BW', 'kg', 'lbs'];
   readonly workoutEntries = linkedSignal(() =>

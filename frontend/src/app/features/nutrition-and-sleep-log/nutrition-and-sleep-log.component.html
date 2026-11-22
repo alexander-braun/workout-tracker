@@ -160,7 +160,9 @@
     </div>
   }
 
-  <frontend-history-section [historyOpen]="historyOpen()" title="Nutrition and Sleep History">
-    <frontend-nutrition-and-sleep-history />
+  <frontend-history-section title="Nutrition and Sleep History">
+    <ng-template>
+      <frontend-nutrition-and-sleep-history />
+    </ng-template>
   </frontend-history-section>
 </form>

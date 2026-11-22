@@ -142,7 +142,9 @@
     </button>
   </footer>
 
-  <frontend-history-section [historyOpen]="historyOpen()" title="Workout History">
-    <frontend-workout-history />
+  <frontend-history-section title="Workout History">
+    <ng-template>
+      <frontend-workout-history />
+    </ng-template>
   </frontend-history-section>
 </section>

@@ -6,6 +6,6 @@
 
   @if (historyOpen()) {
     <div class="history-content">
-      <ng-content></ng-content>
+      <ng-container [ngTemplateOutlet]="historyTemplate()" />
     </div>
   }

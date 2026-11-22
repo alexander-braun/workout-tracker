@@ -234,7 +234,9 @@
     </div>
   </div>
 
-  <frontend-history-section [historyOpen]="historyOpen()" title="Body History">
-    <frontend-body-progress />
+  <frontend-history-section title="Body History">
+    <ng-template>
+      <frontend-body-progress />
+    </ng-template>
   </frontend-history-section>
 </form>

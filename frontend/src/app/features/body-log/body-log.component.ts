@@ -44,8 +44,6 @@ export class BodyLogComponent {
     calfRight: this.fb.control<number | null>(null),
     weight: this.fb.control<number | null>(null),
   });
-
-  historyOpen = signal(false);
   readonly measurementReady = computed(
     () =>
       this.authStore.authenticated() &&
@@ -57,7 +55,7 @@ export class BodyLogComponent {
   readonly hasSavedMeasurement = computed(() => this.bodyStore.currentMeasurement() !== null);
 
   constructor() {
-    effect(() => this.loadMeasurementOnDateChange());
+    effect(() => this.loadMeasurementForSelectedDate());
     effect(() => this.syncFormWithMeasurement());
   }
 
@@ -91,7 +89,7 @@ export class BodyLogComponent {
     });
   }
 
-  private loadMeasurementOnDateChange(): void {
+  private loadMeasurementForSelectedDate(): void {
     const date = this.appStore.selectedDate();
 
     if (!this.authStore.authenticated() || this.bodyStore.measurementSaveInProgress()) {

@@ -4,7 +4,7 @@
       <h2>Nutrition and Sleep Progress</h2>
       <p class="subtitle">See how your nutrition and sleep habits change over time.</p>
     </div>
-    <frontend-range-selector [ranges]="ranges" [selectedRange]="selectedRange()" (selectedChange)="selectRange($event)"></frontend-range-selector>
+    <frontend-range-selector [ranges]="ranges" [selectedRange]="selectedRange()" (selectedRangeChange)="selectRange($event)"></frontend-range-selector>
   </header>
 
   @if (nutritionStore.nutritionHistoryLoading()) {
