@@ -98,10 +98,10 @@ export class DashboardComponent {
   );
 
   constructor() {
-    effect(() => this.closeDialogsOnLogin());
+    effect(() => this.closeAuthDialogsWhenAuthenticated());
   }
 
-  private closeDialogsOnLogin(): void {
+  private closeAuthDialogsWhenAuthenticated(): void {
     if (this.authStore.authenticated()) {
       this.loginDialogVisible = false;
       this.registerDialogVisible = false;

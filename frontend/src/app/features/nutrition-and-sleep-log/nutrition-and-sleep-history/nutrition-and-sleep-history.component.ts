@@ -177,7 +177,7 @@ export class NutritionAndSleepHistoryComponent {
     });
   }
 
-  private loadNutritionHistory() {
+  private loadNutritionHistory(): void {
     if (!this.authStore.authenticated()) {
       return;
     }

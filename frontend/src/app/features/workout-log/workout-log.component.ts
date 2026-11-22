@@ -60,7 +60,7 @@ export class WorkoutLogComponent {
   );
 
   constructor() {
-    effect(() => this.loadWorkoutHistory());
+    effect(() => this.loadExercises());
     effect(() => this.loadWorkoutEntryForSelectedDate());
   }
 
@@ -276,7 +276,7 @@ export class WorkoutLogComponent {
     });
   }
 
-  private loadWorkoutHistory(): void {
+  private loadExercises(): void {
     if (!this.authStore.authenticated()) {
       return;
     }

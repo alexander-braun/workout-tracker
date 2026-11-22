@@ -97,8 +97,9 @@ export class BodyLogComponent {
     }
 
     untracked(() => {
-      if (this.bodyStore.loadedDate() !== toDateString(date)) {
-        this.bodyStore.loadMeasurement(toDateString(date));
+      const dateString = toDateString(date);
+      if (this.bodyStore.loadedDate() !== dateString) {
+        this.bodyStore.loadMeasurement(dateString);
       }
     });
   }
