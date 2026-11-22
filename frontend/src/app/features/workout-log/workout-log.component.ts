@@ -22,6 +22,7 @@ import { toDateString } from '../../shared/helper/toDateString';
 import { AuthStore } from '../auth/store/auth.store';
 import { type ExerciseResponse } from '../../api/generated/api-types';
 import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
+import { HeaderActionsComponent } from '../../shared/components/header-actions/header-actions.component';
 
 @Component({
   selector: 'frontend-workout-log',
@@ -36,6 +37,7 @@ import { HistorySectionComponent } from '../../shared/components/history-section
     WorkoutHistoryComponent,
     LoadingComponent,
     HistorySectionComponent,
+    HeaderActionsComponent
   ],
   templateUrl: './workout-log.component.html',
   styleUrl: './workout-log.component.scss',

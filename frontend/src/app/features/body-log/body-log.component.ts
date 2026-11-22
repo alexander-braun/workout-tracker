@@ -1,6 +1,5 @@
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { type BodyArea, BodyComponent } from './body/body.component';
 import { BodyProgressComponent } from './body-progress/body-progress.component';
@@ -10,18 +9,19 @@ import { toDateString } from '../../shared/helper/toDateString';
 import { LoadingComponent } from '../../shared/components/loading/loading.component';
 import { AuthStore } from '../auth/store/auth.store';
 import { HistorySectionComponent } from '../../shared/components/history-section/history-section.component';
+import { HeaderActionsComponent } from '../../shared/components/header-actions/header-actions.component';
 
 @Component({
   selector: 'frontend-body-log',
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    ButtonModule,
     InputNumberModule,
     BodyComponent,
     BodyProgressComponent,
     LoadingComponent,
     HistorySectionComponent,
+    HeaderActionsComponent
   ],
   templateUrl: './body-log.component.html',
   styleUrl: './body-log.component.scss',

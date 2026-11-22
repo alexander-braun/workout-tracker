@@ -4,38 +4,16 @@
       <h2>Workout Log</h2>
       <p>Track your workout progress</p>
     </div>
-
-    <div class="header-actions">
-      <button
-        pButton
-        type="button"
-        [text]="true"
-        severity="success"
-        class="header-icon-button"
-        aria-label="Save Workout"
-        title="Save Workout"
-        [disabled]="!workoutReady() || !isWorkoutValid()"
-        (click)="saveWorkout()"
-      >
-        <i class="pi pi-save" pButtonIcon></i>
-      </button>
-
-      @if (hasSavedWorkout()) {
-        <button
-          pButton
-          type="button"
-          [text]="true"
-          severity="danger"
-          class="header-icon-button"
-          aria-label="Delete Workout"
-          title="Delete Workout"
-          [disabled]="!workoutReady()"
-          (click)="deleteWorkout()"
-        >
-          <i class="pi pi-trash" pButtonIcon></i>
-        </button>
-      }
-    </div>
+    <frontend-header-actions
+      [hasSavedEntry]="hasSavedWorkout()"
+      deleteTitle="Delete Workout"
+      saveTitle="Save Workout"
+      (delete)="deleteWorkout()"
+      (save)="saveWorkout()"
+      [readyForDelete]="workoutReady()"
+      [readyForSave]="workoutReady() && isWorkoutValid()"
+      saveButtonType="button"
+    ></frontend-header-actions>
   </header>
 
   @if (workoutStore.workoutSaveInProgress()) {
@@ -68,8 +46,8 @@
             (onBlur)="onExerciseBlur(i, $event)"
           />
 
-          <p-inputnumber [(ngModel)]="workoutEntry.sets" [showButtons]="false" />
-          <p-inputnumber [(ngModel)]="workoutEntry.reps" [showButtons]="false" />
+          <p-inputnumber [(ngModel)]="workoutEntry.sets" [showButtons]="false" (keydown.enter)="saveWorkout()" />
+          <p-inputnumber [(ngModel)]="workoutEntry.reps" [showButtons]="false" (keydown.enter)="saveWorkout()" />
           <span class="multiply">×</span>
           <div class="weight">
             <p-inputnumber
@@ -79,6 +57,7 @@
               [maxFractionDigits]="2"
               [useGrouping]="false"
               placeholder="—"
+              (keydown.enter)="saveWorkout()"
             />
             <p-select
               appendTo="body"
@@ -87,7 +66,7 @@
               (ngModelChange)="setWorkoutUnit(workoutEntry, $event)"
             />
           </div>
-          <input pInputText [(ngModel)]="workoutEntry.notes" />
+          <input pInputText [(ngModel)]="workoutEntry.notes" (keydown.enter)="saveWorkout()" />
 
           <div class="row-actions">
             <button
