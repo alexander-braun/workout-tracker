@@ -67,7 +67,7 @@ export class ImportWorkoutDialogComponent {
     this.importError.set(null);
 
     this.workoutStore
-      .getWorkoutForDate(sourceDate)
+      .getWorkoutEntriesForDate(sourceDate)
       .pipe(
         takeUntilDestroyed(this.destroyRef),
         finalize(() => this.workoutImportInProgress.set(false)),

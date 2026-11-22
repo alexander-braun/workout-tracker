@@ -70,10 +70,6 @@ export class WorkoutLogComponent {
   }
 
   applyImportedWorkout(entries: WorkoutEntry[]): void {
-    if (!this.workoutReady()) {
-      return;
-    }
-
     this.workoutEntries.set(entries);
   }
 
@@ -86,10 +82,6 @@ export class WorkoutLogComponent {
       date: toDateString(this.appStore.selectedDate()),
       entries: this.workoutEntries(),
     });
-  }
-
-  openImportWorkoutModal() {
-    this.importDialogVisible.set(true);
   }
 
   hasSavedWorkout(): boolean {

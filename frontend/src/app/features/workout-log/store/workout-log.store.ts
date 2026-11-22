@@ -106,7 +106,7 @@ export const WorkoutLogStore = signalStore(
         reset$.next();
         patchState(store, initialState);
       },
-      getWorkoutForDate(date: string): Observable<WorkoutEntry[]> {
+      getWorkoutEntriesForDate(date: string): Observable<WorkoutEntry[]> {
         return api.getWorkout(date).pipe(
           map((workout) => toWorkoutEntries(workout.entries)),
           takeUntil(reset$),

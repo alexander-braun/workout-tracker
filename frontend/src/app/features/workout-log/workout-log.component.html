@@ -14,7 +14,8 @@
       [readyForSave]="workoutReady() && isWorkoutValid()"
       saveButtonType="button"
       [hasCustomAction]="true"
-      [customActionDisabled]="false"
+      [customActionDisabled]="!workoutReady()"
+      customActionIcon="pi pi-file-import"
       customActionTitle="Import previous workout"
       (customAction)="importDialogVisible.set(true)"
     ></frontend-header-actions>

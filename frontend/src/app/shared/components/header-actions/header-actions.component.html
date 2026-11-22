@@ -41,7 +41,7 @@
       [disabled]="customActionDisabled()"
       (click)="customAction.emit()"
     >
-      <i class="pi pi-file-import" pButtonIcon></i>
+      <i [class]="customActionIcon()" pButtonIcon></i>
     </button>
   }
 </div>

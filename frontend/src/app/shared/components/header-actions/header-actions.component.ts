@@ -1,5 +1,5 @@
 import { Component, input, output } from '@angular/core';
-import { ButtonModule, type ButtonSeverity } from 'primeng/button';
+import { ButtonModule } from 'primeng/button';
 
 @Component({
   selector: 'frontend-header-actions',
@@ -14,13 +14,13 @@ export class HeaderActionsComponent {
   readonly readyForDelete = input.required<boolean>();
   readonly saveTitle = input.required<string>();
   readonly deleteTitle = input.required<string>();
+  readonly customActionIcon = input('pi pi-file-import');
 
-  readonly customActionTitle = input<string>();
-  readonly customActionDisabled = input<boolean>();
+  readonly customActionTitle = input<string>('');
+  readonly customActionDisabled = input<boolean>(false);
   readonly hasCustomAction = input<boolean>(false);
 
   readonly delete = output<void>();
-  sev: ButtonSeverity;
   readonly save = output<void>();
   readonly customAction = output<void>();
 

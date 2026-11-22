@@ -9,8 +9,7 @@ import { NutritionLogStore } from '../../../features/nutrition-and-sleep-log/sto
 @Component({
   selector: 'frontend-datepicker',
   imports: [FormsModule, DatePickerModule],
-  templateUrl: './datepicker.component.html',
-  styleUrl: './datepicker.component.scss',
+  templateUrl: './datepicker.component.html'
 })
 export class DatepickerComponent {
   private readonly workoutStore = inject(WorkoutLogStore);
