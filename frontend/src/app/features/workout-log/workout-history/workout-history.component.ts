@@ -16,12 +16,9 @@ import {
 import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
 import { type Range } from '../../../shared/types/range.model';
 import { type MenuItem } from 'primeng/api';
-import { type Menu, MenuModule } from 'primeng/menu';
+import { MenuModule } from 'primeng/menu';
 import { type ExerciseResponse } from '../../../api/generated/api-types';
-import {
-  type ReplaceExerciseAction,
-  ReplaceExerciseDialogComponent,
-} from './replace-exercise-dialog/replace-exercise-dialog.component';
+import { ReplaceExerciseDialogComponent } from './replace-exercise-dialog/replace-exercise-dialog.component';
 import { WorkoutApiService } from '../workout-api.service';
 
 type ProgressMetric = 'reps' | 'weight';
@@ -42,10 +39,6 @@ type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
   styleUrl: './workout-history.component.scss',
 })
 export class WorkoutHistoryComponent {
-  @ViewChild('actionMenu') actionMenu!: Menu;
-
-  readonly workoutApiService = inject(WorkoutApiService);
-
   readonly selectedExercise = signal<ExerciseResponse | null>(null);
   readonly replaceDialogVisible = signal(false);
 

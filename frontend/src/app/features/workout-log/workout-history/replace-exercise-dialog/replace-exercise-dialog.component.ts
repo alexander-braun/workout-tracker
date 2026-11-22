@@ -6,18 +6,6 @@ import { ButtonModule } from 'primeng/button';
 import { type ExerciseResponse } from '../../../../api/generated/api-types';
 import { WorkoutLogStore } from '../../store/workout-log.store';
 
-export interface RenameExerciseAction {
-  sourceId: string;
-  name: string;
-}
-
-export interface MergeExerciseAction {
-  sourceId: string;
-  targetId: string;
-}
-
-export type ReplaceExerciseAction = RenameExerciseAction | MergeExerciseAction;
-
 @Component({
   selector: 'frontend-replace-exercise-dialog',
   standalone: true,

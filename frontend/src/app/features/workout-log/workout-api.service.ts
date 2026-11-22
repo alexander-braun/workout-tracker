@@ -7,7 +7,7 @@ import {
   type WorkoutResponse,
   type WorkoutDatesResponse,
 } from '../../api/generated/api-types';
-import { type MergeExerciseAction, type RenameExerciseAction } from './workout-history/replace-exercise-dialog/replace-exercise-dialog.component';
+import { type MergeExerciseAction, type RenameExerciseAction } from './store/workout-log.model';
 
 @Injectable({
   providedIn: 'root',

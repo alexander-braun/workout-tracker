@@ -2,24 +2,6 @@
   overflow-x: auto;
 }
 
-.history-table {
-  min-width: 720px;
-}
-
-.history-row {
-  display: grid;
-  grid-template-columns:
-    minmax(160px, 1.2fr)
-    180px
-    minmax(140px, 1fr)
-    150px;
-
-  gap: 24px;
-  align-items: center;
-  min-height: 50px;
-  border-bottom: 1px solid #2b3541;
-}
-
 .history-head {
   min-height: 40px;
 

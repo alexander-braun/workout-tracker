@@ -9,7 +9,6 @@ import {
   finalize,
   map,
   merge,
-  of,
   pipe,
   Subject,
   switchMap,
@@ -22,14 +21,12 @@ import {
   type DeleteWorkout,
   type SaveWorkout,
   type WorkoutStore,
+  type MergeExerciseAction,
+  type RenameExerciseAction,
 } from './workout-log.model';
 import { type WorkoutEntry } from '../workout.model';
 import { type WorkoutEntryResponse } from '../../../api/generated/api-types';
 import { withAuthLifecycle } from '../../../shared/store/withAuthLifecycle';
-import {
-  type MergeExerciseAction,
-  type RenameExerciseAction,
-} from '../workout-history/replace-exercise-dialog/replace-exercise-dialog.component';
 
 const initialState: WorkoutStore = {
   exerciseEntries: [],

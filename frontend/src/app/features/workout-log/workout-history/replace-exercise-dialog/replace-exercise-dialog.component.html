@@ -6,6 +6,8 @@
   [draggable]="false"
   [style]="{ width: '30rem', maxWidth: '95vw' }"
   appendTo="body"
+  [closable]="!store.workoutSaveInProgress()"
+  [closeOnEscape]="!store.workoutSaveInProgress()"
 >
   @if (exerciseToEdit(); as source) {
     <div class="replace-form">
@@ -41,11 +43,23 @@
   }
 
   <ng-template #footer>
-    <button pButton type="button" severity="secondary" [text]="true" (click)="modalVisible.set(false)">
+    <button
+      pButton
+      type="button"
+      severity="secondary"
+      [text]="true"
+      (click)="modalVisible.set(false)"
+      [disabled]="store.workoutSaveInProgress()"
+    >
       <span pButtonLabel>Cancel</span>
     </button>
 
-    <button pButton type="button" [disabled]="!isValidRenameOrMergeOperation() || store.workoutHistoryLoading()" (click)="submit()">
+    <button
+      pButton
+      type="button"
+      [disabled]="!isValidRenameOrMergeOperation() || store.workoutSaveInProgress()"
+      (click)="submit()"
+    >
       <span pButtonLabel>
         {{ targetExercise() ? 'Merge exercises' : 'Rename exercise' }}
       </span>

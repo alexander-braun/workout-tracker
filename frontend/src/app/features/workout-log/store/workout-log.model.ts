@@ -27,3 +27,13 @@ export interface GetWorkoutHistory {
   from?: string;
   to?: string;
 }
+
+export interface RenameExerciseAction {
+  sourceId: string;
+  name: string;
+}
+
+export interface MergeExerciseAction {
+  sourceId: string;
+  targetId: string;
+}
