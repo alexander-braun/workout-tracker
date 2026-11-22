@@ -7,6 +7,7 @@ import {
   type WorkoutResponse,
   type WorkoutDatesResponse,
 } from '../../api/generated/api-types';
+import { type MergeExerciseAction, type RenameExerciseAction } from './store/workout-log.model';
 
 @Injectable({
   providedIn: 'root',
@@ -52,5 +53,13 @@ export class WorkoutApiService {
 
   deleteAllWorkouts(): Observable<void> {
     return this.http.delete<void>('/api/workouts');
+  }
+
+  renameExercise(res: RenameExerciseAction): Observable<void> {
+    return this.http.patch<void>(`/api/exercises/${res.sourceId}`, { name: res.name });
+  }
+
+  mergeExercises(res: MergeExerciseAction): Observable<void> {
+    return this.http.post<void>(`/api/exercises/${res.sourceId}/merge`, { targetUuid: res.targetId });
   }
 }

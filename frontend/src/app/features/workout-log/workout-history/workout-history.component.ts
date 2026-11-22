@@ -15,6 +15,10 @@ import {
 } from '../../../shared/components/sparkline/sparkline.component';
 import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
 import { type Range } from '../../../shared/types/range.model';
+import { type MenuItem } from 'primeng/api';
+import { MenuModule } from 'primeng/menu';
+import { type ExerciseResponse } from '../../../api/generated/api-types';
+import { ReplaceExerciseDialogComponent } from './replace-exercise-dialog/replace-exercise-dialog.component';
 
 type ProgressMetric = 'reps' | 'weight';
 type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
@@ -22,11 +26,21 @@ type WorkoutRange = Exclude<Range, '1W' | '1Y'>;
 @Component({
   selector: 'frontend-workout-history',
   standalone: true,
-  imports: [ButtonModule, SparklineComponent, LoadingComponent, RangeSelectorComponent],
+  imports: [
+    ButtonModule,
+    SparklineComponent,
+    LoadingComponent,
+    ReplaceExerciseDialogComponent,
+    RangeSelectorComponent,
+    MenuModule,
+  ],
   templateUrl: './workout-history.component.html',
   styleUrl: './workout-history.component.scss',
 })
 export class WorkoutHistoryComponent {
+  readonly selectedExercise = signal<ExerciseResponse | null>(null);
+  readonly replaceDialogVisible = signal(false);
+
   readonly store = inject(WorkoutLogStore);
   readonly authStore = inject(AuthStore);
   readonly selectedMetric = signal<ProgressMetric>('reps');
@@ -60,6 +74,7 @@ export class WorkoutHistoryComponent {
             : null;
 
         return {
+          exerciseId: exercise.exerciseId,
           exercise: exercise.exercise,
           sessions,
           latestReps: latest.reps,
@@ -92,6 +107,14 @@ export class WorkoutHistoryComponent {
     }));
   });
 
+  readonly actionMenuItems: MenuItem[] = [
+    {
+      label: 'Rename/Replace globally',
+      icon: 'pi pi-pencil',
+      command: () => this.replaceDialogVisible.set(true),
+    },
+  ];
+
   readonly history = computed<ExerciseHistory[]>(() => {
     const workouts = this.store.workoutHistory();
     const exercises = this.store.exerciseEntries();
@@ -112,6 +135,7 @@ export class WorkoutHistoryComponent {
     }
 
     return [...sessionsByExercise.entries()].map(([exerciseId, sessions]) => ({
+      exerciseId,
       exercise:
         exercises.find((exercise) => exercise.id === exerciseId)?.name ?? `Exercise ${exerciseId}`,
       sessions: sessions.sort((a, b) => a.date.getTime() - b.date.getTime()),

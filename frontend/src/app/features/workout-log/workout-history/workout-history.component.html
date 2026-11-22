@@ -16,10 +16,14 @@
         </button>
       }
     </div>
-    <frontend-range-selector [ranges]="ranges" [selectedRange]="selectedRange()" (selectedRangeChange)="selectRange($event)"></frontend-range-selector>
+    <frontend-range-selector
+      [ranges]="ranges"
+      [selectedRange]="selectedRange()"
+      (selectedRangeChange)="selectRange($event)"
+    ></frontend-range-selector>
   </header>
-
-  @if (store.workoutHistoryLoading()) {
+  <p-menu #actionMenu [model]="actionMenuItems" [popup]="true" appendTo="body" />
+  @if (store.workoutHistoryLoading() || store.workoutSaveInProgress()) {
     <frontend-loading text="Loading workout history..." />
   } @else {
     <div class="history-scroll">
@@ -29,6 +33,7 @@
           <span>Progress</span>
           <span>Latest</span>
           <span>Change</span>
+          <span></span>
         </div>
 
         @for (row of chartRows(); track row.exercise) {
@@ -80,6 +85,20 @@
                 <span>—</span>
               }
             </div>
+            <div class="action-cell">
+              <button
+                type="button"
+                class="action-button"
+                [attr.aria-label]="'Actions for ' + row.exercise"
+                title="Exercise actions"
+                (click)="
+                  selectedExercise.set({ id: row.exerciseId, name: row.exercise });
+                  actionMenu.toggle($event)
+                "
+              >
+                <i class="pi pi-ellipsis-v" aria-hidden="true"></i>
+              </button>
+            </div>
 
             <!--
             TODO show longer history
@@ -92,3 +111,12 @@
     </div>
   }
 </section>
+
+@let selected = selectedExercise();
+
+@if (selected !== null) {
+  <frontend-replace-exercise-dialog
+    [exerciseToEdit]="selected"
+    [(modalVisible)]="replaceDialogVisible"
+  />
+}

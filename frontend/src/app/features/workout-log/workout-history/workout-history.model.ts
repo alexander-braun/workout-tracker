@@ -11,6 +11,7 @@ export interface WorkoutSession {
 export interface ExerciseHistory {
   exercise: string;
   sessions: WorkoutSession[];
+  exerciseId: string;
 }
 
 export interface ProgressChange {
@@ -21,6 +22,7 @@ export interface ProgressChange {
 }
 
 export interface ProgressRow {
+  exerciseId: string;
   exercise: string;
   sessions: WorkoutSession[];
   latestReps: number;
