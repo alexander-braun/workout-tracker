@@ -18,7 +18,6 @@ import { HeaderActionsComponent } from '../../shared/components/header-actions/h
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    ButtonModule,
     TextareaModule,
     InputNumberModule,
     NutritionAndSleepHistoryComponent,

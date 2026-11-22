@@ -6,9 +6,9 @@ import { ButtonModule } from 'primeng/button';
   standalone: true,
   imports: [ButtonModule],
   templateUrl: './header-actions.component.html',
-  styleUrl: './header-actions.component.scss',
 })
 export class HeaderActionsComponent {
+  readonly saveButtonType = input.required<'button' | 'submit'>();
   readonly hasSavedEntry = input.required<boolean>();
   readonly readyForSave = input.required<boolean>();
   readonly readyForDelete = input.required<boolean>();
@@ -17,4 +17,10 @@ export class HeaderActionsComponent {
 
   readonly delete = output<void>();
   readonly save = output<void>();
+
+  onSaveClick(): void {
+    if (this.saveButtonType() === 'button') {
+      this.save.emit();
+    }
+  }
 }

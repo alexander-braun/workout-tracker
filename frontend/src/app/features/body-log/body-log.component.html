@@ -1,4 +1,4 @@
-<form class="card body-measurements" [formGroup]="form">
+<form class="card body-measurements" [formGroup]="form" (ngSubmit)="saveMeasurements()">
   <header class="card-header">
     <div>
       <h2>Body Log</h2>
@@ -9,9 +9,9 @@
       deleteTitle="Delete Measurements"
       saveTitle="Save Measurements"
       (delete)="deleteMeasurement()"
-      (save)="saveMeasurements()"
       [readyForDelete]="measurementReady()"
       [readyForSave]="measurementReady()"
+      saveButtonType="submit"
     ></frontend-header-actions>
   </header>
 

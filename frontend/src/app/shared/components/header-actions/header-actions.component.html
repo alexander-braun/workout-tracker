@@ -1,14 +1,14 @@
 <div class="header-actions">
   <button
     pButton
-    type="button"
+    [type]="saveButtonType()"
     [text]="true"
     severity="success"
     class="header-icon-button"
     [aria-label]="saveTitle()"
     [title]="saveTitle()"
-    (click)="save.emit()"
     [disabled]="!readyForSave()"
+    (click)="onSaveClick()"
   >
     <i class="pi pi-save" pButtonIcon></i>
   </button>

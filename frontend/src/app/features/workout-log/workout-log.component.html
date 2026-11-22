@@ -12,6 +12,7 @@
       (save)="saveWorkout()"
       [readyForDelete]="workoutReady()"
       [readyForSave]="workoutReady() && isWorkoutValid()"
+      saveButtonType="button"
     ></frontend-header-actions>
   </header>
 
@@ -45,8 +46,8 @@
             (onBlur)="onExerciseBlur(i, $event)"
           />
 
-          <p-inputnumber [(ngModel)]="workoutEntry.sets" [showButtons]="false" />
-          <p-inputnumber [(ngModel)]="workoutEntry.reps" [showButtons]="false" />
+          <p-inputnumber [(ngModel)]="workoutEntry.sets" [showButtons]="false" (keydown.enter)="saveWorkout()" />
+          <p-inputnumber [(ngModel)]="workoutEntry.reps" [showButtons]="false" (keydown.enter)="saveWorkout()" />
           <span class="multiply">×</span>
           <div class="weight">
             <p-inputnumber
@@ -56,6 +57,7 @@
               [maxFractionDigits]="2"
               [useGrouping]="false"
               placeholder="—"
+              (keydown.enter)="saveWorkout()"
             />
             <p-select
               appendTo="body"
@@ -64,7 +66,7 @@
               (ngModelChange)="setWorkoutUnit(workoutEntry, $event)"
             />
           </div>
-          <input pInputText [(ngModel)]="workoutEntry.notes" />
+          <input pInputText [(ngModel)]="workoutEntry.notes" (keydown.enter)="saveWorkout()" />
 
           <div class="row-actions">
             <button

@@ -1,6 +1,5 @@
 import { Component, computed, effect, inject, signal, untracked } from '@angular/core';
 import { FormBuilder, ReactiveFormsModule } from '@angular/forms';
-import { ButtonModule } from 'primeng/button';
 import { InputNumberModule } from 'primeng/inputnumber';
 import { type BodyArea, BodyComponent } from './body/body.component';
 import { BodyProgressComponent } from './body-progress/body-progress.component';
@@ -17,7 +16,6 @@ import { HeaderActionsComponent } from '../../shared/components/header-actions/h
   standalone: true,
   imports: [
     ReactiveFormsModule,
-    ButtonModule,
     InputNumberModule,
     BodyComponent,
     BodyProgressComponent,

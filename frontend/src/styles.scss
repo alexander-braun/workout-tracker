@@ -61,6 +61,19 @@ textarea {
   --surface-card: #1d242e;
 }
 
+.card-header .header-actions {
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  margin-top: 2px;
+  gap: 0.75rem;
+  min-width: 0;
+}
+
 .header-icon-button {
   width: 40px;
   height: 40px;
