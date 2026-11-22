@@ -11,6 +11,7 @@ export interface WorkoutStore {
   workoutHistoryStale: boolean;
   workoutDates: string[];
   loadedDate: string | null;
+  exerciseUpdateSucceeded: boolean;
 }
 
 export interface SaveWorkout {

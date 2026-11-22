@@ -1,0 +1,54 @@
+<p-dialog
+  header="Rename/Replace globally"
+  [visible]="modalVisible()"
+  (visibleChange)="modalVisible.set($event)"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: '30rem', maxWidth: '95vw' }"
+  appendTo="body"
+>
+  @if (exerciseToEdit(); as source) {
+    <div class="replace-form">
+      <p>Rename this exercise or merge it into an existing exercise.</p>
+
+      <span class="field-label">Current exercise</span>
+      <strong>{{ source.name }}</strong>
+
+      <label for="replacement-name">New exercise name</label>
+
+      <p-autocomplete
+        inputId="replacement-name"
+        [ngModel]="replacement()"
+        (ngModelChange)="replacement.set($event)"
+        [suggestions]="exerciseSuggestions()"
+        (completeMethod)="filterExercises($event)"
+        optionLabel="name"
+        [forceSelection]="false"
+        [dropdown]="true"
+        [fluid]="true"
+        appendTo="body"
+      />
+
+      @if (targetExercise()) {
+        <small>
+          This will merge the exercise into the selected existing exercise. Where both appear in the
+          same workout, the old entry will be discarded.
+        </small>
+      } @else {
+        <small>This will rename the exercise across all historical workouts.</small>
+      }
+    </div>
+  }
+
+  <ng-template #footer>
+    <button pButton type="button" severity="secondary" [text]="true" (click)="modalVisible.set(false)">
+      <span pButtonLabel>Cancel</span>
+    </button>
+
+    <button pButton type="button" [disabled]="!isValidRenameOrMergeOperation() || store.workoutHistoryLoading()" (click)="submit()">
+      <span pButtonLabel>
+        {{ targetExercise() ? 'Merge exercises' : 'Rename exercise' }}
+      </span>
+    </button>
+  </ng-template>
+</p-dialog>

@@ -56,11 +56,10 @@ public class WorkoutService {
     Workout workout =
         workoutRepository
             .findByUserIdAndDate(user.getId(), date)
-            .map(
-                currentWorkout -> {
-                  currentEntries.addAll(currentWorkout.getEntries());
-                  return currentWorkout;
-                })
+            .map(currentWorkout -> {
+              currentEntries.addAll(currentWorkout.getEntries());
+              return currentWorkout;
+            })
             .orElseGet(() -> new Workout(user, date));
 
     List<UUID> exercisesToRemove = new ArrayList<>();
@@ -141,12 +140,11 @@ public class WorkoutService {
     List<Exercise> exercises = new ArrayList<>();
     workoutRepository
         .findByUserIdAndDate(user.getId(), date)
-        .ifPresent(
-            workout -> {
-              for (WorkoutEntry entry : workout.getEntries()) {
-                exercises.add(entry.getExercise());
-              }
-            });
+        .ifPresent(workout -> {
+          for (WorkoutEntry entry : workout.getEntries()) {
+            exercises.add(entry.getExercise());
+          }
+        });
     workoutRepository.deleteByUserIdAndDate(user.getId(), date);
     workoutRepository.flush();
 
@@ -172,17 +170,16 @@ public class WorkoutService {
         workout.getId(),
         workout.getDate(),
         workout.getEntries().stream()
-            .map(
-                entry ->
-                    new WorkoutEntryResponse(
-                        entry.getId(),
-                        entry.getExercise().getId(),
-                        entry.getSets(),
-                        entry.getReps(),
-                        entry.getWeight(),
-                        entry.getUnit(),
-                        entry.getNotes(),
-                        entry.getPosition()))
+            .map(entry ->
+                new WorkoutEntryResponse(
+                    entry.getId(),
+                    entry.getExercise().getId(),
+                    entry.getSets(),
+                    entry.getReps(),
+                    entry.getWeight(),
+                    entry.getUnit(),
+                    entry.getNotes(),
+                    entry.getPosition()))
             .toList());
   }
 }

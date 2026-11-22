@@ -84,6 +84,22 @@ export interface paths {
         patch?: never;
         trace?: never;
     };
+    "/api/exercises/{sourceExerciseId}/merge": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get?: never;
+        put?: never;
+        post: operations["mergeExercises"];
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch?: never;
+        trace?: never;
+    };
     "/api/auth/register": {
         parameters: {
             query?: never;
@@ -114,6 +130,22 @@ export interface paths {
         options?: never;
         head?: never;
         patch?: never;
+        trace?: never;
+    };
+    "/api/exercises/{id}": {
+        parameters: {
+            query?: never;
+            header?: never;
+            path?: never;
+            cookie?: never;
+        };
+        get: operations["getExercise"];
+        put?: never;
+        post?: never;
+        delete?: never;
+        options?: never;
+        head?: never;
+        patch: operations["renameExercise"];
         trace?: never;
     };
     "/api/workouts": {
@@ -369,6 +401,10 @@ export interface components {
             /** Format: email */
             email: string;
         };
+        MergeExercisesRequest: {
+            /** Format: uuid */
+            targetUuid: string;
+        };
         RegisterRequest: {
             /** Format: email */
             email: string;
@@ -383,6 +419,9 @@ export interface components {
             /** Format: email */
             email: string;
             password: string;
+        };
+        RenameExerciseRequest: {
+            name: string;
         };
         WorkoutDatesResponse: {
             dates: string[];
@@ -427,9 +466,11 @@ export type MeasurementEntryRequest = components['schemas']['MeasurementEntryReq
 export type MeasurementEntryResponse = components['schemas']['MeasurementEntryResponse'];
 export type ChangePasswordRequest = components['schemas']['ChangePasswordRequest'];
 export type ChangeEmailRequest = components['schemas']['ChangeEmailRequest'];
+export type MergeExercisesRequest = components['schemas']['MergeExercisesRequest'];
 export type RegisterRequest = components['schemas']['RegisterRequest'];
 export type RegisterResponse = components['schemas']['RegisterResponse'];
 export type LoginRequest = components['schemas']['LoginRequest'];
+export type RenameExerciseRequest = components['schemas']['RenameExerciseRequest'];
 export type WorkoutDatesResponse = components['schemas']['WorkoutDatesResponse'];
 export type NutritionDatesResponse = components['schemas']['NutritionDatesResponse'];
 export type MeasurementDatesResponse = components['schemas']['MeasurementDatesResponse'];
@@ -451,7 +492,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["WorkoutResponse"];
                 };
@@ -475,7 +518,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["WorkoutResponse"];
                 };
@@ -495,7 +540,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -513,7 +560,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["NutritionEntryResponse"];
                 };
@@ -537,7 +586,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["NutritionEntryResponse"];
                 };
@@ -557,7 +608,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -575,7 +628,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["MeasurementEntryResponse"];
                 };
@@ -599,7 +654,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["MeasurementEntryResponse"];
                 };
@@ -619,7 +676,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -639,17 +698,23 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -669,17 +734,47 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    mergeExercises: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                sourceExerciseId: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["MergeExercisesRequest"];
+            };
+        };
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -699,19 +794,25 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["RegisterResponse"];
                 };
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -731,17 +832,69 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
+                content?: never;
+            };
+        };
+    };
+    getExercise: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody?: never;
+        responses: {
+            /** @description OK */
+            200: {
+                headers: {
+                    [name: string]: unknown;
+                };
+                content: {
+                    "*/*": components["schemas"]["ExerciseResponse"];
+                };
+            };
+        };
+    };
+    renameExercise: {
+        parameters: {
+            query?: never;
+            header?: never;
+            path: {
+                id: string;
+            };
+            cookie?: never;
+        };
+        requestBody: {
+            content: {
+                "application/json": components["schemas"]["RenameExerciseRequest"];
+            };
+        };
+        responses: {
+            /** @description No Content */
+            204: {
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -760,7 +913,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["WorkoutResponse"][];
                 };
@@ -778,7 +933,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -794,7 +951,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["WorkoutDatesResponse"];
                 };
@@ -815,7 +974,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["NutritionEntryResponse"][];
                 };
@@ -833,7 +994,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -849,7 +1012,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["NutritionDatesResponse"];
                 };
@@ -870,7 +1035,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["MeasurementEntryResponse"][];
                 };
@@ -888,7 +1055,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -904,7 +1073,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["MeasurementDatesResponse"];
                 };
@@ -922,7 +1093,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["ExerciseResponse"][];
                 };
@@ -940,19 +1113,25 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["CurrentUserResponse"];
                 };
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -968,17 +1147,23 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Unauthorized */
             401: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
             /** @description Conflict */
             409: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content?: never;
             };
         };
@@ -996,7 +1181,9 @@ export interface operations {
         responses: {
             /** @description OK */
             200: {
-                headers: Record<string, unknown>;
+                headers: {
+                    [name: string]: unknown;
+                };
                 content: {
                     "*/*": components["schemas"]["CsrfToken"];
                 };
