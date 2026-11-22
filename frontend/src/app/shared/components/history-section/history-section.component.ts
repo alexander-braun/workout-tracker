@@ -9,7 +9,7 @@ import { Component, contentChild, input, signal, TemplateRef } from '@angular/co
   imports: [NgTemplateOutlet],
 })
 export class HistorySectionComponent {
-    title = input.required<string>();
-    historyOpen = signal(false);
+    readonly title = input.required<string>();
+    readonly historyOpen = signal(false);
     readonly historyTemplate = contentChild.required(TemplateRef);
 }

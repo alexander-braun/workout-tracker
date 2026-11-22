@@ -8,8 +8,7 @@ import { type Range } from '../../types/range.model';
   styleUrl: './range-selector.component.scss',
 })
 export class RangeSelectorComponent {
-  ranges = input.required<Range[]>();
-  selectedRange = input.required<Range>();
-
-  selectedRangeChange = output<Range>();
+  readonly ranges = input.required<Range[]>();
+  readonly selectedRange = input.required<Range>();
+  readonly selectedRangeChange = output<Range>();
 }
