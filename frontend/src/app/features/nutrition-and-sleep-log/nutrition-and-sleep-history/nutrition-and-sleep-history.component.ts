@@ -6,10 +6,12 @@ import { LoadingComponent } from '../../../shared/components/loading/loading.com
 import { toDateString } from '../../../shared/helper/toDateString';
 import { AuthStore } from '../../auth/store/auth.store';
 import { SparklineComponent } from '../../../shared/components/sparkline/sparkline.component';
-
-type Range = '1W' | '1M' | '3M' | '6M' | 'All';
+import { RangeSelectorComponent } from '../../../shared/components/range-selector/range-selector.component';
+import { type Range } from '../../../shared/types/range.model';
 
 type NutritionKey = 'calories' | 'protein' | 'sleepHours' | 'sleepQuality' | 'steps' | 'energy';
+
+type NutritionRange = Extract<Range, '1W' | '1M' | '3M' | '6M' | 'All'>;
 
 interface HistorySession {
   date: Date;
@@ -66,7 +68,7 @@ const metricDefinitions: {
 @Component({
   selector: 'frontend-nutrition-and-sleep-history',
   standalone: true,
-  imports: [ButtonModule, SparklineComponent, LoadingComponent],
+  imports: [ButtonModule, SparklineComponent, LoadingComponent, RangeSelectorComponent],
   templateUrl: './nutrition-and-sleep-history.component.html',
   styleUrl: './nutrition-and-sleep-history.component.scss',
 })
@@ -74,8 +76,8 @@ export class NutritionAndSleepHistoryComponent {
   readonly nutritionStore = inject(NutritionLogStore);
   readonly authStore = inject(AuthStore);
 
-  readonly selectedRange = signal<Range>('1M');
-  readonly ranges: Range[] = ['1W', '1M', '3M', '6M', 'All'];
+  readonly selectedRange = signal<NutritionRange>('1M');
+  readonly ranges: NutritionRange[] = ['1W', '1M', '3M', '6M', 'All'];
 
   readonly rows = computed<NutritionSleepHistoryRow[]>(() => {
     const history = this.nutritionStore.nutritionHistory();
@@ -113,7 +115,15 @@ export class NutritionAndSleepHistoryComponent {
     });
   }
 
+  private isNutritionRange(range: Range): range is NutritionRange {
+    return this.ranges.some((r) => r === range);
+  }
+
   selectRange(range: Range): void {
+    if (!this.isNutritionRange(range)) {
+      return;
+    }
+
     this.selectedRange.set(range);
   }
 
@@ -165,15 +175,12 @@ export class NutritionAndSleepHistoryComponent {
       case '1W':
         from.setDate(from.getDate() - 7);
         break;
-
       case '1M':
         from.setMonth(from.getMonth() - 1);
         break;
-
       case '3M':
         from.setMonth(from.getMonth() - 3);
         break;
-
       case '6M':
         from.setMonth(from.getMonth() - 6);
         break;

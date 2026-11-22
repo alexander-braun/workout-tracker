@@ -1,0 +1,12 @@
+    <div class="range-selector">
+      @for (range of ranges(); track range) {
+        <button
+          type="button"
+          class="range-button"
+          [class.active]="selectedRange() === range"
+          (click)="selectedChange.emit(range)"
+        >
+          {{ range }}
+        </button>
+      }
+    </div>

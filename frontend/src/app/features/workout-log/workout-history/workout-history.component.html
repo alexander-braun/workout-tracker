@@ -16,18 +16,7 @@
         </button>
       }
     </div>
-    <div class="range-selector">
-      @for (range of ranges; track range) {
-        <button
-          type="button"
-          class="range-button"
-          [class.active]="selectedRange() === range"
-          (click)="selectRange(range)"
-        >
-          {{ range }}
-        </button>
-      }
-    </div>
+    <frontend-range-selector [ranges]="ranges" [selectedRange]="selectedRange()" (selectedChange)="selectRange($event)"></frontend-range-selector>
   </header>
 
   @if (store.workoutHistoryLoading()) {

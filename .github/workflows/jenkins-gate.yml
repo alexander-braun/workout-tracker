@@ -4,6 +4,8 @@ name: Jenkins CI Gate
 on:
   push:
     branches: [main]
+  pull_request:
+    branches: [main]
 
 permissions:
   checks: read
@@ -28,7 +30,7 @@ jobs:
               const { data } = await github.rest.checks.listForRef({
                 owner: context.repo.owner,
                 repo: context.repo.repo,
-                ref: context.sha,
+                ref: context.payload.pull_request?.head.sha ?? context.sha,
                 per_page: 100
               });
 
