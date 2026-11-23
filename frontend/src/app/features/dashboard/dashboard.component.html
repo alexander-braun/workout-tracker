@@ -4,53 +4,11 @@
       <h1 class="heading">Workout Tracker</h1>
     </div>
     <div class="header-actions">
-      <p-datepicker
-        [ngModel]="store.selectedDate()"
-        (ngModelChange)="store.setSelectedDate($event)"
-        [showIcon]="true"
-        iconDisplay="input"
-        [readonlyInput]="true"
-        dateFormat="D, M d, yy"
+      <frontend-datepicker
+        [selectedDate]="store.selectedDate()"
+        (selectedDateChange)="store.setSelectedDate($event)"
         [disabled]="savingInProgress()"
-      >
-        <ng-template #date let-date>
-          @let key = dateKey(date);
-
-          <span class="calendar-day" [class.has-entry]="markedDates().has(key)">
-            <span>{{ date.day }}</span>
-
-            <span class="calendar-markers">
-              @if (workoutDates().has(key)) {
-                <span class="calendar-dot workout"></span>
-              }
-              @if (measurementDates().has(key)) {
-                <span class="calendar-dot body"></span>
-              }
-              @if (nutritionDates().has(key)) {
-                <span class="calendar-dot nutrition"></span>
-              }
-            </span>
-          </span>
-        </ng-template>
-
-        <ng-template #footer>
-          <div class="calendar-legend">
-            <span>
-              <i class="calendar-dot workout"></i>
-              Workout
-            </span>
-            <span>
-              <i class="calendar-dot body"></i>
-              Body
-            </span>
-            <span>
-              <i class="calendar-dot nutrition"></i>
-              Nutrition
-            </span>
-          </div>
-        </ng-template>
-      </p-datepicker>
-
+      />
       <p-menu
         styleClass="account-menu"
         #accountMenu
@@ -75,9 +33,6 @@
   <frontend-workout-log />
   <frontend-body-log />
   <frontend-nutrition-and-sleep-log />
-  <!--
-  <button (click)="deleteAllData()">DELETE ALL DATA</button>
-  -->
 </div>
 
 <p-dialog

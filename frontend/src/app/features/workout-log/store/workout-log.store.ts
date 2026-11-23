@@ -9,6 +9,7 @@ import {
   finalize,
   map,
   merge,
+  type Observable,
   pipe,
   Subject,
   switchMap,
@@ -104,6 +105,12 @@ export const WorkoutLogStore = signalStore(
       clearStore: () => {
         reset$.next();
         patchState(store, initialState);
+      },
+      getWorkoutEntriesForDate(date: string): Observable<WorkoutEntry[]> {
+        return api.getWorkout(date).pipe(
+          map((workout) => toWorkoutEntries(workout.entries)),
+          takeUntil(reset$),
+        );
       },
       loadWorkoutHistory: rxMethod<GetWorkoutHistory>(
         pipe(

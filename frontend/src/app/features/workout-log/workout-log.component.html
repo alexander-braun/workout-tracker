@@ -13,6 +13,11 @@
       [readyForDelete]="workoutReady()"
       [readyForSave]="workoutReady() && isWorkoutValid()"
       saveButtonType="button"
+      [hasCustomAction]="true"
+      [customActionDisabled]="!workoutReady()"
+      customActionIcon="pi pi-file-import"
+      customActionTitle="Import previous workout"
+      (customAction)="importDialogVisible.set(true)"
     ></frontend-header-actions>
   </header>
 
@@ -127,3 +132,9 @@
     </ng-template>
   </frontend-history-section>
 </section>
+
+<frontend-import-workout-dialog
+  [(modalVisible)]="importDialogVisible"
+  [targetDate]="appStore.selectedDate()"
+  (workoutImported)="applyImportedWorkout($event)"
+/>

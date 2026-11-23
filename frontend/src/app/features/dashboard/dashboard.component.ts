@@ -1,8 +1,6 @@
 import { Component, computed, effect, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { WorkoutLogComponent } from '../workout-log/workout-log.component';
-import { DatePickerModule } from 'primeng/datepicker';
-import { FormsModule } from '@angular/forms';
 import { BodyLogComponent } from '../body-log/body-log.component';
 import { NutritionAndSleepLogComponent } from '../nutrition-and-sleep-log/nutrition-and-sleep-log.component';
 import { AppStore } from '../../store/app.store';
@@ -16,6 +14,7 @@ import { RegisterFormComponent } from '../auth/register-form/register-form.compo
 import { LoginFormComponent } from '../auth/login-form/login-form.component';
 import { AuthStore } from '../auth/store/auth.store';
 import { ButtonModule } from 'primeng/button';
+import { DatepickerComponent } from '../../shared/components/datepicker/datepicker.component';
 
 @Component({
   selector: 'frontend-dashboard',
@@ -23,13 +22,12 @@ import { ButtonModule } from 'primeng/button';
     NutritionAndSleepLogComponent,
     BodyLogComponent,
     WorkoutLogComponent,
-    DatePickerModule,
-    FormsModule,
     MenuModule,
     DialogModule,
     RegisterFormComponent,
     LoginFormComponent,
     ButtonModule,
+    DatepickerComponent
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -42,12 +40,6 @@ export class DashboardComponent {
   readonly nutritionLogStore = inject(NutritionLogStore);
   readonly bodyLogStore = inject(BodyLogStore);
 
-  readonly workoutDates = computed(() => new Set(this.workoutLogStore.workoutDates()));
-  readonly nutritionDates = computed(() => new Set(this.nutritionLogStore.nutritionDates()));
-  readonly measurementDates = computed(() => new Set(this.bodyLogStore.measurementDates()));
-  readonly markedDates = computed(
-    () => new Set([...this.workoutDates(), ...this.measurementDates(), ...this.nutritionDates()]),
-  );
   registerDialogVisible = false;
   loginDialogVisible = false;
 
@@ -106,17 +98,5 @@ export class DashboardComponent {
       this.loginDialogVisible = false;
       this.registerDialogVisible = false;
     }
-  }
-
-  dateKey(date: { year: number; month: number; day: number }): string {
-    return [
-      date.year,
-      String(date.month + 1).padStart(2, '0'),
-      String(date.day).padStart(2, '0'),
-    ].join('-');
-  }
-
-  deleteAllData(): void {
-    this.store.deleteAllData();
   }
 }
